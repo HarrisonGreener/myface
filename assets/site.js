@@ -66,11 +66,12 @@
     busy = true; scene.parentNode.classList.add('zooming');
     ry = ((ry % 360) + 540) % 360 - 180; rest();             // take the short way back round
     var s = fit(), vw = window.innerWidth, vh = window.innerHeight;
-    var k = Math.max(vw / (432 * s), vh / (324 * s)) * 1.02;
+    var fr = vw <= 620 ? [20, 50] : [52, 80];
+    var k = Math.max((vw - fr[0]) / (432 * s), (vh - fr[1]) / (324 * s));
     var z = P * (1 - 1 / k) - 150 * s;
     var r = scene.getBoundingClientRect(), dy = (vh / 2) - (r.top + r.height / 2);
     requestAnimationFrame(function () {
-      rig.style.transform = 'translate3d(0,' + (dy + 90 * s) + 'px,' + z + 'px) scale(' + s + ') rotateX(0deg) rotateY(0deg)';
+      rig.style.transform = 'translate3d(0,' + (dy - (fr[1] - fr[0]) / 2 + 90 * s) + 'px,' + z + 'px) scale(' + s + ') rotateX(0deg) rotateY(0deg)';
     });
     setTimeout(function () { showDesktop(false); bootUp(); }, reduce ? 0 : 1000);
   }
@@ -88,7 +89,7 @@
 
   // ---- Boot text the first time you turn it on
   var boot = document.getElementById('boot'), log = document.getElementById('bootlog'), hasBooted = false;
-  var LINES = ['MYFACE BIOS v2.001', 'checking lashes........ ok', 'checking nails......... ok',
+  var LINES = ['MYFACE BIOS v4.00.950', 'checking lashes........ ok', 'checking nails......... ok',
                'loading glitter.drv.... ok', 'mounting /hair /piercing /filler', '', 'welcome x'];
   function bootUp() {
     var first = os.querySelector('.app');
@@ -96,7 +97,10 @@
     hasBooted = true; boot.classList.add('on'); log.textContent = '';
     var i = 0;
     (function next() {
-      if (i >= LINES.length) return setTimeout(function () { boot.classList.remove('on'); first.focus(); }, 350);
+      if (i >= LINES.length) return setTimeout(function () {
+        boot.classList.add('splashing');
+        setTimeout(function () { boot.classList.remove('on', 'splashing'); first.focus(); }, 1500);
+      }, 300);
       log.textContent += LINES[i++] + '\n'; setTimeout(next, 150);
     })();
   }
@@ -206,7 +210,7 @@
   var m = document.getElementById('mascot'), btn = document.getElementById('avatarBtn'), bubble = document.getElementById('bubble');
   if (m && btn) {
     var FR = 7, frame = 0, sx = null, sf = 0, mv = false, li = 0;
-    var lines = ['drag me round x', 'stop spinning me lol', 'book in, i dare u', 'rawr means book now in emo'];
+    var lines = ['drag me round x', 'stop spinning me lol', 'book in, i dare u', 'pick a treatment x'];
     var show = function (f) { frame = ((Math.round(f) % FR) + FR) % FR; m.style.backgroundPositionX = (frame * 100 / (FR - 1)) + '%'; };
     btn.addEventListener('pointerdown', function (e) { sx = e.clientX; sf = frame; mv = false; btn.setPointerCapture(e.pointerId); });
     btn.addEventListener('pointermove', function (e) { if (sx === null) return; var dx = e.clientX - sx; if (Math.abs(dx) > 5) mv = true; show(sf - dx / 20); });

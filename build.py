@@ -504,31 +504,24 @@ CHROME_DEFS = """<svg width="0" height="0" style="position:absolute" aria-hidden
 
 
 def front_stickers():
-    return (sticker("bolt", "chrome", 6, 40, 36, -14) + sticker("star", "chromeHolo", 436, 0, 56, 14)
-            + sticker("heart", "chromePink", 34, 350, 58, -12) + name_sticker(190, 364, -4)
-            + sticker("skull", "chrome", 404, 348, 58, 10))
+    return (sticker("star", "chromeHolo", 436, 0, 56, 14) + name_sticker(190, 364, -4) + sticker("heart", "chromePink", 404, 352, 54, 10))
 
 
 def left_stickers():
-    return (sticker("cherry", "main", 120, 70, 82, -8) + sticker("lips", "chromePink", 60, 200, 80, 10)
-            + word_sticker("xoxo", "url(#chromeHolo)", 130, 310, 120, -6))
+    return sticker("cherry", "main", 110, 150, 86, -8)
 
 
 def side_stickers():
-    return (sticker("butterfly", "chromeHolo", 50, 70, 96, -10) + sticker("star", "chrome", 190, 50, 44, 18)
-            + sticker("heart", "chromePink", 160, 200, 70, 8) + sticker("polish", "chromePink", 56, 250, 64, -8)
-            + sticker("skull", "chromePink", 200, 320, 48, -12))
+    return sticker("butterfly", "chromeHolo", 90, 120, 100, -10) + sticker("lips", "chromePink", 120, 280, 74, 8)
 
 
 def back_stickers():
-    return (sticker("bow", "chromePink", 26, 20, 86, -12) + word_sticker("rawr", "url(#chromeBlack)", 210, 28, 120, 8)
-            + sticker("heart", "chromeHolo", 140, 110, 74, -4) + sticker("lips", "chromePink", 34, 178, 78, 12)
-            + sticker("star", "chromePink", 290, 196, 52, -16) + name_sticker(200, 120, 4))
+    return sticker("bow", "chromePink", 40, 30, 90, -12) + name_sticker(190, 150, 4)
 
 
 def desktop():
     """The computer's desktop: app icons, pop-up windows and a taskbar."""
-    apps = [("web", "myface.com", "web", "./", myspace())]
+    apps = [("web", "myface.com", "web", "./", f'<div class="addr">Address <span>{e(C["site_url"])}/~{e(C["owner"].split()[0].lower())}</span></div>' + myspace())]
     for c in CATEGORIES:
         body = f'<p>{e(c["blurb"])}.</p>' + links(0, [(s["name"], from_price(s), f'{c["slug"]}/{s["slug"]}/') for s in c["services"]]) + \
                f'<p class="win-foot"><a href="{c["slug"]}/">Open {e(c["name"].lower())} page &rarr;</a></p>'
@@ -560,9 +553,9 @@ def desktop():
 <div class="wall" aria-hidden="true"><svg class="wall-logo" viewBox="26 24 530 200"><use href="#mf-logo"/></svg></div>
 <ul class="apps">{icons}</ul>
 {wins}
-<nav class="startmenu" id="startmenu" hidden aria-label="Start menu"><p class="sm-head">{e(C["brand"])} OS</p><ul>{menu}<li class="sm-sep"><button type="button" class="logoff-btn">&#9211; Log off</button></li></ul></nav>
-<div class="taskbar"><button type="button" class="start" id="startBtn" aria-expanded="false" aria-controls="startmenu">myface &#9662;</button><div class="tasks" id="tasks" aria-label="Open windows"></div><div class="tray"><svg class="mic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1"/></svg><svg class="mic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4zM16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg><span id="clock">--:--</span><button type="button" class="tray-off logoff-btn" aria-label="Log off"><svg class="mic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v8M6.3 6.3a8 8 0 1 0 11.4 0"/></svg></button></div></div>
-<div class="boot" id="boot" aria-hidden="true"><pre id="bootlog"></pre></div>
+<nav class="startmenu" id="startmenu" hidden aria-label="Start menu"><p class="sm-head">{e(C["brand"])} 95</p><ul>{menu}<li class="sm-sep"><button type="button" class="logoff-btn">&#9211; Log off</button></li></ul></nav>
+<div class="taskbar"><button type="button" class="start" id="startBtn" aria-expanded="false" aria-controls="startmenu"><svg class="start-logo" viewBox="26 24 530 200" aria-hidden="true"><use href="#mf-logo"/></svg>Start</button><div class="tasks" id="tasks" aria-label="Open windows"></div><div class="tray"><svg class="mic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1"/></svg><svg class="mic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4zM16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg><span id="clock">--:--</span><button type="button" class="tray-off logoff-btn" aria-label="Log off"><svg class="mic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v8M6.3 6.3a8 8 0 1 0 11.4 0"/></svg></button></div></div>
+<div class="boot" id="boot" aria-hidden="true"><pre id="bootlog"></pre><div class="splash"><svg viewBox="26 24 530 200"><use href="#mf-logo"/></svg><div class="bar"><i></i></div></div></div>
 </div>"""
 
 
@@ -582,13 +575,13 @@ def computer():
 <div class="shell s-rear"><span class="vents"></span>{back_stickers()}</div>
 <div class="neck box">{box}</div>
 <div class="base3d box">{box}</div>
-<div class="kbd box"><div class="f fr"></div><div class="f bk"></div><div class="f lf"></div><div class="f rt"></div><div class="f tp keys">{keys}{sticker("star", "chromePink", 400, 8, 34, 12)}</div><div class="f bt"></div></div>
+<div class="kbd box"><div class="f fr"></div><div class="f bk"></div><div class="f lf"></div><div class="f rt"></div><div class="f tp keys">{keys}</div><div class="f bt"></div></div>
 <div class="shadow"></div>
 </div>
 </div>
 <p class="hint" id="hint">drag to spin it 360° · click to turn it on</p>
 </div>
-<div class="zoomview" id="zoomview" hidden><div class="zv-screen" id="zvScreen"></div>
+<div class="zoomview" id="zoomview" hidden><div class="zv-screen" id="zvScreen"></div><div class="zv-star" aria-hidden="true">{sticker("star", "chromeHolo", 0, 0, 58, 0)}</div><div class="zv-badge" aria-hidden="true">{name_sticker(0, 0, -3)}</div>
 </div>
 <div class="caption">
 <h1>Hair, nails, lashes, piercing &amp; lip filler in {e(C['town'])}</h1>
