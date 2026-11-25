@@ -12,10 +12,10 @@ CONFIG = {
     "brand": "MyFace",
     "tagline": "customise your avatar",
     "owner": "Ella Moore",
-    "town": "Droylsden",                     # where the home studio is
+    "town": "Manchester",                    # main area the business is known by
     "city": "Manchester",                    # the bigger search area
     "region": "Greater Manchester",
-    "served": ["Droylsden", "Manchester", "Oldham", "Ashton-under-Lyne", "Failsworth", "Denton", "Audenshaw"],
+    "served": ["Manchester", "Droylsden", "Oldham", "Stockport", "Ashton-under-Lyne", "Failsworth", "Denton", "Audenshaw"],
     "phone": "[PHONE NUMBER]",
     "email": "[EMAIL]",
     "instagram": "https://www.instagram.com/[HANDLE]",
@@ -25,7 +25,7 @@ C = CONFIG
 OUT = os.path.dirname(os.path.abspath(__file__))
 
 # ---------------------------------------------------------------- content
-# Prices are estimates based on typical home-salon prices around Tameside and Oldham.
+# Prices are estimates based on typical home-salon prices around Greater Manchester.
 CATEGORIES = [
     {
         "slug": "hair", "name": "Hair",
@@ -195,11 +195,11 @@ CATEGORIES = [
 
 AREAS = [
     {"slug": "droylsden", "name": "Droylsden",
-     "body": f"<p>{C['brand']} is a home beauty studio in Droylsden, Tameside. It's appointment-only, and the full address is sent once you've booked.</p><p>It's handy for anyone in Droylsden, Fairfield, Littlemoss, Audenshaw and Clayton.</p>"},
-    {"slug": "manchester", "name": "Manchester",
-     "body": f"<p>Looking for nails, lashes, hair, piercing or lip filler in east Manchester? {C['brand']} is in Droylsden, about four miles east of the city centre, with the Metrolink Droylsden stop on the East Manchester line.</p><p>Clients come over from Clayton, Openshaw, Gorton and across the city. It's appointment-only, and you'll get the address when you book.</p>"},
+     "body": f"<p>{C['brand']} is a home beauty studio in Manchester that also covers Droylsden, Fairfield, Audenshaw and Clayton. It's appointment-only, and you'll get the address once you've booked.</p>"},
     {"slug": "oldham", "name": "Oldham",
-     "body": f"<p>{C['brand']} is a short drive from Oldham, Failsworth and Chadderton, at a home studio in Droylsden. It's appointment-only, and you'll get the address when you book.</p>"},
+     "body": f"<p>{C['brand']} is a home beauty studio in Manchester that also covers Oldham, Failsworth and Chadderton. It's appointment-only, and you'll get the address once you've booked.</p>"},
+    {"slug": "stockport", "name": "Stockport",
+     "body": f"<p>{C['brand']} is a home beauty studio in Manchester that also covers Stockport, Denton and Reddish. It's appointment-only, and you'll get the address once you've booked.</p>"},
 ]
 
 AFTERCARE = [
@@ -214,7 +214,7 @@ AFTERCARE = [
 ]
 
 GENERAL_FAQS = [
-    ("Where are you?", f"{C['brand']} is a home studio in {C['town']}, Tameside. The full address is sent once you've booked."),
+    ("Where are you?", f"{C['brand']} is a home studio in {C['town']}, covering Droylsden, Oldham, Stockport and the surrounding areas. The full address is sent once you've booked."),
     ("What are your opening hours?", "There aren't set opening hours. It's appointment-only, so pick a time that suits you on the booking page."),
     ("How do I book?", f"Book online through the <a href=\"{C['booking_url']}\">booking page</a>, message on Instagram or call {C['phone']}."),
     ("Do you do mobile appointments?", "[YES/NO — add details]"),
@@ -397,7 +397,7 @@ def myspace():
 <div class="ms-profile">
 <span class="pic"><img class="pic-img" src="assets/ella-px.png" alt="Photo of {e(C['owner'])}" width="106" height="140"></span>
 <div class="ms-info"><p>"Hair, nails, lashes, piercings &amp; lips, all in one place."</p>
-<p>Home beauty studio<br>{e(C['town'])}<br>{e(C['city'])}<br>United Kingdom</p>
+<p>Home beauty studio<br>{e(C['town'])}<br>United Kingdom</p>
 <p class="online"><span></span> Online Now!</p>
 <p>Last Login: today</p></div></div>
 <p class="viewmy">View My: <a href="prices/">Prices</a> | <a href="gallery/">Pics</a> | <a href="aftercare/">Aftercare</a></p>
@@ -408,7 +408,7 @@ def myspace():
 <div class="ms-box"><h3>{e(C['brand'])}'s Details</h3><table>
 <tr><th scope="row">Status:</th><td>Taking bookings</td></tr>
 <tr><th scope="row">Here for:</th><td>Fresh sets, new hair, a lil sparkle</td></tr>
-<tr><th scope="row">Hometown:</th><td>{e(C['town'])}, Tameside</td></tr>
+<tr><th scope="row">Hometown:</th><td>{e(C['town'])}</td></tr>
 <tr><th scope="row">Hours:</th><td>Appointment only, address sent when you book</td></tr></table></div>
 </div>
 <div class="ms-right">
@@ -538,7 +538,7 @@ def desktop():
                  '<span class="mascot" id="mascot" role="img" aria-label="The MyFace mascot: an emo girl with black and pink hair"></span></button>'
                  '<p class="bubble" id="bubble" aria-live="polite">hiya! welcome to myface x</p><p class="rot-hint" aria-hidden="true">&larr; drag to turn &rarr;</p></div>'))
     apps.append(("about", "About", "about", "about/",
-                 f'<p>{e(C["brand"])} is {e(C["owner"])}\'s home beauty studio in {e(C["town"])}, Tameside, for hair, nails, lashes, brows, piercing and lip filler.</p>'
+                 f'<p>{e(C["brand"])} is {e(C["owner"])}\'s home beauty studio in {e(C["town"])} for hair, nails, lashes, brows, piercing and lip filler.</p>'
                  f'<p>[A line or two about you.]</p><p class="win-foot"><a href="about/">More about me &rarr;</a></p>'))
     apps.append(("contact", "Contact", "contact", "contact/",
                  f'<ul class="plain"><li><a href="tel:{e(C["phone"])}">{e(C["phone"])}</a></li><li><a href="mailto:{e(C["email"])}">{e(C["email"])}</a></li>'
@@ -587,7 +587,7 @@ def computer():
 <div class="caption">
 <p class="cap-tag">{e(C['tagline'])}</p>
 <h1>Hair, nails, lashes, piercing &amp; lip filler in {e(C['town'])}</h1>
-<p>An appointment-only home beauty studio in {e(C['town'])}, near Manchester and Oldham.</p>
+<p>An appointment-only home beauty studio in {e(C['town'])}, also covering Droylsden, Oldham, Stockport and the surrounding areas.</p>
 <p><a class="btn" href="{e(C['booking_url'])}">Book a slot</a> <a class="btn ghost" href="services/">All treatments</a></p>
 </div>
 </main>"""
@@ -601,11 +601,11 @@ def build():
             shutil.rmtree(p)
     town, city = C["town"], C["city"]
 
-    page("", f"{C['brand']} | Nails, Hair, Lashes, Piercing & Lip Filler in {town}, {city}",
-         f"{C['brand']} is an appointment-only home beauty studio in {town}, near Manchester and Oldham: gel and acrylic nails, BIAB, lashes, brows, hair, ear and nose piercing, and lip filler.",
+    page("", f"{C['brand']} | Nails, Hair, Lashes, Piercing & Lip Filler in {town}",
+         f"{C['brand']} is an appointment-only home beauty studio in {town}, also covering Droylsden, Oldham and Stockport: gel and acrylic nails, BIAB, lashes, brows, hair, ear and nose piercing, and lip filler.",
          "", computer(), priority="1.0", home=True)
 
-    page("services/", f"Treatments in {town}, {city} | {C['brand']}",
+    page("services/", f"Treatments in {town} | {C['brand']}",
          f"All nail, hair, lash, brow, piercing and filler treatments at {C['brand']}, a home beauty studio in {town}.",
          "All treatments",
          "".join(sec(f'<a href="../{c["slug"]}/">{e(c["name"])}</a>', links(1, [(s["name"], from_price(s), f'{c["slug"]}/{s["slug"]}/') for s in c["services"]])) for c in CATEGORIES) + cta(1),
@@ -613,8 +613,8 @@ def build():
 
     for c in CATEGORIES:
         cp = f'{c["slug"]}/'
-        page(cp, f"{c['name']} in {town}, {city} | {C['brand']}",
-             f"{c['blurb']} at {C['brand']}, a home studio in {town} near Manchester and Oldham. " + " ".join(s["short"] for s in c["services"])[:90],
+        page(cp, f"{c['name']} in {town} | {C['brand']}",
+             f"{c['blurb']} at {C['brand']}, a home studio in {town}. " + " ".join(s["short"] for s in c["services"])[:90],
              f"{c['name']} in {town}",
              c["intro"] + sec("Menu", links(1, [(s["name"], from_price(s), f'{cp}{s["slug"]}/') for s in c["services"]]))
              + sec("Prices", "".join(f'<h3><a href="{s["slug"]}/">{e(s["name"])}</a></h3>' + price_table(s["prices"]) for s in c["services"]))
@@ -629,8 +629,8 @@ def build():
             care_name = {"piercing": "piercing", "filler": "filler", "nails": "nail", "lashes-and-brows": "lash &amp; brow"}.get(care)
             care_html = f'<p><a href="../../aftercare/{care}/">Read the {care_name} aftercare guide &rarr;</a></p>' if care else ""
             offers = [{"@type": "Offer", "name": n, "priceCurrency": "GBP", "price": p.split("£")[1].split(" ")[0]} for n, p in s["prices"] if "£" in p]
-            page(sp, f"{s['name']} in {town}, {city} | {C['brand']}",
-                 f"{s['name']} in {town}, {from_price(s)}. {s['short']} Appointment-only home studio near Manchester and Oldham.",
+            page(sp, f"{s['name']} in {town} | {C['brand']}",
+                 f"{s['name']} in {town}, {from_price(s)}. {s['short']} Appointment-only home studio in Manchester.",
                  f"{s['name']} in {town}",
                  s["intro"]
                  + sec("Prices", price_table(s["prices"]) + "<p class=\"note\">Prices are a guide and are confirmed at booking.</p>")
@@ -646,11 +646,11 @@ def build():
                        "".join(f'<h3><a href="../{c["slug"]}/{s["slug"]}/">{e(s["name"])}</a></h3>' + price_table(s["prices"]) for s in c["services"]))
                    for c in CATEGORIES)
     page("prices/", f"Price List | Nails, Hair, Lashes & Filler in {town} | {C['brand']}",
-         f"Prices for nails, hair, lashes, brows, waxing, piercing and lip filler at {C['brand']} in {town}, Manchester.",
+         f"Prices for nails, hair, lashes, brows, waxing, piercing and lip filler at {C['brand']} in {town}.",
          "Price list", rows + "<p class=\"note\">Prices are a guide and are confirmed at booking.</p>" + cta(1),
          crumbs=[("Prices", "prices/")], priority="0.8")
 
-    page("areas/", f"Areas Covered | {C['brand']}", f"{C['brand']} is a home beauty studio in {town}, close to Manchester, Oldham and the rest of Tameside.",
+    page("areas/", f"Areas Covered | {C['brand']}", f"{C['brand']} is a home beauty studio in {town}, also covering Droylsden, Oldham, Stockport and the surrounding areas.",
          "Areas we cover", links(1, [(a["name"], "", f'areas/{a["slug"]}/') for a in AREAS]),
          crumbs=[("Areas", "areas/")], priority="0.6")
     for a in AREAS:
@@ -684,7 +684,7 @@ def build():
     page("contact/", f"Contact & Booking | {C['brand']}, {town}", f"Book or get in touch with {C['brand']}, an appointment-only home beauty studio in {town}.",
          "Contact & booking",
          f'<ul class="plain"><li>Book: <a href="{e(C["booking_url"])}">online booking</a></li><li>Call: <a href="tel:{e(C["phone"])}">{e(C["phone"])}</a></li><li>Email: <a href="mailto:{e(C["email"])}">{e(C["email"])}</a></li><li>Instagram: <a href="{e(C["instagram"])}">message us</a></li></ul>'
-         + sec("Where to find us", f"<p>{C['brand']} is a home studio in {town}, Tameside. It's appointment-only with no walk-ins, and the full address is sent once you've booked.</p><p>Close to <a href=\"../areas/manchester/\">Manchester</a>, <a href=\"../areas/oldham/\">Oldham</a> and the rest of Tameside.</p>"),
+         + sec("Where to find us", f"<p>{C['brand']} is a home studio in {town}. It's appointment-only with no walk-ins, and the full address is sent once you've booked.</p><p>Also covering <a href=\"../areas/droylsden/\">Droylsden</a>, <a href=\"../areas/oldham/\">Oldham</a> and <a href=\"../areas/stockport/\">Stockport</a>.</p>"),
          crumbs=[("Contact", "contact/")], priority="0.7")
     page("privacy/", f"Privacy Policy | {C['brand']}", f"How {C['brand']} uses and protects your information.", "Privacy policy",
          "<p>[Your privacy policy: what you collect (booking details, consultation and medical forms), why, how long you keep it, and how clients can ask for it or have it deleted under UK GDPR.]</p>",
