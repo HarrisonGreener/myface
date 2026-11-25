@@ -437,58 +437,93 @@ def logo_svg(cls):
 
 
 # ---------------------------------------------------------------- chrome stickers on the computer
-_SHAPES = {
-    "heart": '<path d="M50 88C20 66 7 48 7 31 7 17 18 8 31 8c9 0 15 5 19 12 4-7 10-12 19-12 13 0 24 9 24 23 0 17-13 35-43 57Z"/>',
-    "star": '<path d="M50 5l11.5 31.5H95L68 57l10 34-28-20-28 20 10-34L5 36.5h33.5Z"/>',
-    "bolt": '<path d="M60 3 18 57h28l-9 40 46-58H55Z"/>',
-    "skull": '<path d="M50 16c-22 0-35 15-35 33 0 12 6 21 14 25v10c0 4 3 7 7 7h28c4 0 7-3 7-7V74c8-4 14-13 14-25 0-18-13-33-35-33Z"/>',
-    "butterfly": '<path d="M49 50C40 18 8 8 8 33c0 14 18 20 41 17ZM51 50c9-32 41-42 41-17 0 14-18 20-41 17ZM49 52C30 52 14 62 20 78c6 14 24 4 29-26ZM51 52c19 0 35 10 29 26-6 14-24 4-29-26Z"/>',
+# Each design is a list of (svg element with FILL placeholder, fill). "main" = the sticker's chrome finish.
+_DESIGNS = {
+    "heart": [('<path d="M50 88C20 66 7 48 7 31 7 17 18 8 31 8c9 0 15 5 19 12 4-7 10-12 19-12 13 0 24 9 24 23 0 17-13 35-43 57Z"/>', "main")],
+    "star": [('<path d="M50 5l11.5 31.5H95L68 57l10 34-28-20-28 20 10-34L5 36.5h33.5Z"/>', "main")],
+    "bolt": [('<path d="M60 3 18 57h28l-9 40 46-58H55Z"/>', "main")],
+    "skull": [('<path d="M50 16c-22 0-35 15-35 33 0 12 6 21 14 25v10c0 4 3 7 7 7h28c4 0 7-3 7-7V74c8-4 14-13 14-25 0-18-13-33-35-33Z"/>', "main"),
+              ('<path d="M74 14l-14-10v20Zm0 0 14-10v20Z"/><circle cx="74" cy="14" r="5"/>', "url(#chromePink)")],
+    "butterfly": [('<path d="M49 50C40 18 8 8 8 33c0 14 18 20 41 17ZM51 50c9-32 41-42 41-17 0 14-18 20-41 17ZM49 52C30 52 14 62 20 78c6 14 24 4 29-26ZM51 52c19 0 35 10 29 26-6 14-24 4-29-26Z"/>', "main")],
+    "lips": [('<path d="M6 50c12-16 26-22 44-11 18-11 32-5 44 11-12 20-28 30-44 30S18 70 6 50Z"/>', "main")],
+    "bow": [('<path d="M50 48 12 24c-8 10-8 38 0 48ZM50 48l38-24c8 10 8 38 0 48ZM44 56l-12 34 12-6 6 10 6-10 12 6-12-34Z"/><circle cx="50" cy="50" r="11"/>', "main")],
+    "cherry": [('<circle cx="32" cy="72" r="17"/><circle cx="68" cy="76" r="17"/>', "url(#chromeRed)"),
+               ('<path d="M62 10q22-10 30 6-18 6-30-6Z"/>', "url(#chromeGreen)")],
+    "polish": [('<rect x="38" y="6" width="24" height="30" rx="4"/>', "url(#chromeBlack)"),
+               ('<rect x="41" y="34" width="18" height="10"/><rect x="22" y="42" width="56" height="50" rx="14"/>', "main")],
 }
-_EXTRA = {
-    "skull": '<circle cx="37" cy="52" r="8" fill="#1c1a1e"/><circle cx="63" cy="52" r="8" fill="#1c1a1e"/><path d="M50 60l-4 8h8Z" fill="#1c1a1e"/><path d="M40 84v-8M50 84v-8M60 84v-8" stroke="#1c1a1e" stroke-width="2.5"/><path d="M74 14l-12-9v18Zm0 0 12-9v18Z" fill="url(#chromePink)" stroke="#fff" stroke-width="3" paint-order="stroke"/><circle cx="74" cy="14" r="4" fill="url(#chromePink)"/>',
-    "butterfly": '<path d="M50 34v42" stroke="#1c1a1e" stroke-width="4" stroke-linecap="round"/>',
+_DETAILS = {   # drawn on top, no die-cut
+    "skull": '<circle cx="37" cy="52" r="8" fill="#1c1a1e"/><circle cx="63" cy="52" r="8" fill="#1c1a1e"/><path d="M50 60l-4 8h8Z" fill="#1c1a1e"/><path d="M40 84v-8M50 84v-8M60 84v-8" stroke="#1c1a1e" stroke-width="2.5"/>',
+    "butterfly": '<path d="M50 32v44" stroke="#1c1a1e" stroke-width="4" stroke-linecap="round"/>',
+    "lips": '<path d="M12 50q38 10 76 0" stroke="#5a1636" stroke-width="3" fill="none" stroke-linecap="round"/>',
+    "cherry": '<path d="M32 55q4-30 30-45M68 59q-8-28-6-49" stroke="#3b5d1f" stroke-width="4" fill="none" stroke-linecap="round"/>',
+    "polish": '<text x="50" y="74" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-size="15" fill="#fff" opacity=".85">mf</text>',
 }
+_N = [0]
 
 
-def sticker(shape, fill, x, y, size, rot):
-    body = _SHAPES[shape]
+def sticker(design, fill, x, y, size, rot):
+    _N[0] += 1
+    cid = f"sk{_N[0]}"
+    if not fill.startswith("url(") and fill != "main":
+        fill = f"url(#{fill})"
+    parts = _DESIGNS[design]
+    shapes = "".join(el for el, _ in parts)
+    body = "".join(f'<g fill="{fill if f == "main" else f}" stroke="#4d4a5a" stroke-width="1.2">{el}</g>' for el, f in parts)
     return (f'<svg class="stk" viewBox="0 0 100 100" style="left:{x}px;top:{y}px;width:{size}px;transform:rotate({rot}deg)" aria-hidden="true">'
-            f'<g fill="#fff" stroke="#fff" stroke-width="12" stroke-linejoin="round">{body}</g>'
-            f'<g fill="url(#{fill})" stroke="#5d5a6b" stroke-width="1.5">{body}</g>'
-            f'{_EXTRA.get(shape, "")}<ellipse cx="34" cy="28" rx="14" ry="6" fill="#fff" opacity=".75" transform="rotate(-30 34 28)"/></svg>')
+            f'<defs><clipPath id="{cid}">{shapes}</clipPath></defs>'
+            f'<g fill="#000" opacity=".18" transform="translate(2 3)" stroke="#000" stroke-width="13" stroke-linejoin="round">{shapes}</g>'
+            f'<g fill="#fff" stroke="#fff" stroke-width="12" stroke-linejoin="round">{shapes}</g>'
+            f'{body}{_DETAILS.get(design, "")}'
+            f'<g clip-path="url(#{cid})"><rect x="-60" y="-20" width="70" height="140" fill="url(#sheen)" transform="rotate(25 50 50)"><animate attributeName="x" values="-90;130;130" keyTimes="0;.45;1" dur="4.5s" begin="{(_N[0] % 7) * 0.6:.1f}s" repeatCount="indefinite"/></rect>'
+            f'<ellipse cx="32" cy="26" rx="15" ry="6" fill="#fff" opacity=".7" transform="rotate(-30 32 26)"/></g></svg>')
+
+
+def word_sticker(text, fill, x, y, width, rot):
+    t = e(text)
+    txt = f'<text x="80" y="38" text-anchor="middle" font-family="Bagel Fat One,Arial Black,Arial,sans-serif" font-size="36">{t}</text>'
+    return (f'<svg class="stk" viewBox="0 0 160 56" style="left:{x}px;top:{y}px;width:{width}px;transform:rotate({rot}deg)" aria-hidden="true">'
+            f'<g fill="#000" opacity=".18" stroke="#000" stroke-width="13" stroke-linejoin="round" transform="translate(2 3)">{txt}</g>'
+            f'<g fill="#fff" stroke="#fff" stroke-width="12" stroke-linejoin="round">{txt}</g>'
+            f'<g fill="{fill}" stroke="#3a1a2c" stroke-width="1.2">{txt}</g></svg>')
 
 
 def name_sticker(x, y, rot):
-    t = e(C["owner"].split()[0].lower()) + " x"
-    txt = f'<text x="80" y="38" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="34" letter-spacing="-1">{t}</text>'
-    return (f'<svg class="stk" viewBox="0 0 160 56" style="left:{x}px;top:{y}px;width:118px;transform:rotate({rot}deg)" aria-hidden="true">'
-            f'<g fill="#fff" stroke="#fff" stroke-width="12" stroke-linejoin="round">{txt}</g>'
-            f'<g fill="url(#chromePink)" stroke="#7a2a52" stroke-width="1.2">{txt}</g></svg>')
+    return word_sticker(C["owner"].split()[0].lower() + " x", "url(#chromePink)", x, y, 118, rot)
 
 
 CHROME_DEFS = """<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="chrome" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".32" stop-color="#d8d8e6"/><stop offset=".48" stop-color="#85859c"/><stop offset=".53" stop-color="#f6f6ff"/><stop offset=".78" stop-color="#b4b4c8"/><stop offset="1" stop-color="#6c6c82"/></linearGradient>
 <linearGradient id="chromePink" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#fff2f9"/><stop offset=".32" stop-color="#ffb3d9"/><stop offset=".48" stop-color="#c23f7c"/><stop offset=".53" stop-color="#ffe3f1"/><stop offset=".78" stop-color="#ff86c3"/><stop offset="1" stop-color="#9c2c5c"/></linearGradient>
-<linearGradient id="chromeHolo" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".25" stop-color="#d7c6ff"/><stop offset=".45" stop-color="#8a6cd8"/><stop offset=".52" stop-color="#e6fff6"/><stop offset=".7" stop-color="#ffc2e6"/><stop offset="1" stop-color="#6d58b0"/></linearGradient>
+<linearGradient id="chromeHolo" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".2" stop-color="#d7c6ff"/><stop offset=".38" stop-color="#8a6cd8"/><stop offset=".5" stop-color="#c9fff0"/><stop offset=".66" stop-color="#ffc2e6"/><stop offset=".82" stop-color="#9ad8ff"/><stop offset="1" stop-color="#6d58b0"/></linearGradient>
+<linearGradient id="chromeBlack" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#8b8796"/><stop offset=".45" stop-color="#2a2630"/><stop offset=".52" stop-color="#050406"/><stop offset=".58" stop-color="#6d6878"/><stop offset="1" stop-color="#141117"/></linearGradient>
+<linearGradient id="chromeRed" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#ffd0dc"/><stop offset=".4" stop-color="#ff3d6e"/><stop offset=".52" stop-color="#8f0f33"/><stop offset=".6" stop-color="#ff8aa8"/><stop offset="1" stop-color="#a3123c"/></linearGradient>
+<linearGradient id="chromeGreen" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#eaffd0"/><stop offset=".5" stop-color="#6fbf3a"/><stop offset="1" stop-color="#2f6a18"/></linearGradient>
+<linearGradient id="sheen" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
 </defs></svg>"""
 
 
 def front_stickers():
-    return (sticker("bolt", "chrome", 8, 40, 36, -14) + sticker("star", "chromeHolo", 438, 2, 54, 14)
-            + sticker("heart", "chromePink", 40, 352, 58, -12) + name_sticker(190, 364, -4)
-            + sticker("skull", "chrome", 404, 350, 56, 10))
+    return (sticker("bolt", "chrome", 6, 40, 36, -14) + sticker("star", "chromeHolo", 436, 0, 56, 14)
+            + sticker("heart", "chromePink", 34, 350, 58, -12) + name_sticker(190, 364, -4)
+            + sticker("skull", "chrome", 404, 348, 58, 10))
 
 
 def left_stickers():
-    return (sticker("heart", "chromeHolo", 150, 90, 74, 10) + sticker("star", "chromePink", 70, 230, 52, -14)
-            + name_sticker(120, 300, 6))
+    return (sticker("cherry", "main", 120, 70, 82, -8) + sticker("lips", "chromePink", 60, 200, 80, 10)
+            + word_sticker("xoxo", "url(#chromeHolo)", 130, 310, 120, -6))
 
 
 def side_stickers():
     return (sticker("butterfly", "chromeHolo", 50, 70, 96, -10) + sticker("star", "chrome", 190, 50, 44, 18)
-            + sticker("heart", "chromePink", 160, 200, 70, 8) + sticker("bolt", "chromePink", 60, 260, 56, -6)
+            + sticker("heart", "chromePink", 160, 200, 70, 8) + sticker("polish", "chromePink", 56, 250, 64, -8)
             + sticker("skull", "chromePink", 200, 320, 48, -12))
 
+
+def back_stickers():
+    return (sticker("bow", "chromePink", 26, 20, 86, -12) + word_sticker("rawr", "url(#chromeBlack)", 210, 28, 120, 8)
+            + sticker("heart", "chromeHolo", 140, 110, 74, -4) + sticker("lips", "chromePink", 34, 178, 78, 12)
+            + sticker("star", "chromePink", 290, 196, 52, -16) + name_sticker(200, 120, 4))
 
 
 def desktop():
@@ -543,7 +578,8 @@ def computer():
 {front_stickers()}<button type="button" class="zoom-btn" id="zoomBtn" aria-label="Zoom into the computer screen"></button></div>
 <div class="f bk"></div><div class="f lf">{left_stickers()}</div><div class="f rt">{side_stickers()}</div><div class="f tp"></div><div class="f bt"></div>
 </div>
-<div class="tube box">{box}</div>
+<div class="shell s-top"></div><div class="shell s-bot"></div><div class="shell s-left"></div><div class="shell s-right"></div>
+<div class="shell s-rear"><span class="vents"></span>{back_stickers()}</div>
 <div class="neck box">{box}</div>
 <div class="foot box">{box}</div>
 <div class="kbd box"><div class="f fr"></div><div class="f bk"></div><div class="f lf"></div><div class="f rt"></div><div class="f tp keys">{keys}{sticker("star", "chromePink", 400, 8, 34, 12)}</div><div class="f bt"></div></div>
