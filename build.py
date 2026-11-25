@@ -259,10 +259,10 @@ def logo(d):
 
 def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", home=False):
     d = path.count("/")
-    nav = [("Hair", "hair/"), ("Nails", "nails/"), ("Beauty", "beauty/"), ("Piercing", "piercing/"),
+    nav = [("Home", ""), ("Hair", "hair/"), ("Nails", "nails/"), ("Beauty", "beauty/"), ("Piercing", "piercing/"),
            ("Filler", "filler/"), ("Prices", "prices/"), ("FAQ", "faq/")]
     cur = ' aria-current="page"'
-    navh = "".join(f'<a href="{rel(d, t)}"{cur if path.startswith(t) else ""}>{n}</a>' for n, t in nav)
+    navh = "".join(f'<a href="{rel(d, t)}"{cur if (path.startswith(t) if t else path == "") else ""}>{n}</a>' for n, t in nav)
     url = C["site_url"] + "/" + path
     crumb_list = [("Home", "")] + list(crumbs)
     graphs = [business_schema()]
@@ -279,7 +279,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
         body = f"""<main id="content" class="wrap">
 {bc}
 <article class="win page-win">
-<div class="titlebar"><span>myface://{e(path.rstrip("/") or "home")}</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+<div class="titlebar"><a class="back" href="{rel(d, crumb_list[-2][1] if len(crumb_list) > 1 else "")}" data-back>&larr; Back</a><span class="tpath">myface://{e(path.rstrip("/") or "home")}</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
 <div class="win-body">
 <h1>{e(h1)}</h1>
 {main}
@@ -479,6 +479,11 @@ def front_stickers():
             + sticker("skull", "chrome", 404, 350, 56, 10))
 
 
+def left_stickers():
+    return (sticker("heart", "chromeHolo", 150, 90, 74, 10) + sticker("star", "chromePink", 70, 230, 52, -14)
+            + name_sticker(120, 300, 6))
+
+
 def side_stickers():
     return (sticker("butterfly", "chromeHolo", 50, 70, 96, -10) + sticker("star", "chrome", 190, 50, 44, 18)
             + sticker("heart", "chromePink", 160, 200, 70, 8) + sticker("bolt", "chromePink", 60, 260, 56, -6)
@@ -511,12 +516,16 @@ def desktop():
                  f'<li><a href="{e(C["instagram"])}">Instagram</a></li></ul><p class="win-foot"><a href="contact/">Contact page &rarr;</a></p>'))
     icons = "".join(f'<li><a class="app" href="{e(href)}" data-app="{k}">{icon(ic)}<span>{e(label)}</span></a></li>' for k, label, ic, href, _ in apps)
     wins = "".join(f'<section class="win app-win{" web" if k == "web" else ""}" id="win-{k}" hidden aria-label="{e(label)}">'
-                   f'<div class="titlebar"><span>{e(label)}</span><button type="button" class="close" aria-label="Close {e(label)}">&times;</button></div>'
+                   f'<div class="titlebar"><button type="button" class="back wback">&larr; Back</button><span class="tpath">{e(label)}</span><button type="button" class="close" aria-label="Close {e(label)}">&times;</button></div>'
                    f'<div class="win-body">{body}</div></section>' for k, label, ic, href, body in apps)
+    menu = "".join(f'<li><a href="{e(href)}" data-app="{k}">{icon(ic, "mic")}{e(label)}</a></li>' for k, label, ic, href, _ in apps)
+    menu += "".join(f'<li><a href="{h}">{icon(ic, "mic")}{n}</a></li>' for n, h, ic in
+                    [("All treatments", "services/", "nails"), ("Aftercare", "aftercare/", "beauty"), ("FAQ", "faq/", "about"), ("Areas", "areas/", "web"), ("Gallery", "gallery/", "her")])
     return f"""<div class="os" id="os">
 <ul class="apps">{icons}</ul>
 {wins}
-<div class="taskbar"><span class="start">myface</span><span id="clock">--:--</span></div>
+<nav class="startmenu" id="startmenu" hidden aria-label="Start menu"><p class="sm-head">{e(C["brand"])}</p><ul>{menu}</ul></nav>
+<div class="taskbar"><button type="button" class="start" id="startBtn" aria-expanded="false" aria-controls="startmenu">myface &#9662;</button><span id="clock">--:--</span></div>
 <div class="boot" id="boot" aria-hidden="true"><pre id="bootlog"></pre></div>
 </div>"""
 
@@ -531,7 +540,7 @@ def computer():
 <div class="monitor box">
 <div class="f fr front"><div class="screen" id="screen">{desktop()}<span class="glare"></span></div>
 {front_stickers()}<button type="button" class="zoom-btn" id="zoomBtn" aria-label="Zoom into the computer screen"></button></div>
-<div class="f bk"></div><div class="f lf"></div><div class="f rt">{side_stickers()}</div><div class="f tp"></div><div class="f bt"></div>
+<div class="f bk"></div><div class="f lf">{left_stickers()}</div><div class="f rt">{side_stickers()}</div><div class="f tp"></div><div class="f bt"></div>
 </div>
 <div class="tube box">{box}</div>
 <div class="neck box">{box}</div>
@@ -540,7 +549,7 @@ def computer():
 <div class="shadow"></div>
 </div>
 </div>
-<p class="hint" id="hint">click the computer to turn it on</p>
+<p class="hint" id="hint">drag to spin it 360° · click to turn it on</p>
 </div>
 <div class="zoomview" id="zoomview" hidden><div class="zv-screen" id="zvScreen"></div>
 <button type="button" class="logoff" id="logoff">log off</button></div>
