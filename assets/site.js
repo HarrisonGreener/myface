@@ -209,7 +209,7 @@
   // ---- her.exe: drag to spin her through the 7 turnaround frames
   var m = document.getElementById('mascot'), btn = document.getElementById('avatarBtn'), bubble = document.getElementById('bubble');
   if (m && btn) {
-    var FR = 7, frame = 0, sx = null, sf = 0, mv = false, li = 0;
+    var FR = 10, frame = 0, sx = null, sf = 0, mv = false, li = 0;
     var lines = ['drag me round x', 'stop spinning me lol', 'book in, i dare u', 'pick a treatment x'];
     var show = function (f) { frame = ((Math.round(f) % FR) + FR) % FR; m.style.backgroundPositionX = (frame * 100 / (FR - 1)) + '%'; };
     btn.addEventListener('pointerdown', function (e) { sx = e.clientX; sf = frame; mv = false; btn.setPointerCapture(e.pointerId); });

@@ -129,7 +129,7 @@ a:hover{color:#c2247a}
 .ms-profile{display:flex;gap:10px}
 .pic{width:130px;height:170px;flex-shrink:0;background:#ffe6f2;border:1px solid #e0368f;padding:0;display:flex;align-items:flex-end;justify-content:center;cursor:grab;touch-action:pan-y;overflow:hidden}
 .pic:active{cursor:grabbing}.pic:focus-visible{outline:2px dashed #111;outline-offset:2px}
-.mascot{display:block;width:62px;aspect-ratio:200/540;background:url(mascot.webp) 0 0/700% 100% no-repeat}
+.mascot{display:block;width:62px;aspect-ratio:250/300;background:url(mascot.webp) 0 0/1000% 100% no-repeat}
 .mascot.mini{width:30px}
 .hop{animation:hop .45s ease-out}
 @keyframes hop{35%{transform:translateY(-10px)}}
@@ -371,3 +371,7 @@ body.home .top{background:rgba(239,233,228,.96)}
 
 .zv-star .stk,.zv-badge .stk{position:static;width:100%!important;transform:none!important}
 .os .startmenu{z-index:9999}.os .taskbar{z-index:9998}
+
+/* new turnaround is wider: resize the mascot spots */
+.spin .mascot{width:230px}.pic .mascot{width:126px}.mascot.mini{width:80px}
+.pic{align-items:center}
