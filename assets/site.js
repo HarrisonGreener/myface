@@ -29,6 +29,7 @@
   var down = null, moved = false;
   scene.addEventListener('pointerdown', function (e) {
     if (zoomed || busy || e.button > 0) return;
+    e.preventDefault();                                     // no text/sticker selection while spinning
     down = { x: e.clientX, y: e.clientY, rx: rx, ry: ry }; moved = false;
     scene.setPointerCapture(e.pointerId); rig.classList.add('drag');
   });
@@ -54,8 +55,16 @@
   });
 
   // ---- Fly into the screen, then hand over to a full-size copy of the screen
+  // the zoomed-in view is the same monitor front, scaled up to fill the window (desktop),
+  // or a full-screen frame on phones
+  var zvMon = document.getElementById('zvMon');
+  function bigScale() { return Math.min(window.innerWidth / 500, window.innerHeight / 420) * 0.98; }
+  function phone() { return window.innerWidth <= 620; }
+  function sizeZoom() { zvMon.style.setProperty('--S', phone() ? 1 : bigScale()); zv.classList.toggle('phone', phone()); }
+  window.addEventListener('resize', function () { if (zoomed) sizeZoom(); });
   function showDesktop(instant) {
-    zvScreen.appendChild(os); os.inert = false;
+    sizeZoom();
+    zvScreen.insertBefore(os, zvScreen.firstChild); os.inert = false;
     zv.hidden = false;
     if (instant) zv.classList.add('show'); else requestAnimationFrame(function () { zv.classList.add('show'); });
     document.body.style.overflow = 'hidden';
@@ -66,12 +75,13 @@
     busy = true; scene.parentNode.classList.add('zooming');
     ry = ((ry % 360) + 540) % 360 - 180; rest();             // take the short way back round
     var s = fit(), vw = window.innerWidth, vh = window.innerHeight;
-    var fr = vw <= 620 ? [20, 50] : [52, 80];
-    var k = Math.max((vw - fr[0]) / (432 * s), (vh - fr[1]) / (324 * s));
+    var k, yOff;
+    if (vw <= 620) { k = Math.max((vw - 20) / (432 * s), (vh - 50) / (324 * s)); yOff = -15 + 90 * s; }
+    else { k = bigScale() / s; yOff = 70 * s; }               // whole monitor front fills the window
     var z = P * (1 - 1 / k) - 150 * s;
     var r = scene.getBoundingClientRect(), dy = (vh / 2) - (r.top + r.height / 2);
     requestAnimationFrame(function () {
-      rig.style.transform = 'translate3d(0,' + (dy - (fr[1] - fr[0]) / 2 + 90 * s) + 'px,' + z + 'px) scale(' + s + ') rotateX(0deg) rotateY(0deg)';
+      rig.style.transform = 'translate3d(0,' + (dy + yOff) + 'px,' + z + 'px) scale(' + s + ') rotateX(0deg) rotateY(0deg)';
     });
     setTimeout(function () { showDesktop(false); bootUp(); }, reduce ? 0 : 1000);
   }
@@ -161,17 +171,19 @@
     bar.addEventListener('dblclick', function (e) { if (!e.target.closest('button')) w.classList.toggle('maxed'); });
     bar.addEventListener('pointerdown', function (e) {
       if (e.target.closest('button') || w.classList.contains('maxed') || os.clientWidth <= 620) return;
-      var r = w.getBoundingClientRect(), o = os.getBoundingClientRect();
-      w.classList.add('dragged'); w.style.left = (r.left - o.left) + 'px'; w.style.top = (r.top - o.top) + 'px';
-      drag = { x: e.clientX, y: e.clientY, l: r.left - o.left, t: r.top - o.top }; bar.setPointerCapture(e.pointerId);
+      var r = w.getBoundingClientRect(), o = os.getBoundingClientRect(), sc = o.width / os.offsetWidth;
+      var l = (r.left - o.left) / sc, t = (r.top - o.top) / sc;
+      w.classList.add('dragged'); w.style.left = l + 'px'; w.style.top = t + 'px';
+      drag = { x: e.clientX, y: e.clientY, l: l, t: t, sc: sc }; e.preventDefault();
+      document.addEventListener('pointermove', move); document.addEventListener('pointerup', stop, { once: true });
     });
-    bar.addEventListener('pointermove', function (e) {
+    function stop() { drag = null; document.removeEventListener('pointermove', move); }
+    function move(e) {
       if (!drag) return;
       var maxL = os.clientWidth - 80, maxT = os.clientHeight - 36 - 34;
-      w.style.left = Math.min(maxL, Math.max(80 - w.offsetWidth, drag.l + e.clientX - drag.x)) + 'px';
-      w.style.top = Math.min(maxT, Math.max(0, drag.t + e.clientY - drag.y)) + 'px';
-    });
-    bar.addEventListener('pointerup', function () { drag = null; });
+      w.style.left = Math.min(maxL, Math.max(80 - w.offsetWidth, drag.l + (e.clientX - drag.x) / drag.sc)) + 'px';
+      w.style.top = Math.min(maxT, Math.max(0, drag.t + (e.clientY - drag.y) / drag.sc)) + 'px';
+    }
   });
   // single click selects an icon on the desktop background, like a real OS
   os.addEventListener('pointerdown', function (e) {

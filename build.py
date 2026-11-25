@@ -303,7 +303,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <meta name="theme-color" content="#efe9e4">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Inter:wght@400;600&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Pixelify+Sans:wght@400;600&family=Inter:wght@400;600&family=VT323&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{rel(d, 'assets/style.css')}">
 <script>document.documentElement.className='js'</script>
 <script type="application/ld+json">{ld}</script>
@@ -504,7 +504,7 @@ CHROME_DEFS = """<svg width="0" height="0" style="position:absolute" aria-hidden
 
 
 def front_stickers():
-    return (sticker("star", "chromeHolo", 436, 0, 56, 14) + name_sticker(190, 364, -4) + sticker("heart", "chromePink", 404, 352, 54, 10))
+    return (sticker("star", "chromeHolo", 462, -20, 50, 14) + name_sticker(190, 364, -4) + sticker("heart", "chromePink", 404, 352, 54, 10))
 
 
 def left_stickers():
@@ -581,7 +581,7 @@ def computer():
 </div>
 <p class="hint" id="hint">drag to spin it 360° · click to turn it on</p>
 </div>
-<div class="zoomview" id="zoomview" hidden><div class="zv-screen" id="zvScreen"></div><div class="zv-star" aria-hidden="true">{sticker("star", "chromeHolo", 0, 0, 58, 0)}</div><div class="zv-badge" aria-hidden="true">{name_sticker(0, 0, -3)}</div>
+<div class="zoomview" id="zoomview" hidden><div class="zv-mon" id="zvMon"><div class="zv-screen" id="zvScreen"><span class="glare"></span></div><div class="zv-stk" aria-hidden="true">{front_stickers()}</div></div>
 </div>
 <div class="caption">
 <p class="cap-tag">{e(C['tagline'])}</p>
