@@ -311,7 +311,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <body{' class="home"' if home else ''}>
 {LOGO_DEFS}
 <a class="skip" href="#content">Skip to content</a>
-<header class="top"><div class="wrap bar"><div class="brand">{logo(d)}<span class="tag">{e(C['tagline'])}</span></div><nav class="nav" aria-label="Main">{navh}</nav><a class="btn" href="{e(C['booking_url'])}">Book</a></div></header>
+<header class="top"><div class="wrap bar"><div class="brand">{logo(d)}<svg class="tag-svg" viewBox="26 0 530 44" role="img" aria-label="{e(C['tagline'])}"><text class="tt" x="63" y="33" textLength="424" lengthAdjust="spacingAndGlyphs" font-family="UnifrakturMaguntia, Old English Text MT, serif" font-size="40" fill="#ff5fae" transform="translate(3 3)">{e(C['tagline'])}</text><text class="tt" x="63" y="33" textLength="424" lengthAdjust="spacingAndGlyphs" font-family="UnifrakturMaguntia, Old English Text MT, serif" font-size="40" fill="#1c1a1e">{e(C['tagline'])}</text></svg></div><nav class="nav" aria-label="Main">{navh}</nav><a class="btn" href="{e(C['booking_url'])}">Book</a></div></header>
 {body}
 <footer class="foot"><div class="wrap">
 <p>{e(C['brand'])} · home beauty studio in {e(C['town'])} · near {area_links}</p>
@@ -504,7 +504,7 @@ CHROME_DEFS = """<svg width="0" height="0" style="position:absolute" aria-hidden
 
 
 def front_stickers():
-    return (sticker("star", "chromeHolo", 462, -20, 50, 14) + name_sticker(190, 364, -4) + sticker("heart", "chromePink", 404, 352, 54, 10))
+    return (name_sticker(190, 364, -4) + sticker("heart", "chromePink", 404, 352, 54, 10))
 
 
 def left_stickers():
@@ -581,7 +581,7 @@ def computer():
 </div>
 <p class="hint" id="hint">drag to spin it 360° · click to turn it on</p>
 </div>
-<div class="zoomview" id="zoomview" hidden><div class="zv-mon" id="zvMon"><div class="zv-screen" id="zvScreen"><span class="glare"></span></div><div class="zv-stk" aria-hidden="true">{front_stickers()}</div></div>
+<div class="zoomview" id="zoomview" hidden><div class="zv-mon" id="zvMon"><div class="zv-screen" id="zvScreen"><span class="glare"></span></div></div>
 </div>
 <div class="caption">
 <p class="cap-tag">{e(C['tagline'])}</p>

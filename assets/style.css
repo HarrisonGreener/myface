@@ -422,3 +422,6 @@ body.home,.zoomview{background-size:420px 420px;image-rendering:pixelated}
 .pic-img{width:100%;height:100%;object-fit:cover;object-position:50% 0;image-rendering:pixelated;display:block}
 
 .ms-tag{font:16px UnifrakturMaguntia,'Old English Text MT',serif}
+
+.tag-svg{display:block;width:auto;height:calc(76px * 44 / 200);aspect-ratio:530/44;margin-top:-8px;overflow:visible}
+@media (max-width:760px){.tag-svg{height:calc(60px * 44 / 200)}}

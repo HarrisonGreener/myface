@@ -1,4 +1,17 @@
 // MyFace site script.
+// Stretch the tagline so it runs exactly from the m to the e of the logo, measured once fonts have loaded.
+(function () {
+  var tt = document.querySelectorAll('.tag-svg .tt'), src = document.querySelector('#mf-logo > g:nth-of-type(2)');
+  if (!tt.length || !src) return;
+  function fit() {
+    var probe = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    probe.setAttribute('viewBox', '26 24 530 200'); probe.style.cssText = 'position:absolute;left:-9999px;top:0;width:530px;height:200px';
+    var g = src.cloneNode(true); probe.appendChild(g); document.body.appendChild(probe);
+    var ts = g.querySelectorAll('text'), b = ts[ts.length - 1].getBBox(); probe.remove();
+    if (b.width > 50) tt.forEach(function (t) { t.setAttribute('x', b.x - 21); t.setAttribute('textLength', b.width + 12); });
+  }
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(fit);
+})();
 (function () {
   // ---- Back buttons on inner pages: go back if we came from this site, else go to the parent page
   document.querySelectorAll('a[data-back]').forEach(function (a) {
