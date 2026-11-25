@@ -196,7 +196,11 @@
   });
 
   // Coming back from another page: go straight to the desktop
-  if (store.get('mf-in')) { hasBooted = true; showDesktop(true); }
+  // (only when coming back from one of the site's own pages: a fresh visit or a refresh always starts at the computer)
+  var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0] || {}).type;
+  var fromSite = document.referrer && document.referrer.indexOf(location.origin) === 0 && document.referrer.split('#')[0] !== location.href.split('#')[0];
+  if (store.get('mf-in') && nav !== 'reload' && (nav === 'back_forward' || fromSite)) { hasBooted = true; showDesktop(true); }
+  else store.set('mf-in', '');
 
   // ---- her.exe: drag to spin her through the 7 turnaround frames
   var m = document.getElementById('mascot'), btn = document.getElementById('avatarBtn'), bubble = document.getElementById('bubble');
