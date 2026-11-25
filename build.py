@@ -8,7 +8,7 @@ import html, json, os, shutil
 
 # ---------------------------------------------------------------- settings
 CONFIG = {
-    "site_url": "https://www.example.com",   # your real domain, no trailing slash
+    "site_url": "https://harrisongreener.github.io/myface",   # change to the real domain when there is one, no trailing slash
     "brand": "My Face",
     "tagline": "your face, your space",  # not shown in the minimal layout
     "owner": "[YOUR NAME]",
