@@ -1,4 +1,17 @@
 // MyFace site script.
+// ---- Tagline runs exactly from the start of the m to the end of the E (measured once fonts load)
+(function () {
+  function fit() {
+    document.querySelectorAll('.brand').forEach(function (b) {
+      var u = b.querySelector('.logo-svg use'), t = b.querySelector('.tag-svg .tt');
+      if (!u || !t) return;
+      var bb = u.getBBox(); if (bb.width < 50) return;
+      var L = 13, R = 7;   // trim the empty corners the tilted m and E add to their boxes
+      t.setAttribute('x', bb.x + L); t.setAttribute('textLength', bb.width - L - R);
+    });
+  }
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(fit);
+})();
 // ---- Captcha intro (homepage, once per visit)
 (function () {
   var cap = document.getElementById('captcha');

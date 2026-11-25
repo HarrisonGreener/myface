@@ -311,7 +311,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <body{' class="home"' if home else ''}>
 {LOGO_DEFS}
 <a class="skip" href="#content">Skip to content</a>
-<header class="top"><div class="wrap bar"><div class="brand">{logo(d)}<svg class="tag-svg" viewBox="28 0 460 44" role="img" aria-label="{e(C['tagline'])}"><text class="tt" x="258" y="32" text-anchor="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="500" letter-spacing="1" font-size="34" fill="#1c1a1e">{e(C['tagline'])}</text></svg></div><nav class="nav" aria-label="Main">{navh}</nav><a class="btn" href="{e(C['booking_url'])}">Book</a></div></header>
+<header class="top"><div class="wrap bar"><div class="brand">{logo(d)}<svg class="tag-svg" viewBox="28 0 460 44" role="img" aria-label="{e(C['tagline'])}"><text class="tt" x="70" y="32" textLength="382" lengthAdjust="spacing" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="500" letter-spacing="1" font-size="34" fill="#1c1a1e">{e(C['tagline'])}</text></svg></div><nav class="nav" aria-label="Main">{navh}</nav><a class="btn" href="{e(C['booking_url'])}">Book</a></div></header>
 {body}
 <footer class="foot"><div class="wrap">
 <p>{e(C['brand'])} · home beauty studio in {e(C['town'])} · near {area_links}</p>
@@ -569,7 +569,7 @@ def computer():
 <div class="cap-top">
 <svg class="cap-img" viewBox="0 0 520 170" role="img" aria-label="myface, written captcha-style in mixed warped letters">
 <rect width="520" height="170" fill="url(#mf-stripes)"/><rect width="520" height="170" fill="url(#mf-dots)" opacity=".8"/>
-<g filter="url(#mf-wob-big)" id="capLetters"><use href="#mf-letters" width="520" height="170"/></g>
+<g stroke="#9a96a3" stroke-width="1.5" fill="none" opacity=".8"><path d="M0 40 L520 70"/><path d="M0 140 L520 110"/><path d="M60 0 L140 170"/><path d="M380 0 L330 170"/></g><g filter="url(#mf-wob-big)" id="capLetters"><use href="#mf-letters" width="520" height="170"/></g><path d="M6 104 C 90 52, 170 150, 270 96 S 430 58, 514 92" fill="none" stroke="#2a2630" stroke-width="4"/><path d="M10 66 Q 200 132 300 70 T 512 120" fill="none" stroke="#d23c86" stroke-width="2.5"/>
 </svg>
 <div class="cap-tools"><button type="button" class="cap-ico" id="capShuffle" aria-label="New captcha"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5"/></svg></button><button type="button" class="cap-ico" id="capAudio" aria-label="Hear the captcha"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4zM16 9a4 4 0 0 1 0 6"/></svg></button></div>
 </div>
