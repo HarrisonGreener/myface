@@ -317,6 +317,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <p>{e(C['brand'])} · home beauty studio in {e(C['town'])} · near {area_links}</p>
 <p><a href="{rel(d, 'services/')}">All treatments</a> · <a href="{rel(d, 'aftercare/')}">Aftercare</a> · <a href="{rel(d, 'about/')}">About</a> · <a href="{rel(d, 'gallery/')}">Gallery</a> · <a href="{rel(d, 'contact/')}">Contact</a> · <a href="{rel(d, 'privacy/')}">Privacy</a> · <a href="{rel(d, 'terms/')}">Terms</a></p>
 <p>&copy;2026 {e(C['brand'])}</p>
+<p class="credit">Designed &amp; built by <a href="https://harrisongreener.co.uk" target="_blank" rel="noopener">Harrison Greener</a></p>
 </div></footer>
 <script src="{rel(d, 'assets/site.js')}" defer></script>
 </body>
@@ -425,7 +426,7 @@ def myspace():
 <div class="ms-box"><h3>{e(C['brand'])}'s Friends Comments</h3><table class="comments">{comments}</table></div>
 </div>
 </div>
-<p class="ms-foot"><a href="about/">About</a> | <a href="faq/">FAQ</a> | <a href="terms/">Terms</a> | <a href="privacy/">Privacy</a> | <a href="areas/">Areas</a><br>&copy;2026 {e(C['brand'])}. All Rights Reserved.</p>
+<p class="ms-foot">Designed &amp; built by <a href="https://harrisongreener.co.uk" target="_blank" rel="noopener">Harrison Greener</a><br><a href="about/">About</a> | <a href="faq/">FAQ</a> | <a href="terms/">Terms</a> | <a href="privacy/">Privacy</a> | <a href="areas/">Areas</a><br>&copy;2026 {e(C['brand'])}. All Rights Reserved.</p>
 </div>"""
 
 
