@@ -535,7 +535,7 @@ def desktop():
     apps.append(("her", "her.exe", "her", "about/",
                  '<div class="spin"><button type="button" class="avatar-btn" id="avatarBtn" aria-label="Spin the My Face mascot">'
                  '<span class="mascot" id="mascot" role="img" aria-label="The My Face mascot: an emo girl with black and pink hair"></span></button>'
-                 '<p class="bubble" id="bubble" aria-live="polite">drag me round x</p></div>'))
+                 '<p class="bubble" id="bubble" aria-live="polite">hiya! welcome to my face x</p><p class="rot-hint" aria-hidden="true">&larr; drag to turn &rarr;</p></div>'))
     apps.append(("about", "About", "about", "about/",
                  f'<p>{e(C["brand"])} is {e(C["owner"])}\'s home beauty studio in {e(C["town"])}, Tameside, for hair, nails, lashes, brows, piercing and lip filler.</p>'
                  f'<p>[A line or two about you.]</p><p class="win-foot"><a href="about/">More about me &rarr;</a></p>'))
