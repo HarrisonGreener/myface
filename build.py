@@ -225,20 +225,6 @@ GENERAL_FAQS = [
     ("How do I pay?", "[PAYMENT METHODS]"),
 ]
 
-# ---------------------------------------------------------------- desktop apps (homepage computer)
-ICONS = {
-    "nails": '<path d="M9 3h6v4H9zM8 7h8l1 13a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1z"/><path d="M10 12h4"/>',
-    "hair": '<circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M8 16 19 3M16 16 5 3"/>',
-    "beauty": '<path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M5 7 3 4M12 5V2M19 7l2-3"/>',
-    "piercing": '<circle cx="12" cy="14" r="6"/><path d="M12 2v6"/><circle cx="12" cy="2.5" r="1.2"/>',
-    "filler": '<path d="M2 12c3-4 6-5 10-2 4-3 7-2 10 2-3 5-6 7-10 7S5 17 2 12z"/><path d="M2 12h20"/>',
-    "prices": '<path d="M15 5a4 4 0 0 0-7 3v11M6 12h7M5 19h12"/>',
-    "book": '<rect x="3" y="5" width="18" height="16" rx="1"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="m9 15 2 2 4-4"/>',
-    "about": '<circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/>',
-    "contact": '<rect x="3" y="5" width="18" height="14" rx="1"/><path d="m3 7 9 6 9-6"/>',
-    "her": '<path d="m12 3 2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/>',
-}
-
 # ---------------------------------------------------------------- helpers
 e = html.escape
 PAGES = []  # (path, priority)
@@ -246,10 +232,6 @@ PAGES = []  # (path, priority)
 
 def rel(depth, target):
     return ("../" * depth) + target if (depth or target) else "./"
-
-
-def icon(name, cls="ic"):
-    return f'<svg class="{cls}" viewBox="0 0 24 24" aria-hidden="true">{ICONS[name]}</svg>'
 
 
 def logo(d):
@@ -369,48 +351,86 @@ def cta(d):
     return f'<p class="cta"><a class="btn" href="{e(C["booking_url"])}">Book a slot</a> <a class="btn ghost" href="{rel(d, "contact/")}">Ask a question</a></p>'
 
 
+def myspace():
+    """The MySpace-style profile that lives on the computer screen."""
+    nav = [("Home", ""), ("Hair", "hair/"), ("Nails", "nails/"), ("Beauty", "beauty/"), ("Piercing", "piercing/"), ("Filler", "filler/"),
+           ("Prices", "prices/"), ("Aftercare", "aftercare/"), ("FAQ", "faq/"), ("Contact", "contact/")]
+    navh = " | ".join(f'<a href="{h or "./"}">{n}</a>' for n, h in nav)
+    services = "".join(
+        f'<tr><th scope="row">{e(c["name"])}</th><td>' + ", ".join(f'<a href="{c["slug"]}/{s["slug"]}/">{e(s["name"])}</a>' for s in c["services"]) + "</td></tr>"
+        for c in CATEGORIES)
+    picks = ["gel-nails", "biab", "acrylic-nails", "lashes", "ear-piercing", "colour", "lip-filler"]
+    allsv = {s["slug"]: (s, c) for c in CATEGORIES for s in c["services"]}
+    top = '<li><a href="about/"><span class="thumb her"><span class="mascot mini"></span></span>her.exe<small>Top friend</small></a></li>' + "".join(
+        f'<li><a href="{allsv[k][1]["slug"]}/{k}/"><span class="thumb">[pic]</span>{e(allsv[k][0]["name"])}<small>{from_price(allsv[k][0])}</small></a></li>' for k in picks)
+    comments = "".join(
+        f'<tr><td class="c-who"><span class="thumb sm">[pic]</span><a href="#">[Client name]</a></td><td><b class="date">[date]</b><p>[Paste a real client review here]</p></td></tr>' for _ in range(3))
+    return f"""<div class="os" id="os">
+<div class="ms-top"><span class="ms-logo">my<b>face</b><i>.com</i></span><span class="ms-tag">your face, your space</span>
+<form class="ms-search" role="search" action="services/"><label for="q">Search treatments</label><input id="q" name="q" placeholder="Search treatments"><button>Search</button></form></div>
+<nav class="ms-nav" aria-label="Profile">{navh}</nav>
+<div class="ms-page">
+<div class="ms-left">
+<h2 class="ms-name">{e(C['brand'])}</h2>
+<div class="ms-profile">
+<button type="button" class="pic" id="avatarBtn" aria-label="Spin the My Face mascot"><span class="mascot" id="mascot"></span></button>
+<div class="ms-info"><p>"Hair, nails, lashes, piercings &amp; lips, all in one place."</p>
+<p>Home beauty studio<br>{e(C['town'])}<br>{e(C['city'])}<br>United Kingdom</p>
+<p class="online"><span></span> Online Now!</p>
+<p>Last Login: today</p></div></div>
+<p class="viewmy">View My: <a href="prices/">Prices</a> | <a href="gallery/">Pics</a> | <a href="aftercare/">Aftercare</a></p>
+<div class="ms-box contact"><h3>Contacting {e(C['brand'])}</h3>
+<div class="actions"><a href="{e(C['booking_url'])}">&#10148; Book Appointment</a><a href="contact/">&#10148; Send Message</a><a href="{e(C['instagram'])}">&#10148; Add to Friends</a><a href="tel:{e(C['phone'])}">&#10148; Call Me</a></div></div>
+<div class="ms-box url"><b>{e(C['brand'])} URL:</b><br>myface.co.uk/book</div>
+<div class="ms-box"><h3>{e(C['brand'])}'s Services</h3><table>{services}</table></div>
+<div class="ms-box"><h3>{e(C['brand'])}'s Details</h3><table>
+<tr><th scope="row">Status:</th><td>Taking bookings</td></tr>
+<tr><th scope="row">Here for:</th><td>Fresh sets, new hair, a lil sparkle</td></tr>
+<tr><th scope="row">Hometown:</th><td>{e(C['town'])}, Tameside</td></tr>
+<tr><th scope="row">Hours:</th><td>Appointment only, address sent when you book</td></tr></table></div>
+</div>
+<div class="ms-right">
+<div class="ms-net"><b>{e(C['brand'])} is in your extended network</b></div>
+<div class="ms-player"><button type="button" id="radio" aria-label="Play">&#9654;</button><span><b>My Face Radio</b><br><span id="np">press play for salon vibes</span></span></div>
+<div class="ms-box"><h3>{e(C['brand'])}'s Latest Blog Entries</h3><ul class="blog">
+<li>[OFFER] new client discount on your first set (<a href="nails/">view more</a>)</li>
+<li>[NEWS] new piercing jewellery just landed (<a href="piercing/">view more</a>)</li>
+<li>Full price list (<a href="prices/">view more</a>)</li></ul></div>
+<div class="ms-box"><h3>{e(C['brand'])}'s Blurbs</h3>
+<h4>About me:</h4><p>[A few lines about you.] {e(C['brand'])} is a home beauty studio in {e(C['town'])} for nails, hair, lashes, brows, piercing and lip filler.</p>
+<h4>Who I'd like to meet:</h4><p>Anyone after a fresh set, a new colour, a little sparkle in their ear or a bit of lip.</p></div>
+<div class="ms-box"><h3>{e(C['brand'])}'s Friend Space</h3><p class="fs-count">{e(C['brand'])} has <b>8</b> treatments in their Top 8.</p><ul class="top8">{top}</ul>
+<p class="all"><a href="services/">View all treatments</a></p></div>
+<div class="ms-box"><h3>{e(C['brand'])}'s Friends Comments</h3><table class="comments">{comments}</table></div>
+</div>
+</div>
+<p class="ms-foot"><a href="about/">About</a> | <a href="faq/">FAQ</a> | <a href="terms/">Terms</a> | <a href="privacy/">Privacy</a> | <a href="areas/">Areas</a><br>&copy;2026 {e(C['brand'])}. All Rights Reserved.</p>
+</div>"""
+
+
 def computer():
-    """The homepage: a vintage computer whose desktop links to every section."""
-    apps = []   # (key, label, icon, href, window html)
-    for c in CATEGORIES:
-        body = f'<p>{e(c["blurb"])}.</p>' + links(0, [(s["name"], from_price(s), f'{c["slug"]}/{s["slug"]}/') for s in c["services"]]) + \
-               f'<p class="win-foot"><a href="{c["slug"]}/">Open {e(c["name"].lower())} page &rarr;</a></p>'
-        apps.append((c["slug"], c["name"], c["slug"], f'{c["slug"]}/', body))
-    price_rows = "".join(f'<tr><th scope="row"><a href="{c["slug"]}/{s["slug"]}/">{e(s["name"])}</a></th><td>{from_price(s)}</td></tr>'
-                         for c in CATEGORIES for s in c["services"])
-    apps.append(("prices", "Prices", "prices", "prices/", f'<table class="prices">{price_rows}</table><p class="win-foot"><a href="prices/">Full price list &rarr;</a></p>'))
-    apps.append(("book", "Book", "book", C["booking_url"],
-                 f'<p>Appointment-only home studio in {e(C["town"])}. Pick a time online and the address is sent once you\'ve booked.</p>'
-                 f'<p><a class="btn" href="{e(C["booking_url"])}">Book a slot</a></p><p class="win-foot"><a href="faq/">Booking FAQs &rarr;</a></p>'))
-    apps.append(("her", "her.exe", "her", "#",
-                 '<div class="spin"><button type="button" class="avatar-btn" id="avatarBtn" aria-label="Spin the My Face mascot">'
-                 '<span class="mascot" id="mascot" role="img" aria-label="The My Face mascot: an emo girl with black and pink hair"></span></button>'
-                 '<p class="bubble" id="bubble" aria-live="polite">drag me round x</p></div>'))
-    apps.append(("about", "About", "about", "about/",
-                 f'<p>{e(C["brand"])} is a home beauty studio in {e(C["town"])}, Tameside, for hair, nails, lashes, brows, piercing and lip filler.</p>'
-                 f'<p>[A line or two about you.]</p><p class="win-foot"><a href="about/">More about me &rarr;</a></p>'))
-    apps.append(("contact", "Contact", "contact", "contact/",
-                 f'<ul class="plain"><li><a href="tel:{e(C["phone"])}">{e(C["phone"])}</a></li><li><a href="mailto:{e(C["email"])}">{e(C["email"])}</a></li>'
-                 f'<li><a href="{e(C["instagram"])}">Instagram</a></li></ul><p class="win-foot"><a href="contact/">Contact page &rarr;</a></p>'))
-    icons = "".join(f'<li><a class="app" href="{e(href)}" data-app="{k}">{icon(ic)}<span>{e(label)}</span></a></li>' for k, label, ic, href, _ in apps)
-    wins = "".join(f'<section class="win app-win" id="win-{k}" data-app="{k}" hidden aria-label="{e(label)}">'
-                   f'<div class="titlebar"><span>{e(label)}</span><button type="button" class="close" aria-label="Close {e(label)}">&times;</button></div>'
-                   f'<div class="win-body">{body}</div></section>' for k, label, ic, href, body in apps)
-    return f"""<main id="content" class="desk">
-<div class="computer">
-<div class="monitor">
-<div class="screen" id="screen">
-<div class="boot" id="boot"><p class="boot-hint">press the power button</p><pre id="bootlog" aria-hidden="true"></pre></div>
-<div class="desktop" id="desktop">
-<ul class="apps">{icons}</ul>
-{wins}
-<div class="taskbar"><span class="start">myface</span><span id="clock">--:--</span></div>
+    keys = "".join('<i></i>' for _ in range(56))
+    box = '<div class="f fr"></div><div class="f bk"></div><div class="f lf"></div><div class="f rt"></div><div class="f tp"></div><div class="f bt"></div>'
+    return f"""<main id="content" class="room">
+<div class="scene" id="scene">
+<div class="rig" id="rig">
+<div class="monitor box">
+<div class="f fr front"><div class="screen" id="screen">{myspace()}<span class="glare"></span></div>
+<div class="plate"><span class="model">MF-2001</span><span class="led"></span><span class="pwr"></span></div>
+<button type="button" class="zoom-btn" id="zoomBtn" aria-label="Zoom into the computer screen"></button></div>
+<div class="f bk"></div><div class="f lf"></div><div class="f rt"></div><div class="f tp"></div><div class="f bt"></div>
+</div>
+<div class="tube box">{box}</div>
+<div class="neck box">{box}</div>
+<div class="foot box">{box}</div>
+<div class="kbd box"><div class="f fr"></div><div class="f bk"></div><div class="f lf"></div><div class="f rt"></div><div class="f tp keys">{keys}</div><div class="f bt"></div></div>
+<div class="shadow"></div>
 </div>
 </div>
-<div class="plate"><span class="model">MF-2001</span><span class="led" id="led"></span><button type="button" class="power" id="power" aria-label="Power on"></button></div>
+<p class="hint" id="hint">click the computer to log in</p>
 </div>
-<div class="neck"></div><div class="base"></div>
-</div>
+<div class="zoomview" id="zoomview" hidden><div class="zv-screen" id="zvScreen"></div>
+<button type="button" class="logoff" id="logoff">&#9211; Log off</button></div>
 <div class="caption">
 <h1>Hair, nails, lashes, piercing &amp; lip filler in {e(C['town'])}</h1>
 <p>An appointment-only home beauty studio in {e(C['town'])}, near Manchester and Oldham.</p>

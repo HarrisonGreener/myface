@@ -10,13 +10,13 @@ Every page is generated from `build.py`.
 2. Edit treatments, FAQs and aftercare in `CATEGORIES`, `AFTERCARE` and `GENERAL_FAQS`.
 3. Run `python3 build.py` to rebuild all the pages, `sitemap.xml` and `robots.txt`.
 
-Styles live in `assets/style.css`. The homepage mascot is `assets/mascot.webp`: a sprite of 7 turnaround views that `assets/site.js` spins in the her.exe window.
+Styles live in `assets/style.css`. The homepage mascot is `assets/mascot.webp`: a sprite of 7 turnaround views that `assets/site.js` spins in the profile pic.
 
 Prices are estimates from typical local prices, so the owner should check them.
 
 ## What's built for SEO
 
-- A homepage built as a vintage computer: press power, then open each treatment as a window (every icon is also a normal link for search engines)
+- A homepage with a 3D CSS computer: click it to zoom into a MySpace-style profile (all links are real HTML for search engines)
 - Location pages for Droylsden, Manchester and Oldham (`/areas/...`)
 - A page for each category (`/hair/`, `/nails/`, `/beauty/`, `/piercing/`, `/filler/`) and for each treatment inside it, e.g. `/filler/lip-filler/`
 - Location-based titles and meta descriptions ("Lip Filler in [TOWN]")
