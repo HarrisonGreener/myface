@@ -10,192 +10,231 @@ import html, json, os, shutil
 CONFIG = {
     "site_url": "https://www.example.com",   # your real domain, no trailing slash
     "brand": "My Face",
+    "tagline": "your face, your space",
     "owner": "[YOUR NAME]",
-    "town": "[TOWN]",
-    "area": "[AREA / COUNTY]",
-    "address": "[STREET ADDRESS]",
-    "postcode": "[POSTCODE]",
+    "town": "Droylsden",                     # where the home studio is
+    "city": "Manchester",                    # the bigger search area
+    "region": "Greater Manchester",
+    "served": ["Droylsden", "Manchester", "Oldham", "Ashton-under-Lyne", "Failsworth", "Denton", "Audenshaw"],
     "phone": "[PHONE NUMBER]",
     "email": "[EMAIL]",
     "instagram": "https://www.instagram.com/[HANDLE]",
     "booking_url": "[BOOKING LINK]",       # e.g. your Fresha / Booksy / Square link
-    "hours": [("Mon – Fri", "[TIMES]"), ("Saturday", "[TIMES]"), ("Sunday", "[TIMES]")],
 }
 C = CONFIG
 OUT = os.path.dirname(os.path.abspath(__file__))
 
 # ---------------------------------------------------------------- content
-# Each category has its own page; each service has a page inside it.
+# Prices are estimates based on typical home-salon prices around Tameside and Oldham.
 CATEGORIES = [
     {
         "slug": "hair", "name": "Hair",
         "blurb": "Cuts, colour, styling and extensions",
-        "intro": f"<p>Whether it's a tidy-up, a full change of colour or extra length and volume, hair appointments at {C['brand']} start with a proper chat about what you want and what will suit your hair.</p>",
+        "intro": "<p>Whether it's a tidy-up, a full change of colour or extra length, hair appointments start with a proper chat about what you want and what will suit your hair.</p>",
         "services": [
             {"slug": "cuts-and-styling", "name": "Haircuts & Styling",
              "short": "Cuts, restyles and blow-dries for all hair types.",
-             "intro": "<p>From a trim to keep your ends healthy to a complete restyle, every cut starts with a consultation so we agree on the shape, length and how you style it day to day.</p><p>Blow-dries and occasion styling are available on their own, too, for nights out, weddings and photos.</p>",
+             "intro": "<p>From a trim to keep your ends healthy to a complete restyle, every cut starts with a consultation so we agree on the shape, length and how you style it day to day.</p><p>Blow-dries and occasion hair are available on their own, too, for nights out, weddings and photos.</p>",
              "expect": ["A consultation about the look you want and your routine", "Wash and condition", "Cut and finish, with tips for styling it at home"],
-             "time": "[TIME]",
+             "time": "45–90 minutes",
+             "prices": [("Cut & blow-dry", "£28"), ("Restyle", "£35"), ("Blow-dry", "£18"), ("Hair up / occasion", "from £30"), ("Fringe trim", "£5")],
              "faqs": [("How often should I get a trim?", "Most people book every 6–12 weeks depending on length and style. Shorter, sharper cuts need trimming more often to keep their shape."),
                       ("Can I bring a picture?", "Yes, please do. Pictures are the easiest way to show the look you're after.")]},
             {"slug": "colour", "name": "Hair Colour",
-             "short": "Full colour, roots, highlights, balayage and toners.",
-             "intro": "<p>Colour services include root touch-ups, all-over colour, highlights, balayage and toners. Bigger changes, like going much lighter, may take more than one appointment to keep your hair in good condition.</p>",
+             "short": "Roots, full colour, highlights, balayage and toners.",
+             "intro": "<p>Colour includes root touch-ups, all-over colour, highlights, balayage and toners. Bigger changes, like going much lighter, may take more than one appointment to keep your hair in good condition.</p>",
              "expect": ["A colour consultation and strand check", "A skin patch test at least 48 hours before your appointment", "Colour, tone, wash and finish"],
-             "time": "[TIME]",
+             "time": "1.5–4 hours",
+             "prices": [("Root tint", "£40"), ("Full head colour", "from £50"), ("Half-head highlights", "from £55"), ("Full-head highlights", "from £70"), ("Balayage", "from £85"), ("Toner", "£20")],
              "faqs": [("Do I need a patch test?", "Yes. A skin patch test is needed at least 48 hours before any colour service, even if you've had colour before, because allergies can develop over time."),
-                      ("Can you take me from dark to blonde in one go?", "Sometimes, but often it's safer done over a few sessions. We'll be honest at your consultation about what's realistic for your hair.")]},
+                      ("Can you take me from dark to blonde in one go?", "Sometimes, but often it's safer done over a few sessions. You'll get an honest answer at your consultation about what's realistic for your hair.")]},
             {"slug": "extensions", "name": "Hair Extensions",
-             "short": "Added length and volume with [METHOD] extensions.",
-             "intro": "<p>Extensions add length, thickness or a pop of colour. We'll match the shade and texture to your own hair and talk you through how to look after them.</p>",
-             "expect": ["Consultation and colour match", "Fitting by [METHOD]", "Blending cut and styling"],
-             "time": "[TIME]",
-             "faqs": [("How long do extensions last?", "It depends on the method and how you look after them. We'll explain maintenance and refit times for the type you choose."),
+             "short": "Tape-in and clip-in extensions for length and volume.",
+             "intro": "<p>Extensions add length, thickness or a pop of colour. The shade and texture are matched to your own hair, and you'll be shown how to look after them.</p>",
+             "expect": ["Consultation and colour match", "Fitting and blending", "Cut and styling to finish"],
+             "time": "1.5–3 hours",
+             "prices": [("Tape-in extensions (full head)", "from £150"), ("Tape-in refit", "from £70"), ("Clip-in fitting & blend", "£30"), ("Removal", "£25")],
+             "faqs": [("How long do tape-ins last?", "Tape-ins are usually moved up every 6–8 weeks, and good quality hair can be reused for several refits."),
                       ("Will they damage my hair?", "Fitted and removed properly, and looked after at home, extensions shouldn't cause damage. Never remove them yourself.")]},
         ],
     },
     {
         "slug": "nails", "name": "Nails",
         "blurb": "Gel, BIAB, acrylics and nail art",
-        "intro": f"<p>Nails are where {C['brand']} gets to play: clean natural sets, long sculpted acrylics, chrome, charms and full hand-painted art.</p>",
+        "intro": "<p>Clean natural sets, long sculpted acrylics, chrome, charms and full hand-painted art.</p>",
         "services": [
             {"slug": "gel-nails", "name": "Gel Nails",
              "short": "Gel polish on natural nails that lasts for weeks.",
              "intro": "<p>Gel polish is cured under a lamp, so it's dry the moment you leave and stays glossy without chipping. It's a good choice if you want colour on your natural nails without extensions.</p>",
              "expect": ["Nail prep, shaping and cuticle care", "Gel colour, cured under a lamp", "Top coat and cuticle oil"],
-             "time": "[TIME]",
+             "time": "45 minutes",
+             "prices": [("Gel polish, hands", "£20"), ("Gel polish, toes", "£20"), ("Hands & toes", "£35"), ("Removal (no new set)", "£5")],
              "faqs": [("How long does gel polish last?", "Usually around 2–3 weeks, depending on how fast your nails grow and what you do with your hands."),
                       ("Should I peel it off?", "No. Peeling gel takes layers of your natural nail with it. Book a removal instead.")]},
             {"slug": "biab", "name": "BIAB Nails",
              "short": "Builder gel that strengthens your own nails.",
              "intro": "<p>BIAB (builder in a bottle) is a thicker builder gel applied over your natural nails. It adds strength, so it's popular with anyone trying to grow their nails out, and it can be infilled rather than fully removed each time.</p>",
              "expect": ["Prep and shaping", "Builder gel to strengthen and shape the nail", "Colour or natural finish"],
-             "time": "[TIME]",
+             "time": "1 hour",
+             "prices": [("BIAB overlay", "£28"), ("BIAB infill", "£25"), ("BIAB with French or chrome", "£33")],
              "faqs": [("How often do I need an infill?", "Most people come back every 3–4 weeks."),
                       ("Can I have art on top?", "Yes, BIAB works well under colour, French tips, chrome and art.")]},
             {"slug": "acrylic-nails", "name": "Acrylic Nails",
              "short": "Sculpted extensions in any length and shape.",
              "intro": "<p>Acrylic extensions are built from liquid and powder to give you length and a strong shape: square, coffin, almond, stiletto, whatever you're into.</p>",
              "expect": ["Prep of the natural nail", "Tips or sculpting to your chosen length and shape", "Colour, art or charms to finish"],
-             "time": "[TIME]",
+             "time": "1.5–2 hours",
+             "prices": [("Full set", "£32"), ("Full set, extra long", "£38"), ("Infill", "£25"), ("Removal", "£10")],
              "faqs": [("How often do acrylics need infills?", "Usually every 2–3 weeks to keep them strong and balanced as your nails grow."),
                       ("What length can I go?", "Pretty much any. We'll talk through what's practical for your day-to-day.")]},
             {"slug": "nail-art", "name": "Nail Art",
              "short": "Hand-painted designs, chrome, gems and charms.",
-             "intro": "<p>Bring a picture, a mood or just a colour, and we'll design something around it. Hand-painted art, chrome, 3D gel, gems and charms are all on the menu.</p>",
+             "intro": "<p>Bring a picture, a mood or just a colour, and the design gets built around it. Hand-painted art, chrome, 3D gel, gems and charms are all on the menu.</p>",
              "expect": ["A chat about the design", "Base set of your choice", "Art priced by detail"],
              "time": "Depends on the design",
-             "faqs": [("Can I book nail art on its own?", "It's added to a gel, BIAB or acrylic set. Let us know the design when you book so enough time is set aside."),
+             "prices": [("Accent nails (2)", "from £5"), ("Full set art", "from £10"), ("Chrome", "£5"), ("Charms & gems", "from £1 each")],
+             "faqs": [("Can I book nail art on its own?", "It's added to a gel, BIAB or acrylic set. Send the design when you book so enough time is set aside."),
                       ("How is art priced?", "By detail and how many nails, from simple accents to a full set.")]},
         ],
     },
     {
         "slug": "beauty", "name": "Beauty",
         "blurb": "Lashes, brows, waxing and make-up",
-        "intro": f"<p>The finishing touches: lashes, brows, waxing and make-up for everyday or big occasions.</p>",
+        "intro": "<p>The finishing touches: lashes, brows, waxing and make-up for everyday or big occasions.</p>",
         "services": [
             {"slug": "lashes", "name": "Lash Lifts & Extensions",
              "short": "Lifted, tinted natural lashes or full extensions.",
              "intro": "<p>A lash lift curls your own lashes from the root and is usually paired with a tint, so they look longer and darker without mascara. Extensions add length and fullness lash by lash.</p>",
              "expect": ["A patch test before your first lift, tint or extensions", "Lift and tint, or extensions applied", "Aftercare advice to make them last"],
-             "time": "[TIME]",
+             "time": "1–2 hours",
+             "prices": [("Lash lift & tint", "£35"), ("Classic extensions, full set", "£45"), ("Hybrid, full set", "£50"), ("Russian volume, full set", "£55"), ("Infills", "from £25")],
              "faqs": [("How long does a lash lift last?", "Usually around 6–8 weeks, as your lashes naturally shed and regrow."),
                       ("Do I need a patch test?", "Yes, at least 24–48 hours before your first appointment.")]},
             {"slug": "brows", "name": "Brows",
              "short": "Shaping, tinting and brow lamination.",
-             "intro": "<p>Brow appointments include shaping with wax or threading, tinting and lamination, which sets your brow hairs in a brushed-up, fuller-looking shape.</p>",
+             "intro": "<p>Brow appointments include shaping, tinting and lamination, which sets your brow hairs in a brushed-up, fuller-looking shape.</p>",
              "expect": ["Brow mapping to suit your face", "Shape, tint or lamination", "A finishing brow gel"],
-             "time": "[TIME]",
+             "time": "20–45 minutes",
+             "prices": [("Brow wax", "£8"), ("Brow wax & tint", "£15"), ("Brow lamination & tint", "£32"), ("Lamination, tint & lash lift", "£60")],
              "faqs": [("How long does brow lamination last?", "Usually around 6–8 weeks."),
-                      ("Can I have a tint and lamination together?", "Yes, they're often booked together.")]},
+                      ("Can I have a tint and lamination together?", "Yes, they're usually booked together.")]},
             {"slug": "waxing", "name": "Waxing",
              "short": "Smooth results for face and body.",
              "intro": "<p>Quick, clean waxing for face and body. Hair needs to be a little grown out for wax to grip, roughly the length of a grain of rice.</p>",
              "expect": ["Skin prep", "Wax suited to the area", "Soothing aftercare"],
-             "time": "[TIME]",
+             "time": "10–45 minutes",
+             "prices": [("Lip or chin", "£6"), ("Underarm", "£10"), ("Bikini", "from £12"), ("Half leg", "£18"), ("Full leg", "£28")],
              "faqs": [("How long should my hair be?", "Around 0.5 cm, or about 2–3 weeks of growth after shaving."),
-                      ("Can I wax if I use retinoids?", "Tell us at booking. Some skincare products make skin more sensitive to waxing.")]},
+                      ("Can I wax if I use retinoids?", "Say so when you book. Some skincare products make skin more sensitive to waxing.")]},
             {"slug": "makeup", "name": "Make-up",
-             "short": "Make-up for nights out, events and shoots.",
+             "short": "Make-up for nights out, prom, events and shoots.",
              "intro": "<p>Make-up for birthdays, nights out, prom, weddings and shoots, from soft and natural to full glam.</p>",
              "expect": ["A chat about the look and your outfit", "Skin prep", "Full make-up, lashes optional"],
-             "time": "[TIME]",
+             "time": "45–75 minutes",
+             "prices": [("Natural make-up", "£30"), ("Full glam", "£40"), ("Prom make-up", "£40"), ("Strip lashes added", "£5")],
              "faqs": [("Do you do bridal make-up?", "[YES/NO — add details]"),
-                      ("Should I come with a clean face?", "Yes, ideally moisturised but with no make-up on.")]},
+                      ("Should I come with a clean face?", "Yes, ideally moisturised with no make-up on.")]},
         ],
     },
     {
         "slug": "piercing", "name": "Piercing",
-        "blurb": "Ear, nose and body piercing",
-        "intro": f"<p>Piercings at {C['brand']} are done by [PIERCER / QUALIFICATIONS] with [METHOD] in a clean, licensed space, with jewellery to choose from.</p><p>Age policy: [YOUR AGE POLICY]. Photo ID may be asked for.</p>",
+        "blurb": "Ear, nose and navel piercing",
+        "intro": "<p>Piercings are done by [PIERCER / QUALIFICATIONS] using [METHOD], in a clean space registered with the council, with jewellery to choose from. Prices include basic jewellery.</p><p>Age policy: [YOUR AGE POLICY]. Photo ID may be asked for.</p>",
         "services": [
             {"slug": "ear-piercing", "name": "Ear Piercing",
              "short": "Lobes, helix, tragus, conch and more.",
-             "intro": "<p>From first lobes to curated ears: lobe, upper lobe, helix, forward helix, tragus, conch, daith and more. We'll help you plan placements that suit your ear shape.</p>",
+             "intro": "<p>From first lobes to a full curated ear: lobe, upper lobe, helix, forward helix, tragus, conch, daith and more. You'll get help planning placements that suit your ear shape.</p>",
              "expect": ["Choose your placement and jewellery", "Marking and a check in the mirror", "Piercing, then aftercare advice"],
-             "time": "[TIME]",
+             "time": "20–30 minutes",
+             "prices": [("Single lobe", "£20"), ("Pair of lobes", "£30"), ("Helix or forward helix", "£25"), ("Tragus", "£25"), ("Conch or daith", "£30")],
              "faqs": [("How long do ear piercings take to heal?", "Lobes usually take around 6–8 weeks. Cartilage piercings like the helix or conch can take 6–12 months or more."),
-                      ("When can I change the jewellery?", "Only once it's healed. Come back and we can check it and change it for you.")]},
+                      ("When can I change the jewellery?", "Only once it's healed. Come back and it can be checked and changed for you.")]},
             {"slug": "nose-piercing", "name": "Nose Piercing",
              "short": "Nostril and septum piercings.",
              "intro": "<p>Nostril and septum piercings, placed to suit your face, with jewellery to choose from.</p>",
              "expect": ["Choose placement and jewellery", "Marking and checking", "Piercing and aftercare advice"],
-             "time": "[TIME]",
+             "time": "20–30 minutes",
+             "prices": [("Nostril", "£25"), ("Septum", "£30")],
              "faqs": [("How long does a nose piercing take to heal?", "A nostril usually takes around 4–6 months, and a septum around 2–3 months, sometimes longer."),
                       ("Does it hurt?", "There's a quick, sharp pinch. Most people say it's over faster than they expected.")]},
-            {"slug": "body-piercing", "name": "Body Piercing",
-             "short": "Navel and other body piercings.",
-             "intro": "<p>Navel and other body piercings: [LIST THE PIERCINGS YOU OFFER]. Some body piercings are only legal from 18, so photo ID will be checked.</p>",
-             "expect": ["Consultation and anatomy check", "Choose jewellery", "Piercing and aftercare advice"],
-             "time": "[TIME]",
+            {"slug": "navel-piercing", "name": "Navel Piercing",
+             "short": "Belly button piercings.",
+             "intro": "<p>Navel (belly button) piercings, with a quick anatomy check first to make sure the piercing will sit and heal well.</p>",
+             "expect": ["Anatomy check", "Choose jewellery", "Piercing and aftercare advice"],
+             "time": "30 minutes",
+             "prices": [("Navel", "£30")],
              "faqs": [("How long does a navel piercing take to heal?", "Usually around 6–12 months."),
-                      ("Can everyone get every piercing?", "Not always. Some depend on your anatomy, which we'll check before piercing.")]},
+                      ("Can everyone get a navel piercing?", "Not always. It depends on your anatomy, which gets checked before piercing.")]},
         ],
     },
     {
         "slug": "filler", "name": "Filler",
         "blurb": "Lip and dermal filler",
-        "intro": f"<p>Filler treatments at {C['brand']} are carried out by [PRACTITIONER / QUALIFICATIONS], using hyaluronic acid fillers. Every treatment starts with a consultation and a medical history check.</p><p><strong>Over-18s only.</strong> It's illegal in England to give cosmetic filler to anyone under 18, and ID will be checked.</p>",
+        "intro": "<p>Filler treatments are carried out by [PRACTITIONER / QUALIFICATIONS], using hyaluronic acid fillers. Every treatment starts with a consultation and a medical history check.</p><p><strong>Over-18s only.</strong> It's illegal in England to give cosmetic filler to anyone under 18, and ID will be checked.</p>",
         "services": [
             {"slug": "lip-filler", "name": "Lip Filler",
-             "short": "Subtle volume, shape and hydration for lips.",
+             "short": "Volume, shape and hydration for lips.",
              "intro": "<p>Lip filler adds volume, defines shape or balances the lips using a hyaluronic acid gel. Results can be kept subtle, and you can build up over more than one appointment.</p><p>Hyaluronic acid filler is temporary and gradually breaks down. Lip filler commonly lasts around 6 months, though it varies from person to person.</p>",
              "expect": ["Consultation, medical history and consent", "Numbing, then filler placed in small amounts", "Aftercare advice and a review appointment"],
-             "time": "[TIME]",
+             "time": "45 minutes",
+             "prices": [("0.5ml lip filler", "£75"), ("1ml lip filler", "£100"), ("Consultation", "Free")],
              "faqs": [("How long does lip filler last?", "Often around 6 months, but it varies depending on the product, the amount and your body."),
                       ("Will I swell?", "Some swelling and bruising is normal for a few days. It settles, and your final result shows after about two weeks."),
-                      ("Who can't have filler?", "Anyone under 18, and anyone pregnant or breastfeeding. Some medical conditions and medications also rule it out, which we'll check at consultation.")]},
+                      ("Who can't have filler?", "Anyone under 18, and anyone pregnant or breastfeeding. Some medical conditions and medications also rule it out, which gets checked at consultation.")]},
             {"slug": "dermal-filler", "name": "Dermal Filler",
-             "short": "[CHEEK / CHIN / JAW — the areas you treat].",
-             "intro": "<p>Dermal filler can restore or add volume and contour to areas such as [AREAS YOU TREAT]. Everything is planned at a consultation so results look like you.</p><p>Hyaluronic acid filler is temporary. How long it lasts depends on the area and product, which we'll explain at consultation.</p>",
+             "short": "Chin, cheek and jawline filler.",
+             "intro": "<p>Dermal filler can add volume and contour to areas such as the chin, cheeks and jawline. Everything is planned at a consultation so results look like you.</p><p>Hyaluronic acid filler is temporary. How long it lasts depends on the area and product, which is explained at consultation.</p>",
              "expect": ["Consultation, medical history and consent", "Treatment", "Aftercare advice and a review appointment"],
-             "time": "[TIME]",
+             "time": "45–60 minutes",
+             "prices": [("Chin (1ml)", "from £100"), ("Cheeks (1ml)", "from £110"), ("Jawline (2ml)", "from £180"), ("Consultation", "Free")],
              "faqs": [("Is filler permanent?", "No. Hyaluronic acid fillers break down naturally over time."),
-                      ("Are there risks?", "As with any injectable treatment, there are risks. Most side effects are mild, like swelling and bruising, and serious complications are rare. We'll go through them with you before treatment.")]},
+                      ("Are there risks?", "As with any injectable treatment, there are risks. Most side effects are mild, like swelling and bruising, and serious complications are rare. They'll be talked through with you before treatment.")]},
         ],
     },
 ]
 
+AREAS = [
+    {"slug": "droylsden", "name": "Droylsden",
+     "body": f"<p>{C['brand']} is a home beauty studio in Droylsden, Tameside. It's appointment-only, and the full address is sent once you've booked.</p><p>It's handy for anyone in Droylsden, Fairfield, Littlemoss, Audenshaw and Clayton.</p>"},
+    {"slug": "manchester", "name": "Manchester",
+     "body": f"<p>Looking for nails, lashes, hair, piercing or lip filler in east Manchester? {C['brand']} is in Droylsden, about four miles east of the city centre, with the Metrolink Droylsden stop on the East Manchester line.</p><p>Clients come over from Clayton, Openshaw, Gorton and across the city. It's appointment-only, and you'll get the address when you book.</p>"},
+    {"slug": "oldham", "name": "Oldham",
+     "body": f"<p>{C['brand']} is a short drive from Oldham, Failsworth and Chadderton, at a home studio in Droylsden. It's appointment-only, and you'll get the address when you book.</p>"},
+]
+
 AFTERCARE = [
     {"slug": "piercing", "name": "Piercing Aftercare",
-     "body": "<ul><li>Clean twice a day with sterile saline spray. No alcohol, tea tree or harsh soaps.</li><li>Don't twist or turn the jewellery, and try not to touch it except when cleaning, with clean hands.</li><li>Avoid sleeping on new ear piercings. A travel pillow helps.</li><li>Keep it out of pools, hot tubs, the sea and baths until it's healed.</li><li>Some redness, swelling and clear or whitish fluid is normal early on.</li><li>Don't take the jewellery out to change it until it's fully healed.</li><li>If you see spreading redness, heat, yellow or green discharge, or feel unwell, contact us and see a GP or pharmacist.</li></ul>"},
+     "body": "<ul><li>Clean twice a day with sterile saline spray. No alcohol, tea tree or harsh soaps.</li><li>Don't twist or turn the jewellery, and try not to touch it except when cleaning, with clean hands.</li><li>Avoid sleeping on new ear piercings. A travel pillow helps.</li><li>Keep it out of pools, hot tubs, the sea and baths until it's healed.</li><li>Some redness, swelling and clear or whitish fluid is normal early on.</li><li>Don't take the jewellery out to change it until it's fully healed.</li><li>If you see spreading redness, heat, yellow or green discharge, or feel unwell, get in touch and see a GP or pharmacist.</li></ul>"},
     {"slug": "filler", "name": "Filler Aftercare",
      "body": "<ul><li>Avoid touching or massaging the area for 24 hours unless you've been told to.</li><li>Skip make-up on the area for 12–24 hours.</li><li>Avoid alcohol, strenuous exercise, saunas and heat for 24–48 hours.</li><li>Swelling and bruising are normal and usually settle within a few days. A cold compress can help.</li><li>Your final result shows after around two weeks. Come back for your review appointment.</li><li><strong>Get help straight away</strong> if you notice severe or worsening pain, skin that turns white, blue or blotchy, or any changes to your vision. Contact us immediately, and call 999 or go to A&amp;E if you can't reach us.</li></ul>"},
     {"slug": "lashes-and-brows", "name": "Lash & Brow Aftercare",
      "body": "<ul><li>Keep lashes and brows dry for 24 hours after a lift, tint or lamination. No steam, saunas or swimming.</li><li>Avoid mascara and brow products for 24 hours.</li><li>For extensions, use oil-free products and brush them gently every day.</li><li>Don't pick or pull at extensions. Book a removal instead.</li></ul>"},
     {"slug": "nails", "name": "Nail Aftercare",
-     "body": "<ul><li>Use cuticle oil daily to keep nails and skin healthy.</li><li>Wear gloves for cleaning and washing up.</li><li>Don't use your nails as tools for opening cans or scraping labels.</li><li>Never pick or peel off gel, BIAB or acrylics. Book a removal.</li><li>If a nail lifts or breaks, get in touch so we can fix it before water gets underneath.</li></ul>"},
+     "body": "<ul><li>Use cuticle oil daily to keep nails and skin healthy.</li><li>Wear gloves for cleaning and washing up.</li><li>Don't use your nails as tools for opening cans or scraping labels.</li><li>Never pick or peel off gel, BIAB or acrylics. Book a removal.</li><li>If a nail lifts or breaks, get in touch so it can be fixed before water gets underneath.</li></ul>"},
 ]
 
 GENERAL_FAQS = [
-    ("How do I book?", f"Book online through our <a href=\"{C['booking_url']}\">booking page</a>, message us on Instagram or call {C['phone']}."),
+    ("Where are you?", f"{C['brand']} is a home studio in {C['town']}, Tameside. The full address is sent once you've booked."),
+    ("What are your opening hours?", "There aren't set opening hours. It's appointment-only, so pick a time that suits you on the booking page."),
+    ("How do I book?", f"Book online through the <a href=\"{C['booking_url']}\">booking page</a>, message on Instagram or call {C['phone']}."),
+    ("Do you do mobile appointments?", "[YES/NO — add details]"),
     ("Do you take deposits?", "[YOUR DEPOSIT POLICY]"),
     ("What's your cancellation policy?", "[YOUR CANCELLATION POLICY]"),
     ("Do I need a patch test?", "Yes, for hair colour, lash and brow tints, lash lifts and lash extensions. Patch tests need to be done 24–48 hours before your appointment."),
-    ("Is there an age limit?", "Filler is over-18s only by law in England. For piercings our policy is [YOUR AGE POLICY]. For other treatments, under-16s need a parent or guardian with them."),
-    ("Where are you?", f"{C['address']}, {C['town']} {C['postcode']}."),
+    ("Is there an age limit?", "Filler is over-18s only by law in England. For piercings the policy is [YOUR AGE POLICY]. For other treatments, under-16s need a parent or guardian with them."),
     ("How do I pay?", "[PAYMENT METHODS]"),
+]
+
+# ---------------------------------------------------------------- avatar (homepage hero)
+AVATAR = '<span class="mascot" id="mascot" role="img" aria-label="The My Face mascot: an emo girl with black and pink hair, a skull top and a plaid skirt"></span>'
+
+HERO_PILLS = [
+    ("Get nails…", "nails/", "ooh a fresh set? say less", "p1"),
+    ("New hair…", "hair/", "colour? chop? extensions? all of it", "p2"),
+    ("Get pierced…", "piercing/", "one more hole won't hurt. ok maybe a lil", "p3"),
+    ("Lip filler…", "filler/lip-filler/", "subtle or juicy, your call", "p4"),
+    ("Lashes…", "beauty/lashes/", "flutter flutter", "p5"),
+    ("Book…", None, "yay!! pick a time x", "p6"),
 ]
 
 # ---------------------------------------------------------------- helpers
@@ -204,28 +243,34 @@ PAGES = []  # (path, priority)
 
 
 def rel(depth, target):
-    """Relative link from a page at `depth` folders deep to a site path like 'nails/biab/'."""
     return ("../" * depth) + target if (depth or target) else "./"
+
+
+def logo(d):
+    return f"""<a class="logo" href="{rel(d, '')}" aria-label="{e(C['brand'])} home"><svg class="logo-ic" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="25" r="19" fill="#ff4fb3" stroke="#fff" stroke-width="3"/><path d="M8 20C10 6 34 2 42 18c-8-4-14-4-20 2-6 4-10 4-14 0Z" fill="#141018" stroke="#fff" stroke-width="2"/><circle cx="17" cy="27" r="3" fill="#141018"/><circle cx="31" cy="27" r="3" fill="#141018"/><path d="M17 35q7 6 14 0" stroke="#141018" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M40 6l2 4 4 1-4 2-2 4-2-4-4-2 4-1Z" fill="#c6ff3d"/></svg><span class="wm">my<b>face</b></span></a>"""
 
 
 def sidebar(d):
     svc = "".join(f'<tr><th scope="row"><a href="{rel(d, c["slug"] + "/")}">{e(c["name"])}</a></th><td>{e(c["blurb"])}</td></tr>' for c in CATEGORIES)
-    hrs = "".join(f"<tr><th scope=\"row\">{e(a)}</th><td>{e(b)}</td></tr>" for a, b in C["hours"])
+    areas = ", ".join(f'<a href="{rel(d, "areas/" + a["slug"] + "/")}">{e(a["name"])}</a>' for a in AREAS)
     return f"""<aside class="side">
 <section class="box profile">
 <p class="h1ish">{e(C['brand'])}</p>
 <div class="prow"><span class="ph">[Profile photo]</span>
-<ul class="pinfo"><li><em>"Hair, nails, face, piercings — all under one roof."</em></li><li>Hair &amp; Beauty</li><li>{e(C['town'])}, United Kingdom</li><li>Mood: <b class="lime">glowing</b></li><li class="online"><span></span>Taking bookings!</li></ul></div>
+<ul class="pinfo"><li><em>"Hair, nails, lashes, piercings &amp; lips, all in one place."</em></li><li>Home beauty studio</li><li>{e(C['town'])}, {e(C['city'])}</li><li>Mood: <b class="lime">glowing</b></li><li class="online"><span></span>Taking bookings!</li></ul></div>
 </section>
 <section class="box"><h2 class="hd lime-bg">Contacting {e(C['brand'])}</h2>
-<div class="cbtns"><a class="btn pri" href="{e(C['booking_url'])}">Book a slot</a><a class="btn" href="{rel(d, 'contact/')}">Send message</a><a class="btn" href="{e(C['instagram'])}">Add on Instagram</a><a class="btn" href="tel:{e(C['phone'])}">Call us</a></div></section>
+<div class="cbtns"><a class="btn pri" href="{e(C['booking_url'])}">Book a slot</a><a class="btn" href="{rel(d, 'contact/')}">Send message</a><a class="btn" href="{e(C['instagram'])}">Add on Instagram</a><a class="btn" href="tel:{e(C['phone'])}">Call</a></div></section>
 <section class="box"><h2 class="hd">{e(C['brand'])}'s Services</h2><table>{svc}</table></section>
-<section class="box"><h2 class="hd lime-bg">Opening Hours</h2><table>{hrs}<tr><th scope="row">Find us</th><td>{e(C['address'])}, {e(C['town'])}</td></tr></table></section>
-<section class="box radio"><button type="button" id="radio" aria-label="Play">&#9654;</button><div><b class="lime">{e(C['brand'])} Radio</b><br><span id="np">Press play for salon vibes</span></div></section>
+<section class="box"><h2 class="hd lime-bg">How it works</h2><table>
+<tr><th scope="row">Where</th><td>Home studio in {e(C['town'])}</td></tr>
+<tr><th scope="row">When</th><td>Appointment only, no walk-ins</td></tr>
+<tr><th scope="row">Address</th><td>Sent once you've booked</td></tr>
+<tr><th scope="row">Near</th><td>{areas}</td></tr></table></section>
 </aside>"""
 
 
-def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6"):
+def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", hero=None):
     d = path.count("/")
     nav = [("Home", ""), ("Hair", "hair/"), ("Nails", "nails/"), ("Beauty", "beauty/"), ("Piercing", "piercing/"),
            ("Filler", "filler/"), ("Prices", "prices/"), ("Aftercare", "aftercare/"), ("FAQ", "faq/"), ("Contact", "contact/")]
@@ -243,6 +288,8 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6"):
             {"@type": "ListItem", "position": i + 1, "name": n, "item": C["site_url"] + "/" + p} for i, (n, p) in enumerate(crumb_list)]})
     graphs += schema or []
     ld = json.dumps({"@context": "https://schema.org", "@graph": graphs}, ensure_ascii=False).replace("</", "<\\/")
+    heading = "" if hero else f'<div class="box banner"><h1>{e(h1)}</h1></div>'
+    area_links = " · ".join(f'<a href="{rel(d, "areas/" + a["slug"] + "/")}">{e(a["name"])}</a>' for a in AREAS)
     doc = f"""<!doctype html>
 <html lang="en-GB">
 <head>
@@ -266,30 +313,29 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6"):
 <body>
 <a class="skip" href="#content">Skip to content</a>
 <header class="top">
-<div class="wrap bar"><a class="logo" href="{rel(d, '')}">my<span>face</span></a><span class="tag">a place for faces</span>
+<div class="wrap bar">{logo(d)}<span class="tag">{e(C['tagline'])}</span>
 <a class="btn lime-btn" href="{e(C['booking_url'])}">Book now</a></div>
 <nav class="nav" aria-label="Main"><div class="wrap">{navh}</div></nav>
 </header>
+{hero or ""}
 <div class="wrap layout">
 {sidebar(d)}
 <main id="content" class="main">
 {bc}
-<div class="box banner"><h1>{e(h1)}</h1></div>
+{heading}
 {main}
 </main>
 </div>
 <footer class="foot"><div class="wrap">
-<nav aria-label="Footer"><a href="{rel(d, 'about/')}">About</a><a href="{rel(d, 'services/')}">All services</a><a href="{rel(d, 'gallery/')}">Gallery</a><a href="{rel(d, 'faq/')}">FAQ</a><a href="{rel(d, 'privacy/')}">Privacy</a><a href="{rel(d, 'terms/')}">Terms</a><a href="{rel(d, 'contact/')}">Contact</a></nav>
-<p>{e(C['brand'])} · Hair, beauty, nails, piercing &amp; filler in {e(C['town'])}, {e(C['area'])}</p>
+<nav aria-label="Footer"><a href="{rel(d, 'about/')}">About</a><a href="{rel(d, 'services/')}">All treatments</a><a href="{rel(d, 'gallery/')}">Gallery</a><a href="{rel(d, 'faq/')}">FAQ</a><a href="{rel(d, 'privacy/')}">Privacy</a><a href="{rel(d, 'terms/')}">Terms</a><a href="{rel(d, 'contact/')}">Contact</a></nav>
+<p>Hair, nails, beauty, piercing &amp; lip filler near {area_links}</p>
 <p>&copy;2026 {e(C['brand'])}. All rights reserved.</p>
 </div></footer>
 <script src="{rel(d, 'assets/site.js')}" defer></script>
 </body>
 </html>
 """
-    target = os.path.join(OUT, path, "index.html") if path else os.path.join(OUT, "index.html")
-    if path == "404.html":
-        target = os.path.join(OUT, "404.html")
+    target = os.path.join(OUT, "404.html") if path == "404.html" else os.path.join(OUT, path, "index.html")
     os.makedirs(os.path.dirname(target), exist_ok=True)
     with open(target, "w", encoding="utf-8") as f:
         f.write(doc)
@@ -299,14 +345,13 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6"):
 
 def business_schema():
     return {"@type": "BeautySalon", "@id": C["site_url"] + "/#business", "name": C["brand"], "url": C["site_url"] + "/",
-            "telephone": C["phone"], "email": C["email"], "sameAs": [C["instagram"]],
-            "address": {"@type": "PostalAddress", "streetAddress": C["address"], "addressLocality": C["town"],
-                        "addressRegion": C["area"], "postalCode": C["postcode"], "addressCountry": "GB"}}
+            "telephone": C["phone"], "email": C["email"], "sameAs": [C["instagram"]], "priceRange": "££",
+            "address": {"@type": "PostalAddress", "addressLocality": C["town"], "addressRegion": C["region"], "addressCountry": "GB"},
+            "areaServed": [{"@type": "Place", "name": a} for a in C["served"]]}
 
 
-def box(title, body, lime=False, id_=None):
-    i = f' id="{id_}"' if id_ else ""
-    return f'<section class="box"{i}><h2 class="hd{" lime-bg" if lime else ""}">{title}</h2><div class="pad">{body}</div></section>'
+def box(title, body, lime=False):
+    return f'<section class="box"><h2 class="hd{" lime-bg" if lime else ""}">{title}</h2><div class="pad">{body}</div></section>'
 
 
 def faq_html(faqs):
@@ -324,8 +369,39 @@ def cards(d, items):
         for name, sub, href in items) + "</div>"
 
 
+def price_table(rows):
+    return '<table class="prices">' + "".join(f'<tr><th scope="row">{e(n)}</th><td>{e(p)}</td></tr>' for n, p in rows) + "</table>"
+
+
+def from_price(s):
+    for _, p in s["prices"]:
+        if "£" in p:
+            return "from £" + p.split("£")[1]
+    return ""
+
+
 def cta(d):
     return f'<div class="box ctabox"><p>Ready to book?</p><a class="btn pri" href="{e(C["booking_url"])}">Book a slot</a><a class="btn" href="{rel(d, "contact/")}">Ask a question</a></div>'
+
+
+def hero_html():
+    pills = "".join(
+        f'<a class="pill {cls}" href="{e(C["booking_url"]) if href is None else href}" data-say="{e(say)}">{e(label)}</a>'
+        for label, href, say, cls in HERO_PILLS)
+    return f"""<section class="hero"><div class="wrap hero-in">
+<div class="hero-copy box">
+<p class="kicker">Home beauty studio · {e(C['town'])}, {e(C['city'])}</p>
+<h1>Hair, nails, lashes, piercing &amp; lip filler in {e(C['town'])}</h1>
+<p>Appointment-only home studio in Tameside, near Manchester and Oldham. Drag her to spin her round, click to say hi, or pick an option to see what's on the menu.</p>
+<div class="hero-btns"><a class="btn pri" href="{e(C['booking_url'])}">Book a slot</a><a class="btn" href="prices/">See prices</a></div>
+</div>
+<div class="stage" id="stage">
+<p class="bubble" id="bubble" aria-live="polite">hiii! what are we getting done today?</p>
+<button type="button" class="avatar-btn" id="avatarBtn" aria-label="Say hi to the My Face mascot"><span class="bob">{AVATAR}</span></button>
+<p class="spin-hint" aria-hidden="true">&larr; drag to spin &rarr;</p>
+<nav class="pills" aria-label="Treatments">{pills}</nav>
+</div>
+</div></section>"""
 
 
 # ---------------------------------------------------------------- build
@@ -334,70 +410,88 @@ def build():
         p = os.path.join(OUT, f)
         if os.path.isdir(p) and f not in ("assets", ".git") and os.path.exists(os.path.join(p, "index.html")):
             shutil.rmtree(p)
-    town = C["town"]
+    town, city = C["town"], C["city"]
     all_services = [(s, c) for c in CATEGORIES for s in c["services"]]
 
     # Home
-    top8 = [(s["name"], "£[PRICE]", f'{c["slug"]}/{s["slug"]}/') for s, c in all_services[:8]]
-    page("", f"{C['brand']} | Hair, Beauty, Nails, Piercing & Filler in {town}",
-         f"{C['brand']} is a hair and beauty salon in {town} offering haircuts, colour, gel and acrylic nails, lashes, brows, ear and nose piercing, and lip filler.",
-         f"{C['brand']} is in your extended network",
-         box(f"{C['brand']}'s Blurbs",
-             f"<h3>About me:</h3><p>[A few lines about you: how long you've been doing this, where you trained, and what clients can expect.] {C['brand']} is a hair and beauty studio in {town}, {C['area']}, for hair, nails, lashes, brows, piercing and filler.</p>"
-             "<h3>Who I'd like to meet:</h3><p>Anyone after a fresh set, a new colour, a little sparkle in their ear or a bit of lip. Walk in as you, walk out as more you.</p>")
+    picks = ["gel-nails", "biab", "acrylic-nails", "lashes", "brows", "ear-piercing", "colour", "lip-filler"]
+    top8 = [(s["name"], from_price(s), f'{c["slug"]}/{s["slug"]}/') for k in picks for s, c in all_services if s["slug"] == k]
+    page("", f"{C['brand']} | Nails, Hair, Lashes, Piercing & Lip Filler in {town}, {city}",
+         f"{C['brand']} is an appointment-only home beauty studio in {town}, near Manchester and Oldham: gel and acrylic nails, BIAB, lashes, brows, hair, ear and nose piercing, and lip filler.",
+         "", box(f"{C['brand']}'s Blurbs",
+                 f"<h3>About me:</h3><p>[A few lines about you: how long you've been doing this, where you trained, and what clients can expect.] {C['brand']} is a home beauty studio in {town}, Tameside, for nails, hair, lashes, brows, piercing and lip filler.</p>"
+                 "<h3>Who I'd like to meet:</h3><p>Anyone after a fresh set, a new colour, a little sparkle in their ear or a bit of lip. Walk in as you, walk out as more you.</p>")
          + box(f"{C['brand']}'s Top 8 <small>(treatments)</small>", cards(0, top8), lime=True)
          + box("Latest Blog Entries <small>[offers &amp; news]</small>",
-               '<ul class="blog"><li><b class="lime">[OFFER]</b> e.g. new client discount on your first set of nails</li><li><b class="lime">[NEWS]</b> e.g. new piercing jewellery has landed</li><li><b class="lime">[PRICES]</b> <a href="prices/">see the full price list</a></li></ul>')
+               '<ul class="blog"><li><b class="lime">[OFFER]</b> e.g. new client discount on your first set of nails</li><li><b class="lime">[NEWS]</b> e.g. new piercing jewellery has landed</li><li><b class="lime">PRICES</b> <a href="prices/">see the full price list</a></li></ul>')
          + box(f"{C['brand']}'s Friends Comments",
                '<div class="comments">' + '<div class="cmt"><span class="ph av">[Pic]</span><div><b class="lime">[Client name]</b> <small>[date]</small><p>[Paste a real client review here]</p></div></div>' * 2 + '</div>', lime=True),
-         priority="1.0")
+         priority="1.0", hero=hero_html())
 
     # All services
-    page("services/", f"Treatments & Services | {C['brand']}, {town}",
-         f"All hair, beauty, nail, piercing and filler treatments at {C['brand']} in {town}.",
+    page("services/", f"Treatments in {town}, {city} | {C['brand']}",
+         f"All nail, hair, lash, brow, piercing and filler treatments at {C['brand']}, a home beauty studio in {town}.",
          "All treatments",
-         "".join(box(f'<a href="../{c["slug"]}/">{e(c["name"])}</a>', cards(1, [(s["name"], s["short"], f'{c["slug"]}/{s["slug"]}/') for s in c["services"]]), lime=i % 2 == 1)
+         "".join(box(f'<a href="../{c["slug"]}/">{e(c["name"])}</a>', cards(1, [(s["name"], from_price(s), f'{c["slug"]}/{s["slug"]}/') for s in c["services"]]), lime=i % 2 == 1)
                  for i, c in enumerate(CATEGORIES)) + cta(1),
-         crumbs=[("Services", "services/")], priority="0.9")
+         crumbs=[("Treatments", "services/")], priority="0.9")
 
     # Categories and services
     for c in CATEGORIES:
         cp = f'{c["slug"]}/'
-        page(cp, f"{c['name']} in {town} | {c['blurb']} | {C['brand']}",
-             f"{c['blurb']} at {C['brand']} in {town}. " + " ".join(s["short"] for s in c["services"])[:110],
+        page(cp, f"{c['name']} in {town}, {city} | {C['brand']}",
+             f"{c['blurb']} at {C['brand']}, a home studio in {town} near Manchester and Oldham. " + " ".join(s["short"] for s in c["services"])[:90],
              f"{c['name']} in {town}",
-             box(f"About our {c['name'].lower()} treatments", c["intro"])
-             + box(f"{c['name']} menu", cards(1, [(s["name"], s["short"], f'{cp}{s["slug"]}/') for s in c["services"]]), lime=True)
+             box(f"About {c['name'].lower()}", c["intro"])
+             + box(f"{c['name']} menu", cards(1, [(s["name"], from_price(s), f'{cp}{s["slug"]}/') for s in c["services"]]), lime=True)
+             + box(f"{c['name']} prices", "".join(f'<h3><a href="{s["slug"]}/">{e(s["name"])}</a></h3>' + price_table(s["prices"]) for s in c["services"]))
              + cta(1),
-             crumbs=[(c["name"], cp)], priority="0.9",
-             schema=[{"@type": "OfferCatalog", "name": f"{c['name']} at {C['brand']}",
-                      "itemListElement": [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": s["name"]}} for s in c["services"]]}])
+             crumbs=[(c["name"], cp)], priority="0.9")
         for s in c["services"]:
             sp = f'{cp}{s["slug"]}/'
-            others = [(o["name"], o["short"], f'{cp}{o["slug"]}/') for o in c["services"] if o is not s]
+            others = [(o["name"], from_price(o), f'{cp}{o["slug"]}/') for o in c["services"] if o is not s]
             care = {"piercing": "piercing", "filler": "filler", "nails": "nails"}.get(c["slug"])
             if s["slug"] in ("lashes", "brows"):
                 care = "lashes-and-brows"
-            care_html = f'<p><a href="../../aftercare/{care}/">Read the {c["name"].lower() if care != "lashes-and-brows" else "lash &amp; brow"} aftercare guide</a></p>' if care else ""
-            page(sp, f"{s['name']} in {town} | {C['brand']}",
-                 f"{s['name']} at {C['brand']} in {town}. {s['short']} Book online today.",
+            care_name = {"piercing": "piercing", "filler": "filler", "nails": "nail", "lashes-and-brows": "lash &amp; brow"}.get(care)
+            care_html = f'<p><a href="../../aftercare/{care}/">Read the {care_name} aftercare guide</a></p>' if care else ""
+            offers = [{"@type": "Offer", "name": n, "priceCurrency": "GBP", "price": p.split("£")[1].split(" ")[0]} for n, p in s["prices"] if "£" in p]
+            page(sp, f"{s['name']} in {town}, {city} | {C['brand']}",
+                 f"{s['name']} in {town}, {from_price(s)}. {s['short']} Appointment-only home studio near Manchester and Oldham.",
                  f"{s['name']} in {town}",
                  box(f"About {s['name'].lower()}", s["intro"])
-                 + box("What to expect", "<ol>" + "".join(f"<li>{x}</li>" for x in s["expect"]) + f"</ol><p><b class=\"lime\">Time:</b> {e(s['time'])} &nbsp; <b class=\"lime\">Price:</b> from £[PRICE] (<a href=\"../../prices/\">full price list</a>)</p>{care_html}", lime=True)
-                 + box("FAQs", faq_html(s["faqs"]))
-                 + (box(f"More {c['name'].lower()}", cards(2, others), lime=True) if others else "")
+                 + box("Prices", price_table(s["prices"]) + "<p><small>Prices are a guide and are confirmed at booking. <a href=\"../../prices/\">Full price list</a></small></p>", lime=True)
+                 + box("What to expect", "<ol>" + "".join(f"<li>{x}</li>" for x in s["expect"]) + f"</ol><p><b class=\"lime\">Time:</b> {e(s['time'])}</p>{care_html}")
+                 + box("FAQs", faq_html(s["faqs"]), lime=True)
+                 + (box(f"More {c['name'].lower()}", cards(2, others)) if others else "")
                  + cta(2),
                  crumbs=[(c["name"], cp), (s["name"], sp)], priority="0.8",
                  schema=[{"@type": "Service", "name": s["name"], "serviceType": s["name"], "description": s["short"],
-                          "provider": {"@id": C["site_url"] + "/#business"}, "areaServed": town}, faq_schema(s["faqs"])])
+                          "provider": {"@id": C["site_url"] + "/#business"}, "areaServed": C["served"], "offers": offers}, faq_schema(s["faqs"])])
 
     # Prices
-    rows = "".join(f'<h3><a href="../{c["slug"]}/">{e(c["name"])}</a></h3><table class="prices">' +
-                   "".join(f'<tr><th scope="row"><a href="../{c["slug"]}/{s["slug"]}/">{e(s["name"])}</a></th><td>from £[PRICE]</td></tr>' for s in c["services"]) + "</table>"
+    rows = "".join(f'<h3><a href="../{c["slug"]}/">{e(c["name"])}</a></h3>' +
+                   "".join(f'<h4><a href="../{c["slug"]}/{s["slug"]}/">{e(s["name"])}</a></h4>' + price_table(s["prices"]) for s in c["services"])
                    for c in CATEGORIES)
-    page("prices/", f"Price List | {C['brand']}, {town}", f"Prices for hair, nails, beauty, piercing and filler at {C['brand']} in {town}.",
-         "Price list", box("Prices", rows + "<p><small>Prices are a guide and may change after your consultation.</small></p>") + cta(1),
+    page("prices/", f"Price List | Nails, Hair, Lashes & Filler in {town} | {C['brand']}",
+         f"Prices for nails, hair, lashes, brows, waxing, piercing and lip filler at {C['brand']} in {town}, Manchester.",
+         "Price list", box("Prices", rows + "<p><small>Prices are a guide and are confirmed at booking.</small></p>") + cta(1),
          crumbs=[("Prices", "prices/")], priority="0.8")
+
+    # Areas
+    page("areas/", f"Areas Covered | {C['brand']}", f"{C['brand']} is a home beauty studio in {town}, close to Manchester, Oldham and the rest of Tameside.",
+         "Areas we cover", box("Where clients come from", cards(1, [(a["name"], "", f'areas/{a["slug"]}/') for a in AREAS])),
+         crumbs=[("Areas", "areas/")], priority="0.6")
+    for a in AREAS:
+        ap = f'areas/{a["slug"]}/'
+        menu = "".join(f'<h3><a href="../../{c["slug"]}/">{e(c["name"])} near {e(a["name"])}</a></h3><p>' +
+                       ", ".join(f'<a href="../../{c["slug"]}/{s["slug"]}/">{e(s["name"])}</a> ({from_price(s)})' for s in c["services"]) + "</p>"
+                       for c in CATEGORIES)
+        page(ap, f"Nails, Lashes, Hair, Piercing & Lip Filler near {a['name']} | {C['brand']}",
+             f"Looking for nails, lashes, hair, piercing or lip filler near {a['name']}? {C['brand']} is an appointment-only home beauty studio in {town}.",
+             f"Beauty near {a['name']}",
+             box(f"{C['brand']} near {e(a['name'])}", a["body"]) + box("Treatments", menu, lime=True) + cta(2),
+             crumbs=[("Areas", "areas/"), (a["name"], ap)], priority="0.7")
 
     # Aftercare
     page("aftercare/", f"Aftercare Guides | {C['brand']}", f"Aftercare advice for piercings, filler, lashes, brows and nails from {C['brand']} in {town}.",
@@ -406,24 +500,24 @@ def build():
     for a in AFTERCARE:
         ap = f'aftercare/{a["slug"]}/'
         page(ap, f"{a['name']} | {C['brand']}", f"{a['name']}: how to look after your treatment from {C['brand']} in {town}.",
-             a["name"], box(a["name"], a["body"] + "<p><small>This is general advice. If you're worried about anything, contact us or speak to a GP or pharmacist.</small></p>") + cta(2),
+             a["name"], box(a["name"], a["body"] + "<p><small>This is general advice. If you're worried about anything, get in touch or speak to a GP or pharmacist.</small></p>") + cta(2),
              crumbs=[("Aftercare", "aftercare/"), (a["name"], ap)], priority="0.5")
 
     # FAQ, about, gallery, contact, legal
-    page("faq/", f"FAQs | {C['brand']}, {town}", f"Answers to common questions about booking, deposits, patch tests and age limits at {C['brand']}.",
+    page("faq/", f"FAQs | {C['brand']}, {town}", f"Answers about booking, the home studio, deposits, patch tests and age limits at {C['brand']} in {town}.",
          "Frequently asked questions", box("FAQs", faq_html(GENERAL_FAQS)) + cta(1),
          crumbs=[("FAQ", "faq/")], schema=[faq_schema(GENERAL_FAQS)], priority="0.6")
-    page("about/", f"About {C['owner']} | {C['brand']}, {town}", f"Meet {C['owner']}, the face behind {C['brand']} in {town}.",
+    page("about/", f"About {C['owner']} | {C['brand']}, {town}", f"Meet {C['owner']}, the face behind {C['brand']}, a home beauty studio in {town}.",
          f"About {C['owner']}", box("About me", "<p>[Your story: how you got into hair and beauty, your training and qualifications, and what makes an appointment with you different.]</p>")
-         + box("Qualifications &amp; insurance", "<ul><li>[QUALIFICATION]</li><li>[QUALIFICATION]</li><li>[INSURANCE / LICENCE DETAILS]</li></ul>", lime=True) + cta(1),
+         + box("Qualifications &amp; insurance", "<ul><li>[QUALIFICATION]</li><li>[QUALIFICATION]</li><li>[INSURANCE / COUNCIL REGISTRATION]</li></ul>", lime=True) + cta(1),
          crumbs=[("About", "about/")], priority="0.5")
-    page("gallery/", f"Gallery | {C['brand']}, {town}", f"Photos of hair, nails, lashes, piercings and more by {C['brand']} in {town}.",
+    page("gallery/", f"Gallery | {C['brand']}, {town}", f"Photos of nails, hair, lashes, piercings and more by {C['brand']} in {town}.",
          "Gallery", "".join(box(e(c["name"]), cards(1, [(s["name"], "", f'{c["slug"]}/{s["slug"]}/') for s in c["services"]]), lime=i % 2 == 1) for i, c in enumerate(CATEGORIES)),
          crumbs=[("Gallery", "gallery/")], priority="0.5")
-    hrs = "".join(f"<tr><th scope=\"row\">{e(a)}</th><td>{e(b)}</td></tr>" for a, b in C["hours"])
-    page("contact/", f"Contact & Find Us | {C['brand']}, {town}", f"Contact {C['brand']} in {town}: phone, email, Instagram, address and opening hours.",
-         "Contact us", box("Get in touch", f'<ul><li><b class="lime">Book:</b> <a href="{e(C["booking_url"])}">online booking</a></li><li><b class="lime">Call:</b> <a href="tel:{e(C["phone"])}">{e(C["phone"])}</a></li><li><b class="lime">Email:</b> <a href="mailto:{e(C["email"])}">{e(C["email"])}</a></li><li><b class="lime">Instagram:</b> <a href="{e(C["instagram"])}">message us</a></li></ul>')
-         + box("Find us", f'<p>{e(C["address"])}<br>{e(C["town"])}, {e(C["area"])}<br>{e(C["postcode"])}</p><div class="ph map">[Map embed]</div><table>{hrs}</table>', lime=True),
+    page("contact/", f"Contact & Booking | {C['brand']}, {town}", f"Book or get in touch with {C['brand']}, an appointment-only home beauty studio in {town}.",
+         "Contact & booking",
+         box("Get in touch", f'<ul><li><b class="lime">Book:</b> <a href="{e(C["booking_url"])}">online booking</a></li><li><b class="lime">Call:</b> <a href="tel:{e(C["phone"])}">{e(C["phone"])}</a></li><li><b class="lime">Email:</b> <a href="mailto:{e(C["email"])}">{e(C["email"])}</a></li><li><b class="lime">Instagram:</b> <a href="{e(C["instagram"])}">message us</a></li></ul>')
+         + box("Where to find us", f"<p>{C['brand']} is a home studio in {town}, Tameside. It's appointment-only with no walk-ins, and the full address is sent once you've booked.</p><p>Close to <a href=\"../areas/manchester/\">Manchester</a>, <a href=\"../areas/oldham/\">Oldham</a> and the rest of Tameside.</p>", lime=True),
          crumbs=[("Contact", "contact/")], priority="0.7")
     page("privacy/", f"Privacy Policy | {C['brand']}", f"How {C['brand']} uses and protects your information.", "Privacy policy",
          box("Privacy", "<p>[Your privacy policy: what you collect (booking details, consultation and medical forms), why, how long you keep it, and how clients can ask for it or have it deleted under UK GDPR.]</p>"),
@@ -433,7 +527,6 @@ def build():
     page("404.html", f"Page not found | {C['brand']}", "This page couldn't be found.", "Oops, this page has left the network",
          box("404", f'<p>That page doesn\'t exist. Try the <a href="{C["site_url"]}/">homepage</a> or the <a href="{C["site_url"]}/services/">treatments list</a>.</p>'))
 
-    # sitemap + robots
     with open(os.path.join(OUT, "sitemap.xml"), "w") as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
         for p, pr in PAGES:

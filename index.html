@@ -3,50 +3,67 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>My Face | Hair, Beauty, Nails, Piercing &amp; Filler in [TOWN]</title>
-<meta name="description" content="My Face is a hair and beauty salon in [TOWN] offering haircuts, colour, gel and acrylic nails, lashes, brows, ear and nose piercing, and lip filler.">
+<title>My Face | Nails, Hair, Lashes, Piercing &amp; Lip Filler in Droylsden, Manchester</title>
+<meta name="description" content="My Face is an appointment-only home beauty studio in Droylsden, near Manchester and Oldham: gel and acrylic nails, BIAB, lashes, brows, hair, ear and nose piercing, and lip filler.">
 <link rel="canonical" href="https://www.example.com/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="My Face">
-<meta property="og:title" content="My Face | Hair, Beauty, Nails, Piercing &amp; Filler in [TOWN]">
-<meta property="og:description" content="My Face is a hair and beauty salon in [TOWN] offering haircuts, colour, gel and acrylic nails, lashes, brows, ear and nose piercing, and lip filler.">
+<meta property="og:title" content="My Face | Nails, Hair, Lashes, Piercing &amp; Lip Filler in Droylsden, Manchester">
+<meta property="og:description" content="My Face is an appointment-only home beauty studio in Droylsden, near Manchester and Oldham: gel and acrylic nails, BIAB, lashes, brows, hair, ear and nose piercing, and lip filler.">
 <meta property="og:url" content="https://www.example.com/">
 <meta name="theme-color" content="#ff4fb3">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BeautySalon", "@id": "https://www.example.com/#business", "name": "My Face", "url": "https://www.example.com/", "telephone": "[PHONE NUMBER]", "email": "[EMAIL]", "sameAs": ["https://www.instagram.com/[HANDLE]"], "address": {"@type": "PostalAddress", "streetAddress": "[STREET ADDRESS]", "addressLocality": "[TOWN]", "addressRegion": "[AREA / COUNTY]", "postalCode": "[POSTCODE]", "addressCountry": "GB"}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BeautySalon", "@id": "https://www.example.com/#business", "name": "My Face", "url": "https://www.example.com/", "telephone": "[PHONE NUMBER]", "email": "[EMAIL]", "sameAs": ["https://www.instagram.com/[HANDLE]"], "priceRange": "££", "address": {"@type": "PostalAddress", "addressLocality": "Droylsden", "addressRegion": "Greater Manchester", "addressCountry": "GB"}, "areaServed": [{"@type": "Place", "name": "Droylsden"}, {"@type": "Place", "name": "Manchester"}, {"@type": "Place", "name": "Oldham"}, {"@type": "Place", "name": "Ashton-under-Lyne"}, {"@type": "Place", "name": "Failsworth"}, {"@type": "Place", "name": "Denton"}, {"@type": "Place", "name": "Audenshaw"}]}]}</script>
 </head>
 <body>
 <a class="skip" href="#content">Skip to content</a>
 <header class="top">
-<div class="wrap bar"><a class="logo" href="./">my<span>face</span></a><span class="tag">a place for faces</span>
+<div class="wrap bar"><a class="logo" href="./" aria-label="My Face home"><svg class="logo-ic" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="25" r="19" fill="#ff4fb3" stroke="#fff" stroke-width="3"/><path d="M8 20C10 6 34 2 42 18c-8-4-14-4-20 2-6 4-10 4-14 0Z" fill="#141018" stroke="#fff" stroke-width="2"/><circle cx="17" cy="27" r="3" fill="#141018"/><circle cx="31" cy="27" r="3" fill="#141018"/><path d="M17 35q7 6 14 0" stroke="#141018" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M40 6l2 4 4 1-4 2-2 4-2-4-4-2 4-1Z" fill="#c6ff3d"/></svg><span class="wm">my<b>face</b></span></a><span class="tag">your face, your space</span>
 <a class="btn lime-btn" href="[BOOKING LINK]">Book now</a></div>
 <nav class="nav" aria-label="Main"><div class="wrap"><a href="./" aria-current="page">Home</a><a href="hair/">Hair</a><a href="nails/">Nails</a><a href="beauty/">Beauty</a><a href="piercing/">Piercing</a><a href="filler/">Filler</a><a href="prices/">Prices</a><a href="aftercare/">Aftercare</a><a href="faq/">FAQ</a><a href="contact/">Contact</a></div></nav>
 </header>
+<section class="hero"><div class="wrap hero-in">
+<div class="hero-copy box">
+<p class="kicker">Home beauty studio · Droylsden, Manchester</p>
+<h1>Hair, nails, lashes, piercing &amp; lip filler in Droylsden</h1>
+<p>Appointment-only home studio in Tameside, near Manchester and Oldham. Drag her to spin her round, click to say hi, or pick an option to see what's on the menu.</p>
+<div class="hero-btns"><a class="btn pri" href="[BOOKING LINK]">Book a slot</a><a class="btn" href="prices/">See prices</a></div>
+</div>
+<div class="stage" id="stage">
+<p class="bubble" id="bubble" aria-live="polite">hiii! what are we getting done today?</p>
+<button type="button" class="avatar-btn" id="avatarBtn" aria-label="Say hi to the My Face mascot"><span class="bob"><span class="mascot" id="mascot" role="img" aria-label="The My Face mascot: an emo girl with black and pink hair, a skull top and a plaid skirt"></span></span></button>
+<p class="spin-hint" aria-hidden="true">&larr; drag to spin &rarr;</p>
+<nav class="pills" aria-label="Treatments"><a class="pill p1" href="nails/" data-say="ooh a fresh set? say less">Get nails…</a><a class="pill p2" href="hair/" data-say="colour? chop? extensions? all of it">New hair…</a><a class="pill p3" href="piercing/" data-say="one more hole won&#x27;t hurt. ok maybe a lil">Get pierced…</a><a class="pill p4" href="filler/lip-filler/" data-say="subtle or juicy, your call">Lip filler…</a><a class="pill p5" href="beauty/lashes/" data-say="flutter flutter">Lashes…</a><a class="pill p6" href="[BOOKING LINK]" data-say="yay!! pick a time x">Book…</a></nav>
+</div>
+</div></section>
 <div class="wrap layout">
 <aside class="side">
 <section class="box profile">
 <p class="h1ish">My Face</p>
 <div class="prow"><span class="ph">[Profile photo]</span>
-<ul class="pinfo"><li><em>"Hair, nails, face, piercings — all under one roof."</em></li><li>Hair &amp; Beauty</li><li>[TOWN], United Kingdom</li><li>Mood: <b class="lime">glowing</b></li><li class="online"><span></span>Taking bookings!</li></ul></div>
+<ul class="pinfo"><li><em>"Hair, nails, lashes, piercings &amp; lips, all in one place."</em></li><li>Home beauty studio</li><li>Droylsden, Manchester</li><li>Mood: <b class="lime">glowing</b></li><li class="online"><span></span>Taking bookings!</li></ul></div>
 </section>
 <section class="box"><h2 class="hd lime-bg">Contacting My Face</h2>
-<div class="cbtns"><a class="btn pri" href="[BOOKING LINK]">Book a slot</a><a class="btn" href="contact/">Send message</a><a class="btn" href="https://www.instagram.com/[HANDLE]">Add on Instagram</a><a class="btn" href="tel:[PHONE NUMBER]">Call us</a></div></section>
-<section class="box"><h2 class="hd">My Face's Services</h2><table><tr><th scope="row"><a href="hair/">Hair</a></th><td>Cuts, colour, styling and extensions</td></tr><tr><th scope="row"><a href="nails/">Nails</a></th><td>Gel, BIAB, acrylics and nail art</td></tr><tr><th scope="row"><a href="beauty/">Beauty</a></th><td>Lashes, brows, waxing and make-up</td></tr><tr><th scope="row"><a href="piercing/">Piercing</a></th><td>Ear, nose and body piercing</td></tr><tr><th scope="row"><a href="filler/">Filler</a></th><td>Lip and dermal filler</td></tr></table></section>
-<section class="box"><h2 class="hd lime-bg">Opening Hours</h2><table><tr><th scope="row">Mon – Fri</th><td>[TIMES]</td></tr><tr><th scope="row">Saturday</th><td>[TIMES]</td></tr><tr><th scope="row">Sunday</th><td>[TIMES]</td></tr><tr><th scope="row">Find us</th><td>[STREET ADDRESS], [TOWN]</td></tr></table></section>
-<section class="box radio"><button type="button" id="radio" aria-label="Play">&#9654;</button><div><b class="lime">My Face Radio</b><br><span id="np">Press play for salon vibes</span></div></section>
+<div class="cbtns"><a class="btn pri" href="[BOOKING LINK]">Book a slot</a><a class="btn" href="contact/">Send message</a><a class="btn" href="https://www.instagram.com/[HANDLE]">Add on Instagram</a><a class="btn" href="tel:[PHONE NUMBER]">Call</a></div></section>
+<section class="box"><h2 class="hd">My Face's Services</h2><table><tr><th scope="row"><a href="hair/">Hair</a></th><td>Cuts, colour, styling and extensions</td></tr><tr><th scope="row"><a href="nails/">Nails</a></th><td>Gel, BIAB, acrylics and nail art</td></tr><tr><th scope="row"><a href="beauty/">Beauty</a></th><td>Lashes, brows, waxing and make-up</td></tr><tr><th scope="row"><a href="piercing/">Piercing</a></th><td>Ear, nose and navel piercing</td></tr><tr><th scope="row"><a href="filler/">Filler</a></th><td>Lip and dermal filler</td></tr></table></section>
+<section class="box"><h2 class="hd lime-bg">How it works</h2><table>
+<tr><th scope="row">Where</th><td>Home studio in Droylsden</td></tr>
+<tr><th scope="row">When</th><td>Appointment only, no walk-ins</td></tr>
+<tr><th scope="row">Address</th><td>Sent once you've booked</td></tr>
+<tr><th scope="row">Near</th><td><a href="areas/droylsden/">Droylsden</a>, <a href="areas/manchester/">Manchester</a>, <a href="areas/oldham/">Oldham</a></td></tr></table></section>
 </aside>
 <main id="content" class="main">
 
-<div class="box banner"><h1>My Face is in your extended network</h1></div>
-<section class="box"><h2 class="hd">My Face's Blurbs</h2><div class="pad"><h3>About me:</h3><p>[A few lines about you: how long you've been doing this, where you trained, and what clients can expect.] My Face is a hair and beauty studio in [TOWN], [AREA / COUNTY], for hair, nails, lashes, brows, piercing and filler.</p><h3>Who I'd like to meet:</h3><p>Anyone after a fresh set, a new colour, a little sparkle in their ear or a bit of lip. Walk in as you, walk out as more you.</p></div></section><section class="box"><h2 class="hd lime-bg">My Face's Top 8 <small>(treatments)</small></h2><div class="pad"><div class="top8"><a href="hair/cuts-and-styling/"><span class="ph sq">[Photo]</span><b>Haircuts &amp; Styling</b><small>£[PRICE]</small></a><a href="hair/colour/"><span class="ph sq">[Photo]</span><b>Hair Colour</b><small>£[PRICE]</small></a><a href="hair/extensions/"><span class="ph sq">[Photo]</span><b>Hair Extensions</b><small>£[PRICE]</small></a><a href="nails/gel-nails/"><span class="ph sq">[Photo]</span><b>Gel Nails</b><small>£[PRICE]</small></a><a href="nails/biab/"><span class="ph sq">[Photo]</span><b>BIAB Nails</b><small>£[PRICE]</small></a><a href="nails/acrylic-nails/"><span class="ph sq">[Photo]</span><b>Acrylic Nails</b><small>£[PRICE]</small></a><a href="nails/nail-art/"><span class="ph sq">[Photo]</span><b>Nail Art</b><small>£[PRICE]</small></a><a href="beauty/lashes/"><span class="ph sq">[Photo]</span><b>Lash Lifts &amp; Extensions</b><small>£[PRICE]</small></a></div></div></section><section class="box"><h2 class="hd">Latest Blog Entries <small>[offers &amp; news]</small></h2><div class="pad"><ul class="blog"><li><b class="lime">[OFFER]</b> e.g. new client discount on your first set of nails</li><li><b class="lime">[NEWS]</b> e.g. new piercing jewellery has landed</li><li><b class="lime">[PRICES]</b> <a href="prices/">see the full price list</a></li></ul></div></section><section class="box"><h2 class="hd lime-bg">My Face's Friends Comments</h2><div class="pad"><div class="comments"><div class="cmt"><span class="ph av">[Pic]</span><div><b class="lime">[Client name]</b> <small>[date]</small><p>[Paste a real client review here]</p></div></div><div class="cmt"><span class="ph av">[Pic]</span><div><b class="lime">[Client name]</b> <small>[date]</small><p>[Paste a real client review here]</p></div></div></div></div></section>
+
+<section class="box"><h2 class="hd">My Face's Blurbs</h2><div class="pad"><h3>About me:</h3><p>[A few lines about you: how long you've been doing this, where you trained, and what clients can expect.] My Face is a home beauty studio in Droylsden, Tameside, for nails, hair, lashes, brows, piercing and lip filler.</p><h3>Who I'd like to meet:</h3><p>Anyone after a fresh set, a new colour, a little sparkle in their ear or a bit of lip. Walk in as you, walk out as more you.</p></div></section><section class="box"><h2 class="hd lime-bg">My Face's Top 8 <small>(treatments)</small></h2><div class="pad"><div class="top8"><a href="nails/gel-nails/"><span class="ph sq">[Photo]</span><b>Gel Nails</b><small>from £20</small></a><a href="nails/biab/"><span class="ph sq">[Photo]</span><b>BIAB Nails</b><small>from £28</small></a><a href="nails/acrylic-nails/"><span class="ph sq">[Photo]</span><b>Acrylic Nails</b><small>from £32</small></a><a href="beauty/lashes/"><span class="ph sq">[Photo]</span><b>Lash Lifts &amp; Extensions</b><small>from £35</small></a><a href="beauty/brows/"><span class="ph sq">[Photo]</span><b>Brows</b><small>from £8</small></a><a href="piercing/ear-piercing/"><span class="ph sq">[Photo]</span><b>Ear Piercing</b><small>from £20</small></a><a href="hair/colour/"><span class="ph sq">[Photo]</span><b>Hair Colour</b><small>from £40</small></a><a href="filler/lip-filler/"><span class="ph sq">[Photo]</span><b>Lip Filler</b><small>from £75</small></a></div></div></section><section class="box"><h2 class="hd">Latest Blog Entries <small>[offers &amp; news]</small></h2><div class="pad"><ul class="blog"><li><b class="lime">[OFFER]</b> e.g. new client discount on your first set of nails</li><li><b class="lime">[NEWS]</b> e.g. new piercing jewellery has landed</li><li><b class="lime">PRICES</b> <a href="prices/">see the full price list</a></li></ul></div></section><section class="box"><h2 class="hd lime-bg">My Face's Friends Comments</h2><div class="pad"><div class="comments"><div class="cmt"><span class="ph av">[Pic]</span><div><b class="lime">[Client name]</b> <small>[date]</small><p>[Paste a real client review here]</p></div></div><div class="cmt"><span class="ph av">[Pic]</span><div><b class="lime">[Client name]</b> <small>[date]</small><p>[Paste a real client review here]</p></div></div></div></div></section>
 </main>
 </div>
 <footer class="foot"><div class="wrap">
-<nav aria-label="Footer"><a href="about/">About</a><a href="services/">All services</a><a href="gallery/">Gallery</a><a href="faq/">FAQ</a><a href="privacy/">Privacy</a><a href="terms/">Terms</a><a href="contact/">Contact</a></nav>
-<p>My Face · Hair, beauty, nails, piercing &amp; filler in [TOWN], [AREA / COUNTY]</p>
+<nav aria-label="Footer"><a href="about/">About</a><a href="services/">All treatments</a><a href="gallery/">Gallery</a><a href="faq/">FAQ</a><a href="privacy/">Privacy</a><a href="terms/">Terms</a><a href="contact/">Contact</a></nav>
+<p>Hair, nails, beauty, piercing &amp; lip filler near <a href="areas/droylsden/">Droylsden</a> · <a href="areas/manchester/">Manchester</a> · <a href="areas/oldham/">Oldham</a></p>
 <p>&copy;2026 My Face. All rights reserved.</p>
 </div></footer>
 <script src="assets/site.js" defer></script>

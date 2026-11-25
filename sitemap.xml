@@ -19,11 +19,15 @@
   <url><loc>https://www.example.com/piercing/</loc><priority>0.9</priority></url>
   <url><loc>https://www.example.com/piercing/ear-piercing/</loc><priority>0.8</priority></url>
   <url><loc>https://www.example.com/piercing/nose-piercing/</loc><priority>0.8</priority></url>
-  <url><loc>https://www.example.com/piercing/body-piercing/</loc><priority>0.8</priority></url>
+  <url><loc>https://www.example.com/piercing/navel-piercing/</loc><priority>0.8</priority></url>
   <url><loc>https://www.example.com/filler/</loc><priority>0.9</priority></url>
   <url><loc>https://www.example.com/filler/lip-filler/</loc><priority>0.8</priority></url>
   <url><loc>https://www.example.com/filler/dermal-filler/</loc><priority>0.8</priority></url>
   <url><loc>https://www.example.com/prices/</loc><priority>0.8</priority></url>
+  <url><loc>https://www.example.com/areas/</loc><priority>0.6</priority></url>
+  <url><loc>https://www.example.com/areas/droylsden/</loc><priority>0.7</priority></url>
+  <url><loc>https://www.example.com/areas/manchester/</loc><priority>0.7</priority></url>
+  <url><loc>https://www.example.com/areas/oldham/</loc><priority>0.7</priority></url>
   <url><loc>https://www.example.com/aftercare/</loc><priority>0.6</priority></url>
   <url><loc>https://www.example.com/aftercare/piercing/</loc><priority>0.5</priority></url>
   <url><loc>https://www.example.com/aftercare/filler/</loc><priority>0.5</priority></url>

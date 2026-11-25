@@ -1,6 +1,6 @@
 # My Face
 
-A MySpace-style site for a hair, beauty, nails, piercing and filler studio.
+A retro profile-page style site for My Face, an appointment-only home beauty studio in Droylsden (hair, nails, lashes, piercing and filler).
 
 ## Editing
 
@@ -10,10 +10,13 @@ Every page is generated from `build.py`.
 2. Edit treatments, FAQs and aftercare in `CATEGORIES`, `AFTERCARE` and `GENERAL_FAQS`.
 3. Run `python3 build.py` to rebuild all the pages, `sitemap.xml` and `robots.txt`.
 
-Styles live in `assets/style.css`.
+Styles live in `assets/style.css`. The leopard background is `assets/leopard.svg`. The homepage mascot is `assets/mascot.webp`: a sprite of 7 turnaround views that `assets/site.js` spins when you drag.
+
+Prices are estimates from typical local prices, so the owner should check them.
 
 ## What's built for SEO
 
+- Location pages for Droylsden, Manchester and Oldham (`/areas/...`)
 - A page for each category (`/hair/`, `/nails/`, `/beauty/`, `/piercing/`, `/filler/`) and for each treatment inside it, e.g. `/filler/lip-filler/`
 - Location-based titles and meta descriptions ("Lip Filler in [TOWN]")
 - Canonical URLs, Open Graph tags and breadcrumbs
