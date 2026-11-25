@@ -10,7 +10,7 @@ import html, json, os, shutil
 CONFIG = {
     "site_url": "https://harrisongreener.github.io/myface",   # change to the real domain when there is one, no trailing slash
     "brand": "MyFace",
-    "tagline": "your face, your space",  # not shown in the minimal layout
+    "tagline": "customise your avatar",
     "owner": "Ella Moore",
     "town": "Droylsden",                     # where the home studio is
     "city": "Manchester",                    # the bigger search area
@@ -311,7 +311,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <body{' class="home"' if home else ''}>
 {LOGO_DEFS}
 <a class="skip" href="#content">Skip to content</a>
-<header class="top"><div class="wrap bar">{logo(d)}<nav class="nav" aria-label="Main">{navh}</nav><a class="btn" href="{e(C['booking_url'])}">Book</a></div></header>
+<header class="top"><div class="wrap bar">{logo(d)}<span class="tag">{e(C['tagline'])}</span><nav class="nav" aria-label="Main">{navh}</nav><a class="btn" href="{e(C['booking_url'])}">Book</a></div></header>
 {body}
 <footer class="foot"><div class="wrap">
 <p>{e(C['brand'])} · home beauty studio in {e(C['town'])} · near {area_links}</p>
@@ -387,7 +387,7 @@ def myspace():
     comments = "".join(
         f'<tr><td class="c-who"><span class="thumb sm">[pic]</span><a href="#">[Client name]</a></td><td><b class="date">[date]</b><p>[Paste a real client review here]</p></td></tr>' for _ in range(3))
     return f"""<div class="ms">
-<div class="ms-top"><span class="ms-logo">{logo_svg("ms-logo-svg")}<i>.com</i></span><span class="ms-tag">your face, your space</span>
+<div class="ms-top"><span class="ms-logo">{logo_svg("ms-logo-svg")}<i>.com</i></span><span class="ms-tag">{e(C['tagline'])}</span>
 <form class="ms-search" role="search" action="services/"><label for="q">Search treatments</label><input id="q" name="q" placeholder="Search treatments"><button>Search</button></form></div>
 <nav class="ms-nav" aria-label="Profile">{navh}</nav>
 <div class="ms-page">
@@ -584,6 +584,7 @@ def computer():
 <div class="zoomview" id="zoomview" hidden><div class="zv-screen" id="zvScreen"></div><div class="zv-star" aria-hidden="true">{sticker("star", "chromeHolo", 0, 0, 58, 0)}</div><div class="zv-badge" aria-hidden="true">{name_sticker(0, 0, -3)}</div>
 </div>
 <div class="caption">
+<p class="cap-tag">{e(C['tagline'])}</p>
 <h1>Hair, nails, lashes, piercing &amp; lip filler in {e(C['town'])}</h1>
 <p>An appointment-only home beauty studio in {e(C['town'])}, near Manchester and Oldham.</p>
 <p><a class="btn" href="{e(C['booking_url'])}">Book a slot</a> <a class="btn ghost" href="services/">All treatments</a></p>
