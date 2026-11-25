@@ -11,7 +11,7 @@ Every page is generated from `build.py`.
 2. Edit treatments, FAQs and aftercare in `CATEGORIES`, `AFTERCARE` and `GENERAL_FAQS`.
 3. Run `python3 build.py` to rebuild all the pages, `sitemap.xml` and `robots.txt`.
 
-Styles live in `assets/style.css`. The pink leopard print on the back of the computer is `assets/leopard-pink.svg`. The homepage mascot is `assets/mascot.webp`: a sprite of 7 turnaround views that `assets/site.js` spins in the her.exe window.
+Styles live in `assets/style.css`. The pink leopard print behind the computer on the homepage is `assets/leopard-pink.webp`. The homepage mascot is `assets/mascot.webp`: a sprite of 7 turnaround views that `assets/site.js` spins in the her.exe window.
 
 Prices are estimates from typical local prices, so the owner should check them.
 

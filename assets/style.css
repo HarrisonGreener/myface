@@ -249,7 +249,10 @@ details p{margin:6px 0 0}
   .nav::-webkit-scrollbar{display:none}
 }
 
-/* pink leopard print on the back of the computer, the tube and the stand */
-.monitor > .bk,.tube > .f,.neck > .f{background:#ffb6d8 url(leopard-pink.svg) 0 0/150px 150px;box-shadow:inset 0 0 0 9999px rgba(0,0,0,var(--shade,0))}
-.tube > .lf,.neck > .lf{--shade:.06}.tube > .rt,.neck > .rt{--shade:.14}.tube > .tp{--shade:0}.tube > .bt,.neck > .bt{--shade:.25}
-.monitor > .bk{--shade:.1}
+/* pink leopard print behind the computer (homepage background) */
+body.home{background:#e8a5c0 url(leopard-pink.webp) 0 0/420px 420px}
+body.home .top{background:rgba(239,233,228,.96)}
+.home .hint{display:table;margin:34px auto 0;background:var(--paper);border:1.5px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:2px 14px;color:var(--ink)}
+.home .caption{background:var(--paper);border:1.5px solid var(--ink);box-shadow:4px 4px 0 var(--ink);padding:22px 26px;margin-top:26px}
+.home .shadow{background:radial-gradient(ellipse at 50% 46%,rgba(60,10,40,.35),transparent 62%)}
+.home .foot{background:var(--bg)}
