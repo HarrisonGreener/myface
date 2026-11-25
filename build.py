@@ -303,7 +303,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <meta name="theme-color" content="#efe9e4">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=UnifrakturMaguntia&family=Pixelify+Sans:wght@400;600&family=Inter:wght@400;600&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Pirata+One&family=Pixelify+Sans:wght@400;600&family=Inter:wght@400;600&family=VT323&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{rel(d, 'assets/style.css')}">
 <script>document.documentElement.className='js'</script>
 <script type="application/ld+json">{ld}</script>
@@ -311,7 +311,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <body{' class="home"' if home else ''}>
 {LOGO_DEFS}
 <a class="skip" href="#content">Skip to content</a>
-<header class="top"><div class="wrap bar"><div class="brand">{logo(d)}<svg class="tag-svg" viewBox="26 0 530 44" role="img" aria-label="{e(C['tagline'])}"><text class="tt" x="63" y="33" textLength="424" lengthAdjust="spacingAndGlyphs" font-family="UnifrakturMaguntia, Old English Text MT, serif" font-size="40" fill="#ff5fae" transform="translate(3 3)">{e(C['tagline'])}</text><text class="tt" x="63" y="33" textLength="424" lengthAdjust="spacingAndGlyphs" font-family="UnifrakturMaguntia, Old English Text MT, serif" font-size="40" fill="#1c1a1e">{e(C['tagline'])}</text></svg></div><nav class="nav" aria-label="Main">{navh}</nav><a class="btn" href="{e(C['booking_url'])}">Book</a></div></header>
+<header class="top"><div class="wrap bar"><div class="brand">{logo(d)}<svg class="tag-svg" viewBox="26 0 530 44" role="img" aria-label="{e(C['tagline'])}"><text class="tt" x="63" y="33" textLength="424" lengthAdjust="spacingAndGlyphs" font-family="Pirata One, Old English Text MT, serif" font-size="40" fill="#1c1a1e">{e(C['tagline'])}</text></svg></div><nav class="nav" aria-label="Main">{navh}</nav><a class="btn" href="{e(C['booking_url'])}">Book</a></div></header>
 {body}
 <footer class="foot"><div class="wrap">
 <p>{e(C['brand'])} · home beauty studio in {e(C['town'])} · near {area_links}</p>
