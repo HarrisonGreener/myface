@@ -430,3 +430,10 @@ body.home,.zoomview{background-size:420px 420px;image-rendering:pixelated}
 .credit{margin-top:8px!important;font-size:12px}
 .credit a{color:var(--ink);font-weight:600;text-decoration-color:var(--pink)}
 .credit a:hover{color:#c2247a}
+
+/* ---------- desktop wallpaper: pixel hills + logo ---------- */
+.os{background:#b9c4ff url(wallpaper.png) center bottom/cover no-repeat;image-rendering:pixelated}
+.os .wall{align-items:flex-start;padding-top:16%}
+.os .wall-logo{width:min(52%,440px);opacity:1;filter:drop-shadow(0 4px 0 rgba(90,20,60,.25))}
+.os .app span{text-shadow:1px 1px 0 #000}
+@media (max-width:620px){.os .wall{align-items:center;padding-top:40%}.os .wall-logo{width:70%}}
