@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Builds the My Face static site.
+"""Builds the MyFace static site.
 
 Edit CONFIG and the content below, then run:  python3 build.py
 Every page, the sitemap and the structured data are regenerated from here.
@@ -9,7 +9,7 @@ import html, json, os, shutil
 # ---------------------------------------------------------------- settings
 CONFIG = {
     "site_url": "https://harrisongreener.github.io/myface",   # change to the real domain when there is one, no trailing slash
-    "brand": "My Face",
+    "brand": "MyFace",
     "tagline": "your face, your space",  # not shown in the minimal layout
     "owner": "Ella Moore",
     "town": "Droylsden",                     # where the home studio is
@@ -412,7 +412,7 @@ def myspace():
 </div>
 <div class="ms-right">
 <div class="ms-net"><b>{e(C['brand'])} is in your extended network</b></div>
-<div class="ms-player"><button type="button" id="radio" aria-label="Play">&#9654;</button><span><b>My Face Radio</b><br><span id="np">press play for salon vibes</span></span></div>
+<div class="ms-player"><button type="button" id="radio" aria-label="Play">&#9654;</button><span><b>MyFace Radio</b><br><span id="np">press play for salon vibes</span></span></div>
 <div class="ms-box"><h3>{e(C['brand'])}'s Latest Blog Entries</h3><ul class="blog">
 <li>[OFFER] new client discount on your first set (<a href="nails/">view more</a>)</li>
 <li>[NEWS] new piercing jewellery just landed (<a href="piercing/">view more</a>)</li>
@@ -533,9 +533,9 @@ def desktop():
                  f'<p>Appointment-only home studio in {e(C["town"])}. Pick a time online and the address is sent once you\'ve booked.</p>'
                  f'<p><a class="btn" href="{e(C["booking_url"])}">Book a slot</a></p><p class="win-foot"><a href="faq/">Booking FAQs &rarr;</a></p>'))
     apps.append(("her", "her.exe", "her", "about/",
-                 '<div class="spin"><button type="button" class="avatar-btn" id="avatarBtn" aria-label="Spin the My Face mascot">'
-                 '<span class="mascot" id="mascot" role="img" aria-label="The My Face mascot: an emo girl with black and pink hair"></span></button>'
-                 '<p class="bubble" id="bubble" aria-live="polite">hiya! welcome to my face x</p><p class="rot-hint" aria-hidden="true">&larr; drag to turn &rarr;</p></div>'))
+                 '<div class="spin"><button type="button" class="avatar-btn" id="avatarBtn" aria-label="Spin the MyFace mascot">'
+                 '<span class="mascot" id="mascot" role="img" aria-label="The MyFace mascot: an emo girl with black and pink hair"></span></button>'
+                 '<p class="bubble" id="bubble" aria-live="polite">hiya! welcome to myface x</p><p class="rot-hint" aria-hidden="true">&larr; drag to turn &rarr;</p></div>'))
     apps.append(("about", "About", "about", "about/",
                  f'<p>{e(C["brand"])} is {e(C["owner"])}\'s home beauty studio in {e(C["town"])}, Tameside, for hair, nails, lashes, brows, piercing and lip filler.</p>'
                  f'<p>[A line or two about you.]</p><p class="win-foot"><a href="about/">More about me &rarr;</a></p>'))

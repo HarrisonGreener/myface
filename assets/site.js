@@ -1,4 +1,4 @@
-// My Face site script.
+// MyFace site script.
 (function () {
   // ---- Back buttons on inner pages: go back if we came from this site, else go to the parent page
   document.querySelectorAll('a[data-back]').forEach(function (a) {
@@ -210,7 +210,7 @@
   var m = document.getElementById('mascot'), btn = document.getElementById('avatarBtn'), bubble = document.getElementById('bubble');
   if (m && btn) {
     var FR = 10, frame = 0, sx = null, sf = 0, mv = false, li = 0;
-    var lines = ['hiya! welcome to my face x', 'what are we booking today?', 'nails, lashes, hair or piercings?', 'pick a treatment x'];
+    var lines = ['hiya! welcome to myface x', 'what are we booking today?', 'nails, lashes, hair or piercings?', 'pick a treatment x'];
     var show = function (f) { frame = ((Math.round(f) % FR) + FR) % FR; m.style.backgroundPositionX = (frame * 100 / (FR - 1)) + '%'; };
     btn.addEventListener('pointerdown', function (e) { sx = e.clientX; sf = frame; mv = false; btn.setPointerCapture(e.pointerId); });
     btn.addEventListener('pointermove', function (e) { if (sx === null) return; var dx = e.clientX - sx; if (Math.abs(dx) > 5) mv = true; show(sf - dx / 20); });

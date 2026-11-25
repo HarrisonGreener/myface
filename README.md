@@ -1,7 +1,7 @@
-# My Face
+# MyFace
 https://harrisongreener.github.io/myface/
 
-A retro profile-page style site for My Face, an appointment-only home beauty studio in Droylsden (hair, nails, lashes, piercing and filler).
+A retro profile-page style site for MyFace, an appointment-only home beauty studio in Droylsden (hair, nails, lashes, piercing and filler).
 
 ## Editing
 
