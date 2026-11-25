@@ -1,3 +1,4 @@
+@font-face{font-family:'Pirata One';src:url(fonts/pirata-one.woff2) format('woff2');font-display:swap}
 /* MyFace — minimal vintage computer */
 :root{--bg:#efe9e4;--ink:#1c1a1e;--muted:#6a636b;--pink:#ff5fae;--pink-soft:#ffc4e1;--paper:#fbf8f5;--beige:#ddd4c4;--beige-dk:#c4b9a6;--wall:#f2d3e2}
 *{box-sizing:border-box}

@@ -303,7 +303,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <meta name="theme-color" content="#efe9e4">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Pirata+One&family=Pixelify+Sans:wght@400;600&family=Inter:wght@400;600&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Pixelify+Sans:wght@400;600&family=Inter:wght@400;600&family=VT323&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{rel(d, 'assets/style.css')}">
 <script>document.documentElement.className='js'</script>
 <script type="application/ld+json">{ld}</script>
