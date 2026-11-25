@@ -470,7 +470,6 @@ def computer():
 <div class="rig" id="rig">
 <div class="monitor box">
 <div class="f fr front"><div class="screen" id="screen">{desktop()}<span class="glare"></span></div>
-<div class="plate"><span class="model">MF-2001</span><span class="led"></span><span class="pwr"></span></div>
 <button type="button" class="zoom-btn" id="zoomBtn" aria-label="Zoom into the computer screen"></button></div>
 <div class="f bk"></div><div class="f lf"></div><div class="f rt"></div><div class="f tp"></div><div class="f bt"></div>
 </div>
