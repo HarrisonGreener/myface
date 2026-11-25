@@ -416,3 +416,6 @@ body.home,.zoomview{background-size:420px 420px;image-rendering:pixelated}
 .os svg,.zv-mon .stk{shape-rendering:crispEdges}
 .os .app .ic{shape-rendering:auto;image-rendering:pixelated}
 .zv-screen .glare,.screen .glare{background:linear-gradient(155deg,rgba(255,255,255,.16),rgba(255,255,255,0) 40%),repeating-linear-gradient(transparent 0 2px,rgba(0,0,0,.07) 2px 3px),repeating-linear-gradient(90deg,transparent 0 2px,rgba(0,0,0,.03) 2px 3px)}
+
+.pic{align-items:stretch}
+.pic-img{width:100%;height:100%;object-fit:cover;object-position:50% 0;image-rendering:pixelated;display:block}

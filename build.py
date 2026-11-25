@@ -394,7 +394,7 @@ def myspace():
 <div class="ms-left">
 <h2 class="ms-name">{e(C['owner'])} &hearts;</h2>
 <div class="ms-profile">
-<span class="pic"><span class="mascot"></span></span>
+<span class="pic"><img class="pic-img" src="assets/ella-px.png" alt="Photo of {e(C['owner'])}" width="106" height="140"></span>
 <div class="ms-info"><p>"Hair, nails, lashes, piercings &amp; lips, all in one place."</p>
 <p>Home beauty studio<br>{e(C['town'])}<br>{e(C['city'])}<br>United Kingdom</p>
 <p class="online"><span></span> Online Now!</p>
