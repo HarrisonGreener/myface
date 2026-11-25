@@ -375,3 +375,11 @@ body.home .top{background:rgba(239,233,228,.96)}
 /* new turnaround is wider: resize the mascot spots */
 .spin .mascot{width:230px}.pic .mascot{width:126px}.mascot.mini{width:80px}
 .pic{align-items:center}
+/* her.exe: the character select screen background */
+#win-her{width:min(480px,92%)}
+#win-her .win-body{padding:0;background:#87a9cf url(her-bg.webp) center/cover;aspect-ratio:864/1243;max-height:calc(100vh - 200px)}
+#win-her .spin{height:100%;justify-content:flex-end;padding:0 0 18px}
+#win-her .spin .mascot{width:min(300px,62cqw);filter:drop-shadow(0 0 0 #fff) drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(4px 6px 6px rgba(0,0,0,.35))}
+#win-her .bubble{position:absolute;top:44%;left:50%;transform:translateX(-50%)}
+#win-her .spin{position:relative;container-type:inline-size}
+#win-her .avatar-btn{display:block}
