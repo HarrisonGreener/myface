@@ -6,7 +6,7 @@
       zoomBtn = document.getElementById('zoomBtn'), zv = document.getElementById('zoomview'), zvScreen = document.getElementById('zvScreen'),
       logoff = document.getElementById('logoff');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var P = 1600, rx = -10, ry = -24, zoomed = false, busy = false;
+  var P = 1600, rx = -10, ry = -30, zoomed = false, busy = false;
 
   os.inert = true;                                   // the small preview isn't tabbable; the zoomed copy is
 
@@ -20,10 +20,10 @@
     if (zoomed || busy) return;
     var r = scene.getBoundingClientRect();
     var mx = (e.clientX - r.left) / r.width - .5, my = (e.clientY - r.top) / r.height - .5;
-    rx = -10 - my * 10; ry = -24 + mx * 30;
+    rx = -10 - my * 10; ry = -30 + mx * 30;
     rig.classList.add('follow'); rest();
   });
-  scene.addEventListener('pointerleave', function () { if (!zoomed && !busy) { rx = -10; ry = -24; rest(); } });
+  scene.addEventListener('pointerleave', function () { if (!zoomed && !busy) { rx = -10; ry = -30; rest(); } });
 
   // Fly the camera into the screen, then hand over to a full-size copy of the screen
   function zoomIn() {
@@ -48,7 +48,7 @@
     setTimeout(function () {
       zv.hidden = true; closeAll(); screen.insertBefore(os, screen.firstChild); os.inert = true;
       document.body.style.overflow = '';
-      rx = -10; ry = -24; rest(); scene.parentNode.classList.remove('zooming');
+      rx = -10; ry = -30; rest(); scene.parentNode.classList.remove('zooming');
       setTimeout(function () { zoomed = false; busy = false; zoomBtn.focus(); }, reduce ? 0 : 1000);
     }, reduce ? 0 : 350);
   }

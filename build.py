@@ -11,7 +11,7 @@ CONFIG = {
     "site_url": "https://harrisongreener.github.io/myface",   # change to the real domain when there is one, no trailing slash
     "brand": "My Face",
     "tagline": "your face, your space",  # not shown in the minimal layout
-    "owner": "[YOUR NAME]",
+    "owner": "Ella Moore",
     "town": "Droylsden",                     # where the home studio is
     "city": "Manchester",                    # the bigger search area
     "region": "Greater Manchester",
@@ -333,7 +333,8 @@ def business_schema():
     return {"@type": "BeautySalon", "@id": C["site_url"] + "/#business", "name": C["brand"], "url": C["site_url"] + "/",
             "telephone": C["phone"], "email": C["email"], "sameAs": [C["instagram"]], "priceRange": "££",
             "address": {"@type": "PostalAddress", "addressLocality": C["town"], "addressRegion": C["region"], "addressCountry": "GB"},
-            "areaServed": [{"@type": "Place", "name": a} for a in C["served"]]}
+            "areaServed": [{"@type": "Place", "name": a} for a in C["served"]],
+            "founder": {"@type": "Person", "name": C["owner"]}}
 
 
 def sec(title, body):
@@ -390,7 +391,7 @@ def myspace():
 <nav class="ms-nav" aria-label="Profile">{navh}</nav>
 <div class="ms-page">
 <div class="ms-left">
-<h2 class="ms-name">{e(C['brand'])}</h2>
+<h2 class="ms-name">{e(C['owner'])} &hearts;</h2>
 <div class="ms-profile">
 <span class="pic"><span class="mascot"></span></span>
 <div class="ms-info"><p>"Hair, nails, lashes, piercings &amp; lips, all in one place."</p>
@@ -398,7 +399,7 @@ def myspace():
 <p class="online"><span></span> Online Now!</p>
 <p>Last Login: today</p></div></div>
 <p class="viewmy">View My: <a href="prices/">Prices</a> | <a href="gallery/">Pics</a> | <a href="aftercare/">Aftercare</a></p>
-<div class="ms-box contact"><h3>Contacting {e(C['brand'])}</h3>
+<div class="ms-box contact"><h3>Contacting {e(C['owner'].split()[0])}</h3>
 <div class="actions"><a href="{e(C['booking_url'])}">&#10148; Book Appointment</a><a href="contact/">&#10148; Send Message</a><a href="{e(C['instagram'])}">&#10148; Add to Friends</a><a href="tel:{e(C['phone'])}">&#10148; Call Me</a></div></div>
 <div class="ms-box url"><b>{e(C['brand'])} URL:</b><br>myface.co.uk/book</div>
 <div class="ms-box"><h3>{e(C['brand'])}'s Services</h3><table>{services}</table></div>
@@ -416,7 +417,7 @@ def myspace():
 <li>[NEWS] new piercing jewellery just landed (<a href="piercing/">view more</a>)</li>
 <li>Full price list (<a href="prices/">view more</a>)</li></ul></div>
 <div class="ms-box"><h3>{e(C['brand'])}'s Blurbs</h3>
-<h4>About me:</h4><p>[A few lines about you.] {e(C['brand'])} is a home beauty studio in {e(C['town'])} for nails, hair, lashes, brows, piercing and lip filler.</p>
+<h4>About me:</h4><p>Hi, I'm {e(C['owner'].split()[0])}! [A few lines about you.] {e(C['brand'])} is my home beauty studio in {e(C['town'])} for nails, hair, lashes, brows, piercing and lip filler.</p>
 <h4>Who I'd like to meet:</h4><p>Anyone after a fresh set, a new colour, a little sparkle in their ear or a bit of lip.</p></div>
 <div class="ms-box"><h3>{e(C['brand'])}'s Friend Space</h3><p class="fs-count">{e(C['brand'])} has <b>8</b> treatments in their Top 8.</p><ul class="top8">{top}</ul>
 <p class="all"><a href="services/">View all treatments</a></p></div>
@@ -425,6 +426,56 @@ def myspace():
 </div>
 <p class="ms-foot"><a href="about/">About</a> | <a href="faq/">FAQ</a> | <a href="terms/">Terms</a> | <a href="privacy/">Privacy</a> | <a href="areas/">Areas</a><br>&copy;2026 {e(C['brand'])}. All Rights Reserved.</p>
 </div>"""
+
+
+# ---------------------------------------------------------------- chrome stickers on the computer
+_SHAPES = {
+    "heart": '<path d="M50 88C20 66 7 48 7 31 7 17 18 8 31 8c9 0 15 5 19 12 4-7 10-12 19-12 13 0 24 9 24 23 0 17-13 35-43 57Z"/>',
+    "star": '<path d="M50 5l11.5 31.5H95L68 57l10 34-28-20-28 20 10-34L5 36.5h33.5Z"/>',
+    "bolt": '<path d="M60 3 18 57h28l-9 40 46-58H55Z"/>',
+    "skull": '<path d="M50 16c-22 0-35 15-35 33 0 12 6 21 14 25v10c0 4 3 7 7 7h28c4 0 7-3 7-7V74c8-4 14-13 14-25 0-18-13-33-35-33Z"/>',
+    "butterfly": '<path d="M49 50C40 18 8 8 8 33c0 14 18 20 41 17ZM51 50c9-32 41-42 41-17 0 14-18 20-41 17ZM49 52C30 52 14 62 20 78c6 14 24 4 29-26ZM51 52c19 0 35 10 29 26-6 14-24 4-29-26Z"/>',
+}
+_EXTRA = {
+    "skull": '<circle cx="37" cy="52" r="8" fill="#1c1a1e"/><circle cx="63" cy="52" r="8" fill="#1c1a1e"/><path d="M50 60l-4 8h8Z" fill="#1c1a1e"/><path d="M40 84v-8M50 84v-8M60 84v-8" stroke="#1c1a1e" stroke-width="2.5"/><path d="M74 14l-12-9v18Zm0 0 12-9v18Z" fill="url(#chromePink)" stroke="#fff" stroke-width="3" paint-order="stroke"/><circle cx="74" cy="14" r="4" fill="url(#chromePink)"/>',
+    "butterfly": '<path d="M50 34v42" stroke="#1c1a1e" stroke-width="4" stroke-linecap="round"/>',
+}
+
+
+def sticker(shape, fill, x, y, size, rot):
+    body = _SHAPES[shape]
+    return (f'<svg class="stk" viewBox="0 0 100 100" style="left:{x}px;top:{y}px;width:{size}px;transform:rotate({rot}deg)" aria-hidden="true">'
+            f'<g fill="#fff" stroke="#fff" stroke-width="12" stroke-linejoin="round">{body}</g>'
+            f'<g fill="url(#{fill})" stroke="#5d5a6b" stroke-width="1.5">{body}</g>'
+            f'{_EXTRA.get(shape, "")}<ellipse cx="34" cy="28" rx="14" ry="6" fill="#fff" opacity=".75" transform="rotate(-30 34 28)"/></svg>')
+
+
+def name_sticker(x, y, rot):
+    t = e(C["owner"].split()[0].lower()) + " x"
+    txt = f'<text x="80" y="38" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="34" letter-spacing="-1">{t}</text>'
+    return (f'<svg class="stk" viewBox="0 0 160 56" style="left:{x}px;top:{y}px;width:118px;transform:rotate({rot}deg)" aria-hidden="true">'
+            f'<g fill="#fff" stroke="#fff" stroke-width="12" stroke-linejoin="round">{txt}</g>'
+            f'<g fill="url(#chromePink)" stroke="#7a2a52" stroke-width="1.2">{txt}</g></svg>')
+
+
+CHROME_DEFS = """<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<linearGradient id="chrome" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".32" stop-color="#d8d8e6"/><stop offset=".48" stop-color="#85859c"/><stop offset=".53" stop-color="#f6f6ff"/><stop offset=".78" stop-color="#b4b4c8"/><stop offset="1" stop-color="#6c6c82"/></linearGradient>
+<linearGradient id="chromePink" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#fff2f9"/><stop offset=".32" stop-color="#ffb3d9"/><stop offset=".48" stop-color="#c23f7c"/><stop offset=".53" stop-color="#ffe3f1"/><stop offset=".78" stop-color="#ff86c3"/><stop offset="1" stop-color="#9c2c5c"/></linearGradient>
+<linearGradient id="chromeHolo" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".25" stop-color="#d7c6ff"/><stop offset=".45" stop-color="#8a6cd8"/><stop offset=".52" stop-color="#e6fff6"/><stop offset=".7" stop-color="#ffc2e6"/><stop offset="1" stop-color="#6d58b0"/></linearGradient>
+</defs></svg>"""
+
+
+def front_stickers():
+    return (sticker("bolt", "chrome", 8, 40, 36, -14) + sticker("star", "chromeHolo", 438, 2, 54, 14)
+            + sticker("heart", "chromePink", 40, 352, 58, -12) + name_sticker(190, 364, -4)
+            + sticker("skull", "chrome", 404, 350, 56, 10))
+
+
+def side_stickers():
+    return (sticker("butterfly", "chromeHolo", 50, 70, 96, -10) + sticker("star", "chrome", 190, 50, 44, 18)
+            + sticker("heart", "chromePink", 160, 200, 70, 8) + sticker("bolt", "chromePink", 60, 260, 56, -6)
+            + sticker("skull", "chromePink", 200, 320, 48, -12))
+
 
 
 def desktop():
@@ -445,7 +496,7 @@ def desktop():
                  '<span class="mascot" id="mascot" role="img" aria-label="The My Face mascot: an emo girl with black and pink hair"></span></button>'
                  '<p class="bubble" id="bubble" aria-live="polite">drag me round x</p></div>'))
     apps.append(("about", "About", "about", "about/",
-                 f'<p>{e(C["brand"])} is a home beauty studio in {e(C["town"])}, Tameside, for hair, nails, lashes, brows, piercing and lip filler.</p>'
+                 f'<p>{e(C["brand"])} is {e(C["owner"])}\'s home beauty studio in {e(C["town"])}, Tameside, for hair, nails, lashes, brows, piercing and lip filler.</p>'
                  f'<p>[A line or two about you.]</p><p class="win-foot"><a href="about/">More about me &rarr;</a></p>'))
     apps.append(("contact", "Contact", "contact", "contact/",
                  f'<ul class="plain"><li><a href="tel:{e(C["phone"])}">{e(C["phone"])}</a></li><li><a href="mailto:{e(C["email"])}">{e(C["email"])}</a></li>'
@@ -466,17 +517,18 @@ def computer():
     keys = "".join('<i></i>' for _ in range(56))
     box = '<div class="f fr"></div><div class="f bk"></div><div class="f lf"></div><div class="f rt"></div><div class="f tp"></div><div class="f bt"></div>'
     return f"""<main id="content" class="room">
+{CHROME_DEFS}
 <div class="scene" id="scene">
 <div class="rig" id="rig">
 <div class="monitor box">
 <div class="f fr front"><div class="screen" id="screen">{desktop()}<span class="glare"></span></div>
-<button type="button" class="zoom-btn" id="zoomBtn" aria-label="Zoom into the computer screen"></button></div>
-<div class="f bk"></div><div class="f lf"></div><div class="f rt"></div><div class="f tp"></div><div class="f bt"></div>
+{front_stickers()}<button type="button" class="zoom-btn" id="zoomBtn" aria-label="Zoom into the computer screen"></button></div>
+<div class="f bk"></div><div class="f lf"></div><div class="f rt">{side_stickers()}</div><div class="f tp"></div><div class="f bt"></div>
 </div>
 <div class="tube box">{box}</div>
 <div class="neck box">{box}</div>
 <div class="foot box">{box}</div>
-<div class="kbd box"><div class="f fr"></div><div class="f bk"></div><div class="f lf"></div><div class="f rt"></div><div class="f tp keys">{keys}</div><div class="f bt"></div></div>
+<div class="kbd box"><div class="f fr"></div><div class="f bk"></div><div class="f lf"></div><div class="f rt"></div><div class="f tp keys">{keys}{sticker("star", "chromePink", 400, 8, 34, 12)}</div><div class="f bt"></div></div>
 <div class="shadow"></div>
 </div>
 </div>

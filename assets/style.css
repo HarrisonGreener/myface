@@ -62,6 +62,9 @@ a:hover{color:#c2247a}
 .hint{text-align:center;margin:-6px 0 0;font:20px VT323,monospace;color:var(--muted);transition:opacity .3s}
 .zooming .hint{opacity:0}
 
+.stk{position:absolute;overflow:visible;filter:drop-shadow(0 1.5px 1px rgba(0,0,0,.28));transform-origin:center}
+.keys .stk{z-index:1}
+
 /* zoomed-in screen */
 .zoomview{position:fixed;inset:0;z-index:50;background:#0d0b0e;opacity:0;transition:opacity .35s}
 .zoomview.show{opacity:1}
