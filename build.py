@@ -10,7 +10,7 @@ import html, json, os, shutil
 CONFIG = {
     "site_url": "https://www.example.com",   # your real domain, no trailing slash
     "brand": "My Face",
-    "tagline": "your face, your space",
+    "tagline": "your face, your space",  # not shown in the minimal layout
     "owner": "[YOUR NAME]",
     "town": "Droylsden",                     # where the home studio is
     "city": "Manchester",                    # the bigger search area
@@ -225,17 +225,19 @@ GENERAL_FAQS = [
     ("How do I pay?", "[PAYMENT METHODS]"),
 ]
 
-# ---------------------------------------------------------------- avatar (homepage hero)
-AVATAR = '<span class="mascot" id="mascot" role="img" aria-label="The My Face mascot: an emo girl with black and pink hair, a skull top and a plaid skirt"></span>'
-
-HERO_PILLS = [
-    ("Get nails…", "nails/", "ooh a fresh set? say less", "p1"),
-    ("New hair…", "hair/", "colour? chop? extensions? all of it", "p2"),
-    ("Get pierced…", "piercing/", "one more hole won't hurt. ok maybe a lil", "p3"),
-    ("Lip filler…", "filler/lip-filler/", "subtle or juicy, your call", "p4"),
-    ("Lashes…", "beauty/lashes/", "flutter flutter", "p5"),
-    ("Book…", None, "yay!! pick a time x", "p6"),
-]
+# ---------------------------------------------------------------- desktop apps (homepage computer)
+ICONS = {
+    "nails": '<path d="M9 3h6v4H9zM8 7h8l1 13a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1z"/><path d="M10 12h4"/>',
+    "hair": '<circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M8 16 19 3M16 16 5 3"/>',
+    "beauty": '<path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M5 7 3 4M12 5V2M19 7l2-3"/>',
+    "piercing": '<circle cx="12" cy="14" r="6"/><path d="M12 2v6"/><circle cx="12" cy="2.5" r="1.2"/>',
+    "filler": '<path d="M2 12c3-4 6-5 10-2 4-3 7-2 10 2-3 5-6 7-10 7S5 17 2 12z"/><path d="M2 12h20"/>',
+    "prices": '<path d="M15 5a4 4 0 0 0-7 3v11M6 12h7M5 19h12"/>',
+    "book": '<rect x="3" y="5" width="18" height="16" rx="1"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="m9 15 2 2 4-4"/>',
+    "about": '<circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/>',
+    "contact": '<rect x="3" y="5" width="18" height="14" rx="1"/><path d="m3 7 9 6 9-6"/>',
+    "her": '<path d="m12 3 2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/>',
+}
 
 # ---------------------------------------------------------------- helpers
 e = html.escape
@@ -246,49 +248,43 @@ def rel(depth, target):
     return ("../" * depth) + target if (depth or target) else "./"
 
 
+def icon(name, cls="ic"):
+    return f'<svg class="{cls}" viewBox="0 0 24 24" aria-hidden="true">{ICONS[name]}</svg>'
+
+
 def logo(d):
-    return f"""<a class="logo" href="{rel(d, '')}" aria-label="{e(C['brand'])} home"><svg class="logo-ic" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="25" r="19" fill="#ff4fb3" stroke="#fff" stroke-width="3"/><path d="M8 20C10 6 34 2 42 18c-8-4-14-4-20 2-6 4-10 4-14 0Z" fill="#141018" stroke="#fff" stroke-width="2"/><circle cx="17" cy="27" r="3" fill="#141018"/><circle cx="31" cy="27" r="3" fill="#141018"/><path d="M17 35q7 6 14 0" stroke="#141018" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M40 6l2 4 4 1-4 2-2 4-2-4-4-2 4-1Z" fill="#c6ff3d"/></svg><span class="wm">my<b>face</b></span></a>"""
+    return f'<a class="logo" href="{rel(d, "")}" aria-label="{e(C["brand"])} home">my<b>face</b></a>'
 
 
-def sidebar(d):
-    svc = "".join(f'<tr><th scope="row"><a href="{rel(d, c["slug"] + "/")}">{e(c["name"])}</a></th><td>{e(c["blurb"])}</td></tr>' for c in CATEGORIES)
-    areas = ", ".join(f'<a href="{rel(d, "areas/" + a["slug"] + "/")}">{e(a["name"])}</a>' for a in AREAS)
-    return f"""<aside class="side">
-<section class="box profile">
-<p class="h1ish">{e(C['brand'])}</p>
-<div class="prow"><span class="ph">[Profile photo]</span>
-<ul class="pinfo"><li><em>"Hair, nails, lashes, piercings &amp; lips, all in one place."</em></li><li>Home beauty studio</li><li>{e(C['town'])}, {e(C['city'])}</li><li>Mood: <b class="lime">glowing</b></li><li class="online"><span></span>Taking bookings!</li></ul></div>
-</section>
-<section class="box"><h2 class="hd lime-bg">Contacting {e(C['brand'])}</h2>
-<div class="cbtns"><a class="btn pri" href="{e(C['booking_url'])}">Book a slot</a><a class="btn" href="{rel(d, 'contact/')}">Send message</a><a class="btn" href="{e(C['instagram'])}">Add on Instagram</a><a class="btn" href="tel:{e(C['phone'])}">Call</a></div></section>
-<section class="box"><h2 class="hd">{e(C['brand'])}'s Services</h2><table>{svc}</table></section>
-<section class="box"><h2 class="hd lime-bg">How it works</h2><table>
-<tr><th scope="row">Where</th><td>Home studio in {e(C['town'])}</td></tr>
-<tr><th scope="row">When</th><td>Appointment only, no walk-ins</td></tr>
-<tr><th scope="row">Address</th><td>Sent once you've booked</td></tr>
-<tr><th scope="row">Near</th><td>{areas}</td></tr></table></section>
-</aside>"""
-
-
-def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", hero=None):
+def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", home=False):
     d = path.count("/")
-    nav = [("Home", ""), ("Hair", "hair/"), ("Nails", "nails/"), ("Beauty", "beauty/"), ("Piercing", "piercing/"),
-           ("Filler", "filler/"), ("Prices", "prices/"), ("Aftercare", "aftercare/"), ("FAQ", "faq/"), ("Contact", "contact/")]
+    nav = [("Hair", "hair/"), ("Nails", "nails/"), ("Beauty", "beauty/"), ("Piercing", "piercing/"),
+           ("Filler", "filler/"), ("Prices", "prices/"), ("FAQ", "faq/")]
     cur = ' aria-current="page"'
-    navh = "".join(f'<a href="{rel(d, t)}"{cur if t == path else ""}>{n}</a>' for n, t in nav)
+    navh = "".join(f'<a href="{rel(d, t)}"{cur if path.startswith(t) else ""}>{n}</a>' for n, t in nav)
     url = C["site_url"] + "/" + path
     crumb_list = [("Home", "")] + list(crumbs)
-    bc = ""
-    if crumbs:
-        bc = '<nav class="crumbs" aria-label="Breadcrumb">' + " &rsaquo; ".join(
-            f'<a href="{rel(d, p)}">{e(n)}</a>' if p != path else f"<span>{e(n)}</span>" for n, p in crumb_list) + "</nav>"
     graphs = [business_schema()]
     if crumbs:
         graphs.append({"@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": i + 1, "name": n, "item": C["site_url"] + "/" + p} for i, (n, p) in enumerate(crumb_list)]})
     graphs += schema or []
     ld = json.dumps({"@context": "https://schema.org", "@graph": graphs}, ensure_ascii=False).replace("</", "<\\/")
-    heading = "" if hero else f'<div class="box banner"><h1>{e(h1)}</h1></div>'
+    if home:
+        body = main
+    else:
+        bc = '<nav class="crumbs" aria-label="Breadcrumb">' + " / ".join(
+            f'<a href="{rel(d, p)}">{e(n)}</a>' if p != path else f"<span>{e(n)}</span>" for n, p in crumb_list) + "</nav>"
+        body = f"""<main id="content" class="wrap">
+{bc}
+<article class="win page-win">
+<div class="titlebar"><span>myface://{e(path.rstrip("/") or "home")}</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+<div class="win-body">
+<h1>{e(h1)}</h1>
+{main}
+</div>
+</article>
+</main>"""
     area_links = " · ".join(f'<a href="{rel(d, "areas/" + a["slug"] + "/")}">{e(a["name"])}</a>' for a in AREAS)
     doc = f"""<!doctype html>
 <html lang="en-GB">
@@ -303,33 +299,22 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", he
 <meta property="og:title" content="{e(title)}">
 <meta property="og:description" content="{e(desc)}">
 <meta property="og:url" content="{e(url)}">
-<meta name="theme-color" content="#ff4fb3">
+<meta name="theme-color" content="#efe9e4">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=VT323&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{rel(d, 'assets/style.css')}">
+<script>document.documentElement.className='js'</script>
 <script type="application/ld+json">{ld}</script>
 </head>
-<body>
+<body{' class="home"' if home else ''}>
 <a class="skip" href="#content">Skip to content</a>
-<header class="top">
-<div class="wrap bar">{logo(d)}<span class="tag">{e(C['tagline'])}</span>
-<a class="btn lime-btn" href="{e(C['booking_url'])}">Book now</a></div>
-<nav class="nav" aria-label="Main"><div class="wrap">{navh}</div></nav>
-</header>
-{hero or ""}
-<div class="wrap layout">
-{sidebar(d)}
-<main id="content" class="main">
-{bc}
-{heading}
-{main}
-</main>
-</div>
+<header class="top"><div class="wrap bar">{logo(d)}<nav class="nav" aria-label="Main">{navh}</nav><a class="btn" href="{e(C['booking_url'])}">Book</a></div></header>
+{body}
 <footer class="foot"><div class="wrap">
-<nav aria-label="Footer"><a href="{rel(d, 'about/')}">About</a><a href="{rel(d, 'services/')}">All treatments</a><a href="{rel(d, 'gallery/')}">Gallery</a><a href="{rel(d, 'faq/')}">FAQ</a><a href="{rel(d, 'privacy/')}">Privacy</a><a href="{rel(d, 'terms/')}">Terms</a><a href="{rel(d, 'contact/')}">Contact</a></nav>
-<p>Hair, nails, beauty, piercing &amp; lip filler near {area_links}</p>
-<p>&copy;2026 {e(C['brand'])}. All rights reserved.</p>
+<p>{e(C['brand'])} · home beauty studio in {e(C['town'])} · near {area_links}</p>
+<p><a href="{rel(d, 'services/')}">All treatments</a> · <a href="{rel(d, 'aftercare/')}">Aftercare</a> · <a href="{rel(d, 'about/')}">About</a> · <a href="{rel(d, 'gallery/')}">Gallery</a> · <a href="{rel(d, 'contact/')}">Contact</a> · <a href="{rel(d, 'privacy/')}">Privacy</a> · <a href="{rel(d, 'terms/')}">Terms</a></p>
+<p>&copy;2026 {e(C['brand'])}</p>
 </div></footer>
 <script src="{rel(d, 'assets/site.js')}" defer></script>
 </body>
@@ -350,8 +335,8 @@ def business_schema():
             "areaServed": [{"@type": "Place", "name": a} for a in C["served"]]}
 
 
-def box(title, body, lime=False):
-    return f'<section class="box"><h2 class="hd{" lime-bg" if lime else ""}">{title}</h2><div class="pad">{body}</div></section>'
+def sec(title, body):
+    return f'<section class="sec"><h2>{title}</h2>{body}</section>'
 
 
 def faq_html(faqs):
@@ -363,10 +348,10 @@ def faq_schema(faqs):
             "acceptedAnswer": {"@type": "Answer", "text": html.unescape(a)}} for q, a in faqs]}
 
 
-def cards(d, items):
-    return '<div class="top8">' + "".join(
-        f'<a href="{rel(d, href)}"><span class="ph sq">[Photo]</span><b>{e(name)}</b><small>{e(sub)}</small></a>'
-        for name, sub, href in items) + "</div>"
+def links(d, items):
+    """A minimal menu list: name on the left, price or note on the right."""
+    return '<ul class="menu">' + "".join(
+        f'<li><a href="{rel(d, href)}">{e(name)}</a><span>{e(sub)}</span></li>' for name, sub, href in items) + "</ul>"
 
 
 def price_table(rows):
@@ -381,27 +366,57 @@ def from_price(s):
 
 
 def cta(d):
-    return f'<div class="box ctabox"><p>Ready to book?</p><a class="btn pri" href="{e(C["booking_url"])}">Book a slot</a><a class="btn" href="{rel(d, "contact/")}">Ask a question</a></div>'
+    return f'<p class="cta"><a class="btn" href="{e(C["booking_url"])}">Book a slot</a> <a class="btn ghost" href="{rel(d, "contact/")}">Ask a question</a></p>'
 
 
-def hero_html():
-    pills = "".join(
-        f'<a class="pill {cls}" href="{e(C["booking_url"]) if href is None else href}" data-say="{e(say)}">{e(label)}</a>'
-        for label, href, say, cls in HERO_PILLS)
-    return f"""<section class="hero"><div class="wrap hero-in">
-<div class="hero-copy box">
-<p class="kicker">Home beauty studio · {e(C['town'])}, {e(C['city'])}</p>
+def computer():
+    """The homepage: a vintage computer whose desktop links to every section."""
+    apps = []   # (key, label, icon, href, window html)
+    for c in CATEGORIES:
+        body = f'<p>{e(c["blurb"])}.</p>' + links(0, [(s["name"], from_price(s), f'{c["slug"]}/{s["slug"]}/') for s in c["services"]]) + \
+               f'<p class="win-foot"><a href="{c["slug"]}/">Open {e(c["name"].lower())} page &rarr;</a></p>'
+        apps.append((c["slug"], c["name"], c["slug"], f'{c["slug"]}/', body))
+    price_rows = "".join(f'<tr><th scope="row"><a href="{c["slug"]}/{s["slug"]}/">{e(s["name"])}</a></th><td>{from_price(s)}</td></tr>'
+                         for c in CATEGORIES for s in c["services"])
+    apps.append(("prices", "Prices", "prices", "prices/", f'<table class="prices">{price_rows}</table><p class="win-foot"><a href="prices/">Full price list &rarr;</a></p>'))
+    apps.append(("book", "Book", "book", C["booking_url"],
+                 f'<p>Appointment-only home studio in {e(C["town"])}. Pick a time online and the address is sent once you\'ve booked.</p>'
+                 f'<p><a class="btn" href="{e(C["booking_url"])}">Book a slot</a></p><p class="win-foot"><a href="faq/">Booking FAQs &rarr;</a></p>'))
+    apps.append(("her", "her.exe", "her", "#",
+                 '<div class="spin"><button type="button" class="avatar-btn" id="avatarBtn" aria-label="Spin the My Face mascot">'
+                 '<span class="mascot" id="mascot" role="img" aria-label="The My Face mascot: an emo girl with black and pink hair"></span></button>'
+                 '<p class="bubble" id="bubble" aria-live="polite">drag me round x</p></div>'))
+    apps.append(("about", "About", "about", "about/",
+                 f'<p>{e(C["brand"])} is a home beauty studio in {e(C["town"])}, Tameside, for hair, nails, lashes, brows, piercing and lip filler.</p>'
+                 f'<p>[A line or two about you.]</p><p class="win-foot"><a href="about/">More about me &rarr;</a></p>'))
+    apps.append(("contact", "Contact", "contact", "contact/",
+                 f'<ul class="plain"><li><a href="tel:{e(C["phone"])}">{e(C["phone"])}</a></li><li><a href="mailto:{e(C["email"])}">{e(C["email"])}</a></li>'
+                 f'<li><a href="{e(C["instagram"])}">Instagram</a></li></ul><p class="win-foot"><a href="contact/">Contact page &rarr;</a></p>'))
+    icons = "".join(f'<li><a class="app" href="{e(href)}" data-app="{k}">{icon(ic)}<span>{e(label)}</span></a></li>' for k, label, ic, href, _ in apps)
+    wins = "".join(f'<section class="win app-win" id="win-{k}" data-app="{k}" hidden aria-label="{e(label)}">'
+                   f'<div class="titlebar"><span>{e(label)}</span><button type="button" class="close" aria-label="Close {e(label)}">&times;</button></div>'
+                   f'<div class="win-body">{body}</div></section>' for k, label, ic, href, body in apps)
+    return f"""<main id="content" class="desk">
+<div class="computer">
+<div class="monitor">
+<div class="screen" id="screen">
+<div class="boot" id="boot"><p class="boot-hint">press the power button</p><pre id="bootlog" aria-hidden="true"></pre></div>
+<div class="desktop" id="desktop">
+<ul class="apps">{icons}</ul>
+{wins}
+<div class="taskbar"><span class="start">myface</span><span id="clock">--:--</span></div>
+</div>
+</div>
+<div class="plate"><span class="model">MF-2001</span><span class="led" id="led"></span><button type="button" class="power" id="power" aria-label="Power on"></button></div>
+</div>
+<div class="neck"></div><div class="base"></div>
+</div>
+<div class="caption">
 <h1>Hair, nails, lashes, piercing &amp; lip filler in {e(C['town'])}</h1>
-<p>Appointment-only home studio in Tameside, near Manchester and Oldham. Drag her to spin her round, click to say hi, or pick an option to see what's on the menu.</p>
-<div class="hero-btns"><a class="btn pri" href="{e(C['booking_url'])}">Book a slot</a><a class="btn" href="prices/">See prices</a></div>
+<p>An appointment-only home beauty studio in {e(C['town'])}, near Manchester and Oldham.</p>
+<p><a class="btn" href="{e(C['booking_url'])}">Book a slot</a> <a class="btn ghost" href="services/">All treatments</a></p>
 </div>
-<div class="stage" id="stage">
-<p class="bubble" id="bubble" aria-live="polite">hiii! what are we getting done today?</p>
-<button type="button" class="avatar-btn" id="avatarBtn" aria-label="Say hi to the My Face mascot"><span class="bob">{AVATAR}</span></button>
-<p class="spin-hint" aria-hidden="true">&larr; drag to spin &rarr;</p>
-<nav class="pills" aria-label="Treatments">{pills}</nav>
-</div>
-</div></section>"""
+</main>"""
 
 
 # ---------------------------------------------------------------- build
@@ -411,40 +426,24 @@ def build():
         if os.path.isdir(p) and f not in ("assets", ".git") and os.path.exists(os.path.join(p, "index.html")):
             shutil.rmtree(p)
     town, city = C["town"], C["city"]
-    all_services = [(s, c) for c in CATEGORIES for s in c["services"]]
 
-    # Home
-    picks = ["gel-nails", "biab", "acrylic-nails", "lashes", "brows", "ear-piercing", "colour", "lip-filler"]
-    top8 = [(s["name"], from_price(s), f'{c["slug"]}/{s["slug"]}/') for k in picks for s, c in all_services if s["slug"] == k]
     page("", f"{C['brand']} | Nails, Hair, Lashes, Piercing & Lip Filler in {town}, {city}",
          f"{C['brand']} is an appointment-only home beauty studio in {town}, near Manchester and Oldham: gel and acrylic nails, BIAB, lashes, brows, hair, ear and nose piercing, and lip filler.",
-         "", box(f"{C['brand']}'s Blurbs",
-                 f"<h3>About me:</h3><p>[A few lines about you: how long you've been doing this, where you trained, and what clients can expect.] {C['brand']} is a home beauty studio in {town}, Tameside, for nails, hair, lashes, brows, piercing and lip filler.</p>"
-                 "<h3>Who I'd like to meet:</h3><p>Anyone after a fresh set, a new colour, a little sparkle in their ear or a bit of lip. Walk in as you, walk out as more you.</p>")
-         + box(f"{C['brand']}'s Top 8 <small>(treatments)</small>", cards(0, top8), lime=True)
-         + box("Latest Blog Entries <small>[offers &amp; news]</small>",
-               '<ul class="blog"><li><b class="lime">[OFFER]</b> e.g. new client discount on your first set of nails</li><li><b class="lime">[NEWS]</b> e.g. new piercing jewellery has landed</li><li><b class="lime">PRICES</b> <a href="prices/">see the full price list</a></li></ul>')
-         + box(f"{C['brand']}'s Friends Comments",
-               '<div class="comments">' + '<div class="cmt"><span class="ph av">[Pic]</span><div><b class="lime">[Client name]</b> <small>[date]</small><p>[Paste a real client review here]</p></div></div>' * 2 + '</div>', lime=True),
-         priority="1.0", hero=hero_html())
+         "", computer(), priority="1.0", home=True)
 
-    # All services
     page("services/", f"Treatments in {town}, {city} | {C['brand']}",
          f"All nail, hair, lash, brow, piercing and filler treatments at {C['brand']}, a home beauty studio in {town}.",
          "All treatments",
-         "".join(box(f'<a href="../{c["slug"]}/">{e(c["name"])}</a>', cards(1, [(s["name"], from_price(s), f'{c["slug"]}/{s["slug"]}/') for s in c["services"]]), lime=i % 2 == 1)
-                 for i, c in enumerate(CATEGORIES)) + cta(1),
+         "".join(sec(f'<a href="../{c["slug"]}/">{e(c["name"])}</a>', links(1, [(s["name"], from_price(s), f'{c["slug"]}/{s["slug"]}/') for s in c["services"]])) for c in CATEGORIES) + cta(1),
          crumbs=[("Treatments", "services/")], priority="0.9")
 
-    # Categories and services
     for c in CATEGORIES:
         cp = f'{c["slug"]}/'
         page(cp, f"{c['name']} in {town}, {city} | {C['brand']}",
              f"{c['blurb']} at {C['brand']}, a home studio in {town} near Manchester and Oldham. " + " ".join(s["short"] for s in c["services"])[:90],
              f"{c['name']} in {town}",
-             box(f"About {c['name'].lower()}", c["intro"])
-             + box(f"{c['name']} menu", cards(1, [(s["name"], from_price(s), f'{cp}{s["slug"]}/') for s in c["services"]]), lime=True)
-             + box(f"{c['name']} prices", "".join(f'<h3><a href="{s["slug"]}/">{e(s["name"])}</a></h3>' + price_table(s["prices"]) for s in c["services"]))
+             c["intro"] + sec("Menu", links(1, [(s["name"], from_price(s), f'{cp}{s["slug"]}/') for s in c["services"]]))
+             + sec("Prices", "".join(f'<h3><a href="{s["slug"]}/">{e(s["name"])}</a></h3>' + price_table(s["prices"]) for s in c["services"]))
              + cta(1),
              crumbs=[(c["name"], cp)], priority="0.9")
         for s in c["services"]:
@@ -454,78 +453,72 @@ def build():
             if s["slug"] in ("lashes", "brows"):
                 care = "lashes-and-brows"
             care_name = {"piercing": "piercing", "filler": "filler", "nails": "nail", "lashes-and-brows": "lash &amp; brow"}.get(care)
-            care_html = f'<p><a href="../../aftercare/{care}/">Read the {care_name} aftercare guide</a></p>' if care else ""
+            care_html = f'<p><a href="../../aftercare/{care}/">Read the {care_name} aftercare guide &rarr;</a></p>' if care else ""
             offers = [{"@type": "Offer", "name": n, "priceCurrency": "GBP", "price": p.split("£")[1].split(" ")[0]} for n, p in s["prices"] if "£" in p]
             page(sp, f"{s['name']} in {town}, {city} | {C['brand']}",
                  f"{s['name']} in {town}, {from_price(s)}. {s['short']} Appointment-only home studio near Manchester and Oldham.",
                  f"{s['name']} in {town}",
-                 box(f"About {s['name'].lower()}", s["intro"])
-                 + box("Prices", price_table(s["prices"]) + "<p><small>Prices are a guide and are confirmed at booking. <a href=\"../../prices/\">Full price list</a></small></p>", lime=True)
-                 + box("What to expect", "<ol>" + "".join(f"<li>{x}</li>" for x in s["expect"]) + f"</ol><p><b class=\"lime\">Time:</b> {e(s['time'])}</p>{care_html}")
-                 + box("FAQs", faq_html(s["faqs"]), lime=True)
-                 + (box(f"More {c['name'].lower()}", cards(2, others)) if others else "")
+                 s["intro"]
+                 + sec("Prices", price_table(s["prices"]) + "<p class=\"note\">Prices are a guide and are confirmed at booking.</p>")
+                 + sec("What to expect", "<ol>" + "".join(f"<li>{x}</li>" for x in s["expect"]) + f"</ol><p><strong>Time:</strong> {e(s['time'])}</p>{care_html}")
+                 + sec("FAQs", faq_html(s["faqs"]))
+                 + (sec(f"More {c['name'].lower()}", links(2, others)) if others else "")
                  + cta(2),
                  crumbs=[(c["name"], cp), (s["name"], sp)], priority="0.8",
                  schema=[{"@type": "Service", "name": s["name"], "serviceType": s["name"], "description": s["short"],
                           "provider": {"@id": C["site_url"] + "/#business"}, "areaServed": C["served"], "offers": offers}, faq_schema(s["faqs"])])
 
-    # Prices
-    rows = "".join(f'<h3><a href="../{c["slug"]}/">{e(c["name"])}</a></h3>' +
-                   "".join(f'<h4><a href="../{c["slug"]}/{s["slug"]}/">{e(s["name"])}</a></h4>' + price_table(s["prices"]) for s in c["services"])
+    rows = "".join(sec(f'<a href="../{c["slug"]}/">{e(c["name"])}</a>',
+                       "".join(f'<h3><a href="../{c["slug"]}/{s["slug"]}/">{e(s["name"])}</a></h3>' + price_table(s["prices"]) for s in c["services"]))
                    for c in CATEGORIES)
     page("prices/", f"Price List | Nails, Hair, Lashes & Filler in {town} | {C['brand']}",
          f"Prices for nails, hair, lashes, brows, waxing, piercing and lip filler at {C['brand']} in {town}, Manchester.",
-         "Price list", box("Prices", rows + "<p><small>Prices are a guide and are confirmed at booking.</small></p>") + cta(1),
+         "Price list", rows + "<p class=\"note\">Prices are a guide and are confirmed at booking.</p>" + cta(1),
          crumbs=[("Prices", "prices/")], priority="0.8")
 
-    # Areas
     page("areas/", f"Areas Covered | {C['brand']}", f"{C['brand']} is a home beauty studio in {town}, close to Manchester, Oldham and the rest of Tameside.",
-         "Areas we cover", box("Where clients come from", cards(1, [(a["name"], "", f'areas/{a["slug"]}/') for a in AREAS])),
+         "Areas we cover", links(1, [(a["name"], "", f'areas/{a["slug"]}/') for a in AREAS]),
          crumbs=[("Areas", "areas/")], priority="0.6")
     for a in AREAS:
         ap = f'areas/{a["slug"]}/'
-        menu = "".join(f'<h3><a href="../../{c["slug"]}/">{e(c["name"])} near {e(a["name"])}</a></h3><p>' +
-                       ", ".join(f'<a href="../../{c["slug"]}/{s["slug"]}/">{e(s["name"])}</a> ({from_price(s)})' for s in c["services"]) + "</p>"
-                       for c in CATEGORIES)
+        menu = "".join(sec(f'<a href="../../{c["slug"]}/">{e(c["name"])} near {e(a["name"])}</a>',
+                           links(2, [(s["name"], from_price(s), f'{c["slug"]}/{s["slug"]}/') for s in c["services"]])) for c in CATEGORIES)
         page(ap, f"Nails, Lashes, Hair, Piercing & Lip Filler near {a['name']} | {C['brand']}",
              f"Looking for nails, lashes, hair, piercing or lip filler near {a['name']}? {C['brand']} is an appointment-only home beauty studio in {town}.",
-             f"Beauty near {a['name']}",
-             box(f"{C['brand']} near {e(a['name'])}", a["body"]) + box("Treatments", menu, lime=True) + cta(2),
+             f"Beauty near {a['name']}", a["body"] + menu + cta(2),
              crumbs=[("Areas", "areas/"), (a["name"], ap)], priority="0.7")
 
-    # Aftercare
     page("aftercare/", f"Aftercare Guides | {C['brand']}", f"Aftercare advice for piercings, filler, lashes, brows and nails from {C['brand']} in {town}.",
-         "Aftercare guides", box("Look after your new look", cards(1, [(a["name"], "Read the guide", f'aftercare/{a["slug"]}/') for a in AFTERCARE])),
+         "Aftercare guides", links(1, [(a["name"], "", f'aftercare/{a["slug"]}/') for a in AFTERCARE]),
          crumbs=[("Aftercare", "aftercare/")], priority="0.6")
     for a in AFTERCARE:
         ap = f'aftercare/{a["slug"]}/'
         page(ap, f"{a['name']} | {C['brand']}", f"{a['name']}: how to look after your treatment from {C['brand']} in {town}.",
-             a["name"], box(a["name"], a["body"] + "<p><small>This is general advice. If you're worried about anything, get in touch or speak to a GP or pharmacist.</small></p>") + cta(2),
+             a["name"], a["body"] + "<p class=\"note\">This is general advice. If you're worried about anything, get in touch or speak to a GP or pharmacist.</p>" + cta(2),
              crumbs=[("Aftercare", "aftercare/"), (a["name"], ap)], priority="0.5")
 
-    # FAQ, about, gallery, contact, legal
     page("faq/", f"FAQs | {C['brand']}, {town}", f"Answers about booking, the home studio, deposits, patch tests and age limits at {C['brand']} in {town}.",
-         "Frequently asked questions", box("FAQs", faq_html(GENERAL_FAQS)) + cta(1),
+         "Frequently asked questions", faq_html(GENERAL_FAQS) + cta(1),
          crumbs=[("FAQ", "faq/")], schema=[faq_schema(GENERAL_FAQS)], priority="0.6")
     page("about/", f"About {C['owner']} | {C['brand']}, {town}", f"Meet {C['owner']}, the face behind {C['brand']}, a home beauty studio in {town}.",
-         f"About {C['owner']}", box("About me", "<p>[Your story: how you got into hair and beauty, your training and qualifications, and what makes an appointment with you different.]</p>")
-         + box("Qualifications &amp; insurance", "<ul><li>[QUALIFICATION]</li><li>[QUALIFICATION]</li><li>[INSURANCE / COUNCIL REGISTRATION]</li></ul>", lime=True) + cta(1),
+         f"About {C['owner']}", "<p>[Your story: how you got into hair and beauty, your training and qualifications, and what makes an appointment with you different.]</p>"
+         + sec("Qualifications &amp; insurance", "<ul><li>[QUALIFICATION]</li><li>[QUALIFICATION]</li><li>[INSURANCE / COUNCIL REGISTRATION]</li></ul>") + cta(1),
          crumbs=[("About", "about/")], priority="0.5")
     page("gallery/", f"Gallery | {C['brand']}, {town}", f"Photos of nails, hair, lashes, piercings and more by {C['brand']} in {town}.",
-         "Gallery", "".join(box(e(c["name"]), cards(1, [(s["name"], "", f'{c["slug"]}/{s["slug"]}/') for s in c["services"]]), lime=i % 2 == 1) for i, c in enumerate(CATEGORIES)),
+         "Gallery", '<div class="grid">' + "".join(f'<a class="ph" href="../{c["slug"]}/{s["slug"]}/">[{e(s["name"])} photo]</a>' for c in CATEGORIES for s in c["services"]) + "</div>",
          crumbs=[("Gallery", "gallery/")], priority="0.5")
     page("contact/", f"Contact & Booking | {C['brand']}, {town}", f"Book or get in touch with {C['brand']}, an appointment-only home beauty studio in {town}.",
          "Contact & booking",
-         box("Get in touch", f'<ul><li><b class="lime">Book:</b> <a href="{e(C["booking_url"])}">online booking</a></li><li><b class="lime">Call:</b> <a href="tel:{e(C["phone"])}">{e(C["phone"])}</a></li><li><b class="lime">Email:</b> <a href="mailto:{e(C["email"])}">{e(C["email"])}</a></li><li><b class="lime">Instagram:</b> <a href="{e(C["instagram"])}">message us</a></li></ul>')
-         + box("Where to find us", f"<p>{C['brand']} is a home studio in {town}, Tameside. It's appointment-only with no walk-ins, and the full address is sent once you've booked.</p><p>Close to <a href=\"../areas/manchester/\">Manchester</a>, <a href=\"../areas/oldham/\">Oldham</a> and the rest of Tameside.</p>", lime=True),
+         f'<ul class="plain"><li>Book: <a href="{e(C["booking_url"])}">online booking</a></li><li>Call: <a href="tel:{e(C["phone"])}">{e(C["phone"])}</a></li><li>Email: <a href="mailto:{e(C["email"])}">{e(C["email"])}</a></li><li>Instagram: <a href="{e(C["instagram"])}">message us</a></li></ul>'
+         + sec("Where to find us", f"<p>{C['brand']} is a home studio in {town}, Tameside. It's appointment-only with no walk-ins, and the full address is sent once you've booked.</p><p>Close to <a href=\"../areas/manchester/\">Manchester</a>, <a href=\"../areas/oldham/\">Oldham</a> and the rest of Tameside.</p>"),
          crumbs=[("Contact", "contact/")], priority="0.7")
     page("privacy/", f"Privacy Policy | {C['brand']}", f"How {C['brand']} uses and protects your information.", "Privacy policy",
-         box("Privacy", "<p>[Your privacy policy: what you collect (booking details, consultation and medical forms), why, how long you keep it, and how clients can ask for it or have it deleted under UK GDPR.]</p>"),
+         "<p>[Your privacy policy: what you collect (booking details, consultation and medical forms), why, how long you keep it, and how clients can ask for it or have it deleted under UK GDPR.]</p>",
          crumbs=[("Privacy", "privacy/")], priority="0.2")
     page("terms/", f"Terms & Booking Policy | {C['brand']}", f"Booking, deposit and cancellation terms at {C['brand']}.", "Terms & booking policy",
-         box("Terms", "<p>[Deposits, cancellations, late arrivals, refunds and redos.]</p>"), crumbs=[("Terms", "terms/")], priority="0.2")
-    page("404.html", f"Page not found | {C['brand']}", "This page couldn't be found.", "Oops, this page has left the network",
-         box("404", f'<p>That page doesn\'t exist. Try the <a href="{C["site_url"]}/">homepage</a> or the <a href="{C["site_url"]}/services/">treatments list</a>.</p>'))
+         "<p>[Deposits, cancellations, late arrivals, refunds and redos.]</p>", crumbs=[("Terms", "terms/")], priority="0.2")
+    page("404.html", f"Page not found | {C['brand']}", "This page couldn't be found.", "Error 404",
+         f'<p>That page doesn\'t exist. Try the <a href="{C["site_url"]}/">homepage</a> or the <a href="{C["site_url"]}/services/">treatments list</a>.</p>')
 
     with open(os.path.join(OUT, "sitemap.xml"), "w") as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
