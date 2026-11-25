@@ -39,14 +39,14 @@
       zvScreen.appendChild(os); os.inert = false;
       zv.hidden = false; requestAnimationFrame(function () { zv.classList.add('show'); });
       document.body.style.overflow = 'hidden';
-      zoomed = true; busy = false; logoff.focus();
+      zoomed = true; busy = false; bootUp();
     }, reduce ? 0 : 1000);
   }
   function zoomOut() {
     if (!zoomed || busy) return;
     busy = true; zv.classList.remove('show');
     setTimeout(function () {
-      zv.hidden = true; screen.insertBefore(os, screen.firstChild); os.inert = true; os.scrollTop = 0;
+      zv.hidden = true; closeAll(); screen.insertBefore(os, screen.firstChild); os.inert = true;
       document.body.style.overflow = '';
       rx = -10; ry = -24; rest(); scene.parentNode.classList.remove('zooming');
       setTimeout(function () { zoomed = false; busy = false; zoomBtn.focus(); }, reduce ? 0 : 1000);
@@ -55,10 +55,53 @@
   zoomBtn.addEventListener('click', zoomIn);
   scene.addEventListener('click', zoomIn);
   logoff.addEventListener('click', zoomOut);
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') zoomOut(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (os.querySelector('.app-win:not([hidden])')) { closeAll(); if (lastIcon) lastIcon.focus(); } else zoomOut();
+  });
+
+  // Boot text on the way in (once per visit)
+  var boot = document.getElementById('boot'), log = document.getElementById('bootlog'), hasBooted = false;
+  var LINES = ['MYFACE BIOS v2.001', 'checking lashes........ ok', 'checking nails......... ok',
+               'loading glitter.drv.... ok', 'mounting /hair /piercing /filler', '', 'welcome x'];
+  function bootUp() {
+    var first = os.querySelector('.app');
+    if (hasBooted || reduce) { hasBooted = true; first.focus(); return; }
+    hasBooted = true; boot.classList.add('on'); log.textContent = '';
+    var i = 0;
+    (function next() {
+      if (i >= LINES.length) return setTimeout(function () { boot.classList.remove('on'); first.focus(); }, 350);
+      log.textContent += LINES[i++] + '\n'; setTimeout(next, 150);
+    })();
+  }
+
+  // Clock
+  var clock = document.getElementById('clock');
+  function tick() { var d = new Date(); clock.textContent = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
+  tick(); setInterval(tick, 20000);
+
+  // Desktop windows
+  var lastIcon = null;
+  function closeAll() {
+    os.querySelectorAll('.app-win').forEach(function (w) { w.hidden = true; });
+    os.querySelectorAll('.app.open').forEach(function (a) { a.classList.remove('open'); });
+  }
+  os.querySelectorAll('.app').forEach(function (a) {
+    a.addEventListener('click', function (ev) {
+      var w = document.getElementById('win-' + a.dataset.app);
+      if (!w || !zoomed) return;
+      ev.preventDefault();
+      closeAll(); w.hidden = false; a.classList.add('open'); lastIcon = a;
+      w.querySelector('.close').focus();
+    });
+  });
+  os.querySelectorAll('.app-win .close').forEach(function (b) {
+    b.addEventListener('click', function () { closeAll(); if (lastIcon) lastIcon.focus(); });
+  });
 
   // Profile pic: drag to spin her through the 7 turnaround frames, click to hop
   var m = document.getElementById('mascot'), btn = document.getElementById('avatarBtn');
+  var bubble = document.getElementById('bubble'), li = 0, lines = ['drag me round x', 'stop spinning me lol', 'book in, i dare u', 'rawr means book now in emo'];
   var FR = 7, frame = 0, sx = null, sf = 0, moved = false;
   function show(f) { frame = ((Math.round(f) % FR) + FR) % FR; m.style.backgroundPositionX = (frame * 100 / (FR - 1)) + '%'; }
   btn.addEventListener('pointerdown', function (e) { sx = e.clientX; sf = frame; moved = false; btn.setPointerCapture(e.pointerId); });
@@ -67,7 +110,8 @@
   btn.addEventListener('pointercancel', function () { sx = null; });
   btn.addEventListener('click', function () {
     if (moved) { moved = false; return; }
-    show(0); m.classList.remove('hop'); void m.offsetWidth; m.classList.add('hop');
+    show(0); li = (li + 1) % lines.length; bubble.textContent = lines[li];
+    m.classList.remove('hop'); void m.offsetWidth; m.classList.add('hop');
   });
   btn.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowLeft') { show(frame - 1); e.preventDefault(); }
