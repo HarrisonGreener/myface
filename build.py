@@ -581,7 +581,7 @@ def computer():
 <div class="shell s-top"></div><div class="shell s-bot"></div><div class="shell s-left"></div><div class="shell s-right"></div>
 <div class="shell s-rear"><span class="vents"></span>{back_stickers()}</div>
 <div class="neck box">{box}</div>
-<div class="foot box">{box}</div>
+<div class="base3d box">{box}</div>
 <div class="kbd box"><div class="f fr"></div><div class="f bk"></div><div class="f lf"></div><div class="f rt"></div><div class="f tp keys">{keys}{sticker("star", "chromePink", 400, 8, 34, 12)}</div><div class="f bt"></div></div>
 <div class="shadow"></div>
 </div>
