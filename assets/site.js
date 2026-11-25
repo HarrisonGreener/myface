@@ -1,17 +1,39 @@
 // MyFace site script.
-// Stretch the tagline so it runs exactly from the m to the e of the logo, measured once fonts have loaded.
+// ---- Captcha intro (homepage, once per visit)
 (function () {
-  var tt = document.querySelectorAll('.tag-svg .tt'), src = document.querySelector('#mf-logo > g:nth-of-type(2)');
-  if (!tt.length || !src) return;
-  function fit() {
-    var probe = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    probe.setAttribute('viewBox', '26 24 530 200'); probe.style.cssText = 'position:absolute;left:-9999px;top:0;width:530px;height:200px';
-    var g = src.cloneNode(true); probe.appendChild(g); document.body.appendChild(probe);
-    var ts = g.querySelectorAll('text'), b = ts[ts.length - 1].getBBox(); probe.remove();
-    if (b.width > 50) tt.forEach(function (t) { t.setAttribute('x', b.x - 21); t.setAttribute('textLength', b.width + 12); });
+  var cap = document.getElementById('captcha');
+  if (!cap) return;
+  var seen = false; try { seen = sessionStorage.getItem('mf-human'); } catch (e) {}
+  if (seen) { cap.hidden = true; return; }
+  var check = document.getElementById('capCheck'), letters = document.querySelector('#capLetters use');
+  document.body.style.overflow = 'hidden';
+  setTimeout(function () { check.focus(); }, 50);
+  function pass() {
+    try { sessionStorage.setItem('mf-human', '1'); } catch (e) {}
+    cap.classList.add('done'); document.body.style.overflow = '';
+    setTimeout(function () { cap.hidden = true; }, 450);
   }
-  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(fit);
+  check.addEventListener('click', function () {
+    if (check.classList.contains('loading') || check.classList.contains('ok')) return;
+    check.classList.add('loading');
+    setTimeout(function () {
+      check.classList.remove('loading'); check.classList.add('ok'); check.setAttribute('aria-checked', 'true');
+      setTimeout(pass, 650);
+    }, 900);
+  });
+  document.getElementById('capSkip').addEventListener('click', function (e) { e.preventDefault(); pass(); });
+  // refresh: re-roll the wobble
+  var seed = 7;
+  document.getElementById('capShuffle').addEventListener('click', function () {
+    seed = (seed * 7 + 3) % 97;
+    var t = document.querySelector('#mf-wob-big feTurbulence'); if (t) t.setAttribute('seed', seed);
+  });
+  // audio: say it out loud where the browser supports speech
+  document.getElementById('capAudio').addEventListener('click', function () {
+    if (window.speechSynthesis) { var u = new SpeechSynthesisUtterance('my face. customise your avatar.'); u.rate = 0.85; speechSynthesis.speak(u); }
+  });
 })();
+
 (function () {
   // ---- Back buttons on inner pages: go back if we came from this site, else go to the parent page
   document.querySelectorAll('a[data-back]').forEach(function (a) {
