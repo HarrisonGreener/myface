@@ -12,7 +12,7 @@
   if (!scene) return;
   var rig = document.getElementById('rig'), screen = document.getElementById('screen'), os = document.getElementById('os'),
       zoomBtn = document.getElementById('zoomBtn'), zv = document.getElementById('zoomview'), zvScreen = document.getElementById('zvScreen'),
-      logoff = document.getElementById('logoff');
+      x = 0;
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var P = 1600, RX = -10, RY = -30, rx = RX, ry = RY, zoomed = false, busy = false;
   var store = { get: function (k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } },
@@ -84,7 +84,7 @@
       setTimeout(function () { zoomed = false; busy = false; zoomBtn.focus(); }, reduce ? 0 : 1000);
     }, reduce ? 0 : 350);
   }
-  logoff.addEventListener('click', zoomOut);
+  document.querySelectorAll('.logoff-btn').forEach(function (b) { b.addEventListener('click', zoomOut); });
 
   // ---- Boot text the first time you turn it on
   var boot = document.getElementById('boot'), log = document.getElementById('bootlog'), hasBooted = false;
@@ -106,30 +106,78 @@
   function tick() { var d = new Date(); clock.textContent = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
   tick(); setInterval(tick, 20000);
 
-  // ---- Windows
-  var lastIcon = null;
-  function closeAll() {
-    os.querySelectorAll('.app-win').forEach(function (w) { w.hidden = true; });
-    os.querySelectorAll('.app.open').forEach(function (a) { a.classList.remove('open'); });
+  // ---- Windows (several can be open; drag by the title bar; minimise and maximise)
+  var lastIcon = null, z = 10, tasks = document.getElementById('tasks'), opened = 0;
+  function wins() { return Array.prototype.slice.call(os.querySelectorAll('.app-win')); }
+  function task(w) { return tasks.querySelector('[data-win="' + w.id + '"]'); }
+  function focusWin(w) {
+    wins().forEach(function (x) { x.classList.remove('active'); var t = task(x); if (t) t.classList.remove('on'); });
+    w.hidden = false; w.style.zIndex = ++z; w.classList.add('active');
+    var t = task(w); if (t) t.classList.add('on');
   }
+  function closeWin(w) {
+    w.hidden = true; w.classList.remove('active', 'maxed');
+    var t = task(w); if (t) t.remove();
+    var icon = os.querySelector('.app[data-app="' + w.id.slice(4) + '"]'); if (icon) icon.classList.remove('open');
+    var top = wins().filter(function (x) { return !x.hidden; }).sort(function (p, q) { return q.style.zIndex - p.style.zIndex; })[0];
+    if (top) focusWin(top); else if (lastIcon) lastIcon.focus();
+  }
+  function closeAll() { wins().forEach(function (w) { if (!w.hidden || task(w)) closeWin(w); }); }
   function openWin(key, from) {
     var w = document.getElementById('win-' + key);
     if (!w) return false;
-    closeAll(); closeStart(); w.hidden = false;
-    var icon = os.querySelector('.app[data-app="' + key + '"]');
-    if (icon) icon.classList.add('open');
+    closeStart();
+    if (!task(w)) {
+      var t = document.createElement('button'); t.type = 'button'; t.className = 'task'; t.dataset.win = w.id; t.textContent = w.dataset.label;
+      t.addEventListener('click', function () { if (!w.hidden && w.classList.contains('active')) { w.hidden = true; t.classList.remove('on'); } else focusWin(w); });
+      tasks.appendChild(t);
+      if (!w.classList.contains('dragged') && os.clientWidth > 620) {     // cascade new windows
+        var off = (opened++ % 5) * 26;
+        w.hidden = false; w.classList.add('dragged');
+        w.style.left = Math.max(8, (os.clientWidth - w.offsetWidth) / 2 - 60 + off) + 'px';
+        w.style.top = Math.max(8, (os.clientHeight - 36 - w.offsetHeight) / 2 - 30 + off) + 'px';
+      }
+    }
+    focusWin(w);
+    var icon = os.querySelector('.app[data-app="' + key + '"]'); if (icon) icon.classList.add('open');
     lastIcon = from || icon; w.querySelector('.back').focus();
     return true;
   }
-  function backToDesktop() { closeAll(); if (lastIcon) lastIcon.focus(); }
+  function backToDesktop() { var w = os.querySelector('.app-win.active:not([hidden])'); if (w) closeWin(w); }
   os.querySelectorAll('.app').forEach(function (a) {
     a.addEventListener('click', function (ev) { if (zoomed && openWin(a.dataset.app, a)) ev.preventDefault(); });
   });
-  os.querySelectorAll('.app-win .close, .app-win .wback').forEach(function (b) { b.addEventListener('click', backToDesktop); });
+  wins().forEach(function (w) {
+    w.addEventListener('pointerdown', function () { if (!w.classList.contains('active')) focusWin(w); });
+    w.querySelector('.close').addEventListener('click', function () { closeWin(w); });
+    w.querySelector('.wback').addEventListener('click', function () { closeWin(w); });
+    w.querySelector('.min').addEventListener('click', function () { w.hidden = true; w.classList.remove('active'); var t = task(w); if (t) t.classList.remove('on'); });
+    w.querySelector('.max').addEventListener('click', function () { w.classList.toggle('maxed'); });
+    var bar = w.querySelector('.titlebar'), drag = null;
+    bar.addEventListener('dblclick', function (e) { if (!e.target.closest('button')) w.classList.toggle('maxed'); });
+    bar.addEventListener('pointerdown', function (e) {
+      if (e.target.closest('button') || w.classList.contains('maxed') || os.clientWidth <= 620) return;
+      var r = w.getBoundingClientRect(), o = os.getBoundingClientRect();
+      w.classList.add('dragged'); w.style.left = (r.left - o.left) + 'px'; w.style.top = (r.top - o.top) + 'px';
+      drag = { x: e.clientX, y: e.clientY, l: r.left - o.left, t: r.top - o.top }; bar.setPointerCapture(e.pointerId);
+    });
+    bar.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      var maxL = os.clientWidth - 80, maxT = os.clientHeight - 36 - 34;
+      w.style.left = Math.min(maxL, Math.max(80 - w.offsetWidth, drag.l + e.clientX - drag.x)) + 'px';
+      w.style.top = Math.min(maxT, Math.max(0, drag.t + e.clientY - drag.y)) + 'px';
+    });
+    bar.addEventListener('pointerup', function () { drag = null; });
+  });
+  // single click selects an icon on the desktop background, like a real OS
+  os.addEventListener('pointerdown', function (e) {
+    os.querySelectorAll('.app.sel').forEach(function (a) { a.classList.remove('sel'); });
+    var a = e.target.closest('.app'); if (a) a.classList.add('sel');
+  });
 
   // ---- Start menu
   var startBtn = document.getElementById('startBtn'), startMenu = document.getElementById('startmenu');
-  function closeStart() { startMenu.hidden = true; startBtn.setAttribute('aria-expanded', 'false'); }
+  function closeStart() { if (!startMenu) return; startMenu.hidden = true; startBtn.setAttribute('aria-expanded', 'false'); }
   startBtn.addEventListener('click', function (e) {
     e.stopPropagation();
     var open = startMenu.hidden; closeStart();
@@ -143,7 +191,7 @@
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape' || !zoomed) return;
     if (!startMenu.hidden) { closeStart(); startBtn.focus(); }
-    else if (os.querySelector('.app-win:not([hidden])')) backToDesktop();
+    else if (os.querySelector('.app-win.active:not([hidden])')) backToDesktop();
     else zoomOut();
   });
 
