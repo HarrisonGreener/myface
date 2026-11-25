@@ -311,7 +311,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <body{' class="home"' if home else ''}>
 {LOGO_DEFS}
 <a class="skip" href="#content">Skip to content</a>
-<header class="top"><div class="wrap bar"><div class="brand">{logo(d)}<svg class="tag-svg" viewBox="28 0 460 44" role="img" aria-label="{e(C['tagline'])}"><text class="tt" x="70" y="33" textLength="382" lengthAdjust="spacingAndGlyphs" font-family="Pirata One, Old English Text MT, serif" font-size="40" fill="#1c1a1e">{e(C['tagline'])}</text></svg></div><nav class="nav" aria-label="Main">{navh}</nav><a class="btn" href="{e(C['booking_url'])}">Book</a></div></header>
+<header class="top"><div class="wrap bar"><div class="brand">{logo(d)}<svg class="tag-svg" viewBox="28 0 460 44" role="img" aria-label="{e(C['tagline'])}"><text class="tt" x="258" y="32" text-anchor="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="500" letter-spacing="1" font-size="34" fill="#1c1a1e">{e(C['tagline'])}</text></svg></div><nav class="nav" aria-label="Main">{navh}</nav><a class="btn" href="{e(C['booking_url'])}">Book</a></div></header>
 {body}
 <footer class="foot"><div class="wrap">
 <p>{e(C['brand'])} · home beauty studio in {e(C['town'])} · near {area_links}</p>
