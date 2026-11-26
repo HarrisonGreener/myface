@@ -743,3 +743,11 @@
     if (e.key === '/' && !layer && !/INPUT|TEXTAREA/.test(document.activeElement.tagName) && !document.body.classList.contains('mf-zoomed')) { e.preventDefault(); open(); }
   });
 })();
+
+// ---- The sliding type bands carry on from where they were (no restart when you move between pages)
+(function () {
+  var tracks = document.querySelectorAll('.band .track'); if (!tracks.length) return;
+  var t0 = null; try { t0 = +sessionStorage.getItem('mf-bands'); if (!t0) { t0 = Date.now(); sessionStorage.setItem('mf-bands', t0); } } catch (e) { t0 = Date.now(); }
+  var ago = (Date.now() - t0) / 1000;
+  tracks.forEach(function (t) { t.style.animationDelay = '-' + ago.toFixed(2) + 's'; });
+})();
