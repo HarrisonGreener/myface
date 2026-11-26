@@ -1030,3 +1030,41 @@ html.mf-phone .pop95{left:50%;top:70px}
 
   .home .scene{height:calc(100svh - var(--top-h,90px) - 98px);min-height:380px}
 }
+
+/* ==== Neon cursors on the site (mouse only): Windows-style pixel cursors in neon green. The MyFace 95 desktop keeps its white ones. ==== */
+@media (hover:hover) and (pointer:fine){
+  html{cursor:url(ncur-arrow.svg) 0 0,default}
+  body :not(.os,.os *){cursor:inherit}
+  :is(a,button,summary,label,select,[role=button],.cap-check,.cap-ico,.pie-item,.pop-x,.pop-btns button,.ms-player button,.zoom-btn,.scene:not(.has-deck)):not(.os,.os *){cursor:url(ncur-hand.svg) 8 0,pointer!important}
+  :is(input:not([type=checkbox],[type=radio],[type=button],[type=submit]),textarea,[contenteditable]):not(.os,.os *){cursor:url(ncur-text.svg) 5 11,text!important}
+  :is(.scene.has-deck,.deck3d canvas,.avatar-btn,.pic):not(.os,.os *){cursor:url(ncur-grab.svg) 12 12,grab!important}
+  :is(.scene.has-deck,.deck3d canvas,.avatar-btn,.pic):not(.os,.os *):active{cursor:url(ncur-grabbing.svg) 12 12,grabbing!important}
+  :is(:disabled,[aria-disabled=true]):not(.os,.os *){cursor:url(ncur-no.svg) 10 10,not-allowed!important}
+  [title]:not(a,button):not(.os,.os *){cursor:url(ncur-help.svg) 0 0,help}
+}
+/* homepage on desktop too: thin readable banner under the header (big bands stay behind the computer) */
+@media (min-width:621px){
+  .home .home-bands{display:block;margin:0}
+  .home .home-bands .band.b2{height:60px}
+  .home .home-bands .band.thin{height:34px}
+  .home .scene{height:calc(100svh - var(--top-h,90px) - 94px);min-height:420px}
+}
+/* thin bands: content is 6x longer now (no gaps), so slow the loop to keep the same speed */
+.pg-bands .band.b2 .track{animation-duration:210s}
+.pg-bands .band.thin .track{animation-duration:360s}
+/* menu centre: the m+F mark instead of the pixel portrait */
+.pie-head{background:#fff;display:grid;place-items:center}
+.pie-head svg{width:84%;height:84%;display:block}
+
+/* MyFace 95 desktop: old-style pixel cursors for typing and dragging too */
+.os :is(input:not([type=checkbox],[type=radio],[type=button],[type=submit]),textarea,[contenteditable]){cursor:url(cursor-text.svg) 7 15,text}
+.os :is(.cz-fig,.pic,.avatar-btn,[draggable=true]){cursor:url(cursor-grab.svg) 16 8,grab}
+.os :is(.cz-fig,.pic,.avatar-btn,[draggable=true]):active{cursor:url(cursor-grabbing.svg) 16 12,grabbing}
+.os .cz-fig .hs,.os .pt-sw,.os .pt-thumb,.os .cz-sw,.os .cz-turn{cursor:url(cursor-hand.svg) 6 0,pointer}
+/* ==== Brutalist concrete over the moving bands, and a soft lift behind the computer so it reads clearly ==== */
+/* texture sits on the stripes themselves, so the words stay crisp on top of it */
+.bands>.band{background-image:url(concrete.jpg?v=4);background-size:max(100vw,1600px) auto;background-blend-mode:multiply}
+.bands>.band.b2{background-position:center 33%}.bands>.band.b3{background-position:center 66%}
+.bands::before{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;
+  background:radial-gradient(ellipse 34% 46% at 50% 54%,rgba(236,232,227,.55) 0%,rgba(236,232,227,.28) 55%,rgba(236,232,227,0) 100%)}
+.bands>.band.b1{background-color:var(--bg)}

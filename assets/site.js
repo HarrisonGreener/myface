@@ -623,7 +623,7 @@
     }
     if (ring) ring.remove();
     ring = document.createElement('div'); ring.className = 'pie';
-    var head = document.createElement('span'); head.className = 'pie-head'; ring.appendChild(head);
+    var head = document.createElement('span'); head.className = 'pie-head'; head.innerHTML = '<svg aria-hidden="true"><use href="#mf-mono" width="100%" height="100%"/></svg>'; ring.appendChild(head);
     if (nested) ring.dataset.nested = '1';
     var list = items.slice(); if (nested) list.push({ label: 'Back', back: true });
     var top = list.shift(), L = [], R = [], made = [];
