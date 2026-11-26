@@ -19,7 +19,7 @@
   // shown when you arrive or refresh, but not when moving between the site's own pages
   var navType = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0] || {}).type;
   var ref = document.referrer, internal = ref && ref.indexOf(location.origin + location.pathname.replace(/[^/]*$/, '')) === 0;   // came from one of the site's pages
-  if (navType !== 'reload' && (navType === 'back_forward' || internal)) { cap.hidden = true; return; }
+  if (document.documentElement.classList.contains('no-cap') || (navType !== 'reload' && (navType === 'back_forward' || internal))) { cap.hidden = true; return; }
   var check = document.getElementById('capCheck'), letters = document.querySelector('#capLetters use');
   document.body.style.overflow = 'hidden';
   setTimeout(function () { check.focus(); }, 50);

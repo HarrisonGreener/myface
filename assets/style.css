@@ -889,3 +889,4 @@ body:not(.home) .crumbs a{color:#c2246f}
   .page-win .sec h2{font-size:26px}
   .pg-bands .band.thin{height:36px}
 }
+html.no-cap .captcha-intro{display:none!important}
