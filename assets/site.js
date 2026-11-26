@@ -411,7 +411,7 @@
     var lx = Math.min(Math.max(cx, 8 - minX * k), sr.width - 8 - maxX * k), ly = Math.min(Math.max(cy, 8 - minY * k), sr.height - 8 - maxY * k);
     ring.style.left = lx + 'px'; ring.style.top = ly + 'px';
     czRingEl = ring;
-    requestAnimationFrame(function () { ring.classList.add('open'); });
+    void ring.offsetWidth; ring.classList.add('open');            // force a layout so the pop-out animates
     var first = ring.querySelector('a'); if (first) first.focus({ preventScroll: true });
   }
   function czSpinTo(target, done) {                      // turn frame by frame, like a character select
