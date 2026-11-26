@@ -315,14 +315,14 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bagel+Fat+One&family=Pixelify+Sans:wght@400;600&family=Inter:wght@400;600&family=VT323&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{rel(d, 'assets/style.css')}?v=62">
+<link rel="stylesheet" href="{rel(d, 'assets/style.css')}?v=63">
 <script>document.documentElement.className='js'</script>
 <script type="application/ld+json">{ld}</script>
 </head>
 <body{' class="home"' if home else ''}>
 {LOGO_DEFS}
 <a class="skip" href="#content">Skip to content</a>
-<header class="top"><div class="wrap bar"><div class="brand">{logo(d)}<svg class="tag-svg" viewBox="28 0 460 44" role="img" aria-label="{e(C['tagline'])}"><text class="tt" x="70" y="32" textLength="382" lengthAdjust="spacing" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="500" letter-spacing="1" font-size="34" fill="#1c1a1e">{e(C['tagline'])}</text></svg></div><nav class="nav" aria-label="Main">{navh}</nav><button type="button" class="orb-btn" id="menuBtn" aria-expanded="false" aria-controls="bubbleNav"><span class="pk"></span>Menu</button><a class="btn" href="{e(C['booking_url'])}"><span class="pk"></span>Book</a><button type="button" class="orb-btn search-btn" id="searchBtn" aria-label="Search the site" data-index="{rel(d, 'assets/search.json')}?v=62" data-root="{rel(d, '')}"><svg class="mg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/></svg><span class="sl">Search</span></button></div></header>
+<header class="top"><div class="wrap bar"><div class="brand">{logo(d)}<svg class="tag-svg" viewBox="28 0 460 44" role="img" aria-label="{e(C['tagline'])}"><text class="tt" x="70" y="32" textLength="382" lengthAdjust="spacing" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="500" letter-spacing="1" font-size="34" fill="#1c1a1e">{e(C['tagline'])}</text></svg></div><nav class="nav" aria-label="Main">{navh}</nav><button type="button" class="orb-btn" id="menuBtn" aria-expanded="false" aria-controls="bubbleNav"><span class="pk"></span>Menu</button><a class="btn" href="{e(C['booking_url'])}"><span class="pk"></span>Book</a><button type="button" class="orb-btn search-btn" id="searchBtn" aria-label="Search the site" data-index="{rel(d, 'assets/search.json')}?v=63" data-root="{rel(d, '')}"><svg class="mg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/></svg><span class="sl">Search</span></button></div></header>
 <nav class="bubble-nav" id="bubbleNav" aria-label="Menu" hidden><ul>{bubbles}</ul></nav>
 {body}
 <footer class="foot"><div class="wrap">
@@ -331,7 +331,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <p>&copy;2026 {e(C['brand'])}</p>
 <p class="credit">Designed &amp; built by <a href="https://harrisongreener.co.uk" target="_blank" rel="noopener">Harrison Greener</a></p>
 </div></footer>
-<script src="{rel(d, 'assets/site.js')}?v=62" defer></script>
+<script src="{rel(d, 'assets/site.js')}?v=63" defer></script>
 </body>
 </html>
 """
@@ -569,14 +569,66 @@ def customiser():
         panels += (f'<section class="cz-part" data-part="{group}" hidden><h3>{e(label)}</h3><ul class="cz-list">{rows}</ul>'
                    f'<p class="cz-actions"><a class="cz-book" href="{e(C["booking_url"])}"><span class="pk"></span>Book this</a>'
                    f'<button type="button" class="cz-reset">&larr; pick another part</button></p></section>')
-    return (f'<div class="cz"><div class="addr">Address <span>{e(C["site_url"])}/customise</span></div>'
-            f'<div class="cz-main"><div class="cz-stage"><p class="cz-hud">CUSTOMISE YOUR AVATAR</p>'
+    # thumbnails: crop each part out of her front view (frame 0 of the turnaround sprite)
+    FW, FH, T = 380, 1007, 58
+    thumbs, done = "", set()
+    for key, label, (x, y, w, h), items in AVATAR_PARTS:
+        group = label.lower().replace(" & ", "-").replace(" ", "-")
+        if group in done or key in ("ear", "navel", "hand-r"):
+            continue
+        done.add(group)
+        cx, cy = (x + w / 2) / 100 * FW, (y + h / 2) / 100 * FH
+        side = max(w / 100 * FW, h / 100 * FH, 46) * 1.35
+        k = T / side                                             # px of thumbnail per px of frame
+        bx, by = -(cx - side / 2) * k, -(cy - side / 2) * k
+        thumbs += (f'<button type="button" class="pt-thumb" data-part="{group}" title="{e(label)}" aria-label="{e(label)}" '
+                   f'style="background-size:{FW * 6 * k:.1f}px {FH * k:.1f}px;background-position:{bx:.1f}px {by:.1f}px"></button>')
+    tool = lambda d: f'<span class="pt-tool" aria-hidden="true"><svg viewBox="0 0 16 16">{d}</svg></span>'
+    tools = "".join(tool(d) for d in [
+        '<path d="M8 1l2 4 4 .5-3 3 1 4.5-4-2-4 2 1-4.5-3-3 4-.5z" fill="none" stroke="#000" stroke-dasharray="1.5 1"/>',
+        '<rect x="2" y="3" width="12" height="10" fill="none" stroke="#000" stroke-dasharray="2 1.5"/>',
+        '<path d="M3 11l6-7 4 3-6 7H4z" fill="#f6e6a8" stroke="#000"/>',
+        '<path d="M3 8l5-5 5 5-5 5z" fill="#3a6fd8" stroke="#000"/><path d="M12 9c1 1.5 2 3 0 3" fill="none" stroke="#3a6fd8"/>',
+        '<path d="M11 2l3 3-7 7-3 1 1-3z" fill="#7fd0e8" stroke="#000"/>',
+        '<circle cx="6.5" cy="6.5" r="4" fill="#cfe6ff" stroke="#000"/><path d="M9.5 9.5l5 5" stroke="#000" stroke-width="2"/>',
+        '<path d="M3 13l1-3 7-7 2 2-7 7z" fill="#ffd34d" stroke="#000"/><path d="M3 13l1-3 2 2z" fill="#ff4fa3"/>',
+        '<path d="M7 1h2v7H7z" fill="#c9a46b" stroke="#000"/><path d="M6 8h4l1 6H5z" fill="#ff4fa3" stroke="#000"/>',
+        '<path d="M4 6h5v8H4z" fill="#3a6fd8" stroke="#000"/><circle cx="12" cy="3" r=".7"/><circle cx="13.5" cy="5" r=".7"/><circle cx="11.5" cy="5.5" r=".7"/>',
+        '<text x="8" y="13.5" font-size="13" font-family="Georgia,serif" font-weight="700" text-anchor="middle">A</text>',
+        '<path d="M3 3l10 10" stroke="#000" stroke-width="1.5"/>',
+        '<path d="M5 2c6 2-4 8 2 12" fill="none" stroke="#000" stroke-width="1.5"/>',
+        '<rect x="2" y="4" width="12" height="8" fill="none" stroke="#000" stroke-width="1.5"/>',
+        '<path d="M3 13L6 3h8l-3 10z" fill="none" stroke="#000" stroke-width="1.5"/>',
+        '<ellipse cx="8" cy="8" rx="6" ry="4" fill="none" stroke="#000" stroke-width="1.5"/>',
+        '<rect x="2" y="4" width="12" height="8" rx="3" fill="none" stroke="#000" stroke-width="1.5"/>'])
+    hair = [("", "Black &amp; pink", "linear-gradient(135deg,#1c1a1e 55%,#ff4fa3 55%)"), ("green", "Green", "#7cff3a"),
+            ("blue", "Ice blue", "#a9cdf2"), ("red", "Red", "#c2321c"), ("blonde", "Blonde", "#f0d48e")]
+    hairsw = "".join(f'<button type="button" class="pt-sw pt-hair" data-hair="{k}" style="background:{c}" title="Hair: {n}" aria-label="Hair colour: {n}"></button>' for k, n, c in hair)
+    bgcols = ["#000000", "#808080", "#800000", "#808000", "#008000", "#008080", "#000080", "#800080", "#ff4fa3",
+              "#ffffff", "#c0c0c0", "#ff0000", "#ffff00", "#00ff00", "#00ffff", "#0000ff", "#ff00ff", "#ffd1ea"]
+    bgsw = "".join(f'<button type="button" class="pt-sw pt-bg" data-bg="{c}" style="background:{c}" aria-label="Star colour {c}"></button>' for c in bgcols)
+    star = ('<svg class="pt-burst" viewBox="0 0 400 400" aria-hidden="true"><defs>'
+            '<pattern id="ptDots" width="11" height="11" patternUnits="userSpaceOnUse"><circle cx="5.5" cy="5.5" r="3.4" fill="currentColor"/></pattern>'
+            '<radialGradient id="ptFade"><stop offset=".25" stop-color="#fff"/><stop offset="1" stop-color="#000"/></radialGradient>'
+            '<mask id="ptMask"><rect width="400" height="400" fill="url(#ptFade)"/></mask></defs>'
+            '<polygon points="200,8 247,140 392,145 277,232 318,380 200,295 82,380 123,232 8,145 153,140" fill="url(#ptDots)" mask="url(#ptMask)"/></svg>')
+    deco = ('<svg class="pt-bang" viewBox="0 0 60 90" aria-hidden="true"><path d="M8 2l14 3-6 52-10-2zM34 8l13 4-12 44-9-3z"/><circle cx="12" cy="72" r="7"/><circle cx="30" cy="70" r="6"/></svg>'
+            '<svg class="pt-spark" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 0C54 38 62 46 100 50 62 54 54 62 50 100 46 62 38 54 0 50 38 46 46 38 50 0z"/></svg>'
+            '<img class="pt-cursor" src="assets/cursor.svg" alt="" aria-hidden="true">')
+    return (f'<div class="cz paint">'
+            f'<div class="pt-menu" aria-hidden="true"><span><u>F</u>ile</span><span><u>E</u>dit</span><span><u>V</u>iew</span><span><u>I</u>mage</span><span><u>C</u>olors</span><span><u>H</u>elp</span></div>'
+            f'<div class="pt-body"><div class="pt-tools">{tools}<div class="pt-mini" aria-hidden="true"><span class="pt-mini-fig"></span></div></div>'
+            f'<div class="pt-well"><div class="pt-parts" aria-label="Parts">{thumbs}</div>'
+            f'<div class="cz-stage pt-canvas">{star}{deco}'
             f'<div class="cz-fig" id="czFig" role="img" aria-label="{e(C["owner"])}\'s avatar: black and pink hair, studded denim vest, cargo trousers">{spots}</div>'
             f'<div class="cz-rot"><button type="button" class="cz-turn" data-d="-1" aria-label="Turn left">&#9664;</button>'
-            f'<span>drag to turn</span><button type="button" class="cz-turn" data-d="1" aria-label="Turn right">&#9654;</button></div></div>'
-            f'<aside class="cz-panel" aria-live="polite"><section class="cz-part cz-intro" data-part="" ><h3>Pick a part</h3>'
-            f'<p>Click part of her to customise it, or choose below.</p><div class="cz-chips">{chips}</div></section>{panels}</aside></div></div>')
-
+            f'<button type="button" class="cz-turn" data-d="1" aria-label="Turn right">&#9654;</button></div></div>'
+            f'<div class="pt-scroll" aria-hidden="true"><i>&#9650;</i><b></b><i>&#9660;</i></div></div></div>'
+            f'<div class="pt-palette"><div class="pt-cur" aria-hidden="true"><i class="pt-fg"></i><i class="pt-bgc"></i></div>'
+            f'<div class="pt-group"><span>Hair</span><div class="pt-row">{hairsw}</div></div>'
+            f'<div class="pt-group pt-grid"><span>Background</span><div class="pt-row2">{bgsw}</div></div></div>'
+            f'<div class="pt-status"><span>For Help, click a part of her, or Help Topics on the Help Menu.</span><span class="pt-frame" id="ptFrame">1/6</span></div>'
+            f'<aside class="cz-panel" hidden>{panels}</aside></div>')
 
 def desktop():
     """The computer's desktop: app icons, pop-up windows and a taskbar."""
@@ -604,7 +656,7 @@ def desktop():
                  f'<li><a href="{e(C["instagram"])}">Instagram</a></li></ul><p class="win-foot"><a href="contact/">Contact page &rarr;</a></p>'))
     icons = "".join(f'<li><a class="app" href="{e(href)}" data-app="{k}">{icon(ic)}<span>{e(label)}</span></a></li>' for k, label, ic, href, _ in apps)
     wins = "".join(f'<section class="win app-win{" web" if k == "web" else ""}" id="win-{k}" data-label="{e(label)}" hidden aria-label="{e(label)}">'
-                   f'<div class="titlebar"><button type="button" class="back wback">&larr; Back</button><span class="tpath">{e(label)}</span><span class="wctl"><button type="button" class="min" aria-label="Minimise {e(label)}">_</button><button type="button" class="max" aria-label="Maximise {e(label)}">&#9633;</button><button type="button" class="close" aria-label="Close {e(label)}">&times;</button></span></div>'
+                   f'<div class="titlebar"><button type="button" class="back wback">&larr; Back</button><span class="tpath">{"avatar.bmp - Paint" if k == "avatar" else e(label)}</span><span class="wctl"><button type="button" class="min" aria-label="Minimise {e(label)}">_</button><button type="button" class="max" aria-label="Maximise {e(label)}">&#9633;</button><button type="button" class="close" aria-label="Close {e(label)}">&times;</button></span></div>'
                    f'<div class="win-body">{body}</div></section>' for k, label, ic, href, body in apps)
     menu = "".join(f'<li><a href="{e(href)}" data-app="{k}">{icon(ic, "mic")}{e(label)}</a></li>' for k, label, ic, href, _ in apps)
     menu += "".join(f'<li><a href="{h}">{icon(ic, "mic")}{n}</a></li>' for n, h, ic in
@@ -659,7 +711,7 @@ def computer():
 </div>
 </div>
 <script type="importmap">{{"imports":{{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}}}</script>
-<script type="module">import {{ createDeck }} from './assets/deck.js?v=62';
+<script type="module">import {{ createDeck }} from './assets/deck.js?v=63';
 try {{ window.MFDeck = createDeck(document.getElementById('deck3d'), {{ phone: matchMedia('(max-width: 620px)').matches && /[?&]phone\b/.test(location.search) }}); window.dispatchEvent(new Event('mfdeck')); }} catch (e) {{ console.warn('3D computer unavailable', e); }}</script>
 </div>
 <div class="zoomview" id="zoomview" hidden><div class="zv-mon" id="zvMon"><div class="zv-screen" id="zvScreen"><span class="glare"></span></div></div>

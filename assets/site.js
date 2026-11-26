@@ -407,6 +407,7 @@
     czFrame = ((f % CZ_FRAMES) + CZ_FRAMES) % CZ_FRAMES;
     czFig.style.backgroundPosition = (czFrame * 100 / (CZ_FRAMES - 1)) + '% 0';
     czFig.classList.toggle('front', czFrame === 0);
+    var pf = document.getElementById('ptFrame'); if (pf) pf.textContent = (czFrame + 1) + '/' + CZ_FRAMES;
   }
   // clicking a part pops a ring of bubbles out of that spot (same style as the site menu)
   var czRingEl = null;
@@ -481,7 +482,10 @@
   var czHair = store.get('mf-hair') || '';
   function czSetHair(key) {
     czHair = key || ''; store.set('mf-hair', czHair);
-    czFig.style.backgroundImage = 'url(assets/avatar-turn' + (czHair ? '-' + czHair : '') + '.webp?v=55)';
+    var url = 'url(assets/avatar-turn' + (czHair ? '-' + czHair : '') + '.webp?v=55)';
+    czFig.style.backgroundImage = url; if (cz) cz.style.setProperty('--sprite', url);
+    if (cz) cz.querySelectorAll('.pt-hair').forEach(function (b) { b.classList.toggle('on', b.dataset.hair === czHair); });
+    var fg = cz && cz.querySelector('.pt-fg'), sw = cz && cz.querySelector('.pt-hair[data-hair="' + czHair + '"]'); if (fg && sw) fg.style.background = sw.style.background;
   }
   var czPreloaded = false;
   function czPreload() { if (czPreloaded) return; czPreloaded = true; CZ_HAIR.forEach(function (c) { if (c.key) new Image().src = 'assets/avatar-turn-' + c.key + '.webp?v=55'; }); }
@@ -503,6 +507,15 @@
     cz.querySelectorAll('.cz-chip').forEach(function (c) {
       c.addEventListener('click', function () { czSpinTo(0, function () { czPart(c.dataset.part); }); });
     });
+    // Paint bits: part thumbnails, hair colours, background (star burst) colours
+    cz.querySelectorAll('.pt-thumb').forEach(function (t) {
+      t.addEventListener('click', function (e) { e.stopPropagation(); czSpinTo(0, function () { czPart(t.dataset.part); }); });
+    });
+    cz.querySelectorAll('.pt-hair').forEach(function (b) { b.addEventListener('click', function () { czSetHair(b.dataset.hair); }); });
+    cz.querySelectorAll('.pt-bg').forEach(function (b) {
+      b.addEventListener('click', function () { cz.style.setProperty('--burst', b.dataset.bg); var bc = cz.querySelector('.pt-bgc'); if (bc) bc.style.background = b.dataset.bg; });
+    });
+    czSetHair(czHair);
     cz.querySelectorAll('.cz-reset').forEach(function (b) { b.addEventListener('click', function () { czPart(''); }); });
     cz.querySelectorAll('.cz-turn').forEach(function (b) { b.addEventListener('click', function () { czClose(); czSet(czFrame + (+b.dataset.d)); }); });
     cz.querySelector('.cz-stage').addEventListener('click', function (e) { if (czRingEl && !czRingEl.contains(e.target)) czClose(); });
