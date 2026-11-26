@@ -190,6 +190,8 @@
   }
   document.querySelectorAll('.logoff-btn').forEach(function (b) { b.addEventListener('click', zoomOut); });
 
+  // remember which way the computer was facing when you leave, so Back returns to the same view
+  window.addEventListener('pagehide', function () { if (D && D.getView) store.set('mf-view', JSON.stringify(D.getView())); });
   function useDeck(d) {
     D = d; scene.classList.add('has-deck');
     var hint = document.getElementById('hint'); if (D.isPhone) { zv.classList.add('flip'); if (hint) hint.textContent = 'spin it · tap a key to go there'; }
@@ -594,6 +596,7 @@
     setTimeout(function () { l.remove(); }, 200);
     btn.setAttribute('aria-expanded', 'false'); document.documentElement.classList.remove('bn-open'); btn.focus();
   }
+  var instant = false;
   var ringLabel = '';                                    // which ring is showing ('' = the main one)
   function show(items, nested, label) {
     ringLabel = nested ? (label || '') : '';
@@ -601,7 +604,7 @@
       layer = document.createElement('div'); layer.className = 'bn-layer'; layer.setAttribute('role', 'dialog'); layer.setAttribute('aria-label', 'Menu');
       layer.addEventListener('click', function (e) { if (e.target === layer) close(); });
       document.body.appendChild(layer); document.documentElement.classList.add('bn-open');
-      requestAnimationFrame(function () { layer && layer.classList.add('open'); });
+      if (instant) layer.classList.add('open', 'nt'); else requestAnimationFrame(function () { layer && layer.classList.add('open'); });
       btn.setAttribute('aria-expanded', 'true');
     }
     if (ring) ring.remove();
@@ -643,7 +646,8 @@
     var w = maxX - minX, h = maxY - minY, k = Math.min(1, (innerWidth - 20) / w, (innerHeight - 20) / h);
     ring.style.setProperty('--k', k);
     ring.style.left = (innerWidth / 2 - (minX + w / 2) * k) + 'px'; ring.style.top = (innerHeight / 2 - (minY + h / 2) * k) + 'px';
-    ring.classList.remove('open'); void ring.offsetWidth; ring.classList.remove('nt'); ring.classList.add('open');
+    if (!instant) { ring.classList.remove('open'); void ring.offsetWidth; ring.classList.remove('nt'); ring.classList.add('open'); }
+    else setTimeout(function () { ring && ring.classList.remove('nt'); layer && layer.classList.remove('nt'); }, 50);
     made[0].focus({ preventScroll: true });
   }
   btn.addEventListener('click', function () { layer ? close() : show(ROOT, false); });
@@ -656,6 +660,11 @@
     var sub = m.ring && ROOT.filter(function (it) { return it.label === m.ring && it.sub; })[0];
     sub ? show(sub.sub, true, sub.label) : show(ROOT, false);
   }
+  // straight away on load (not after), already open, so there's no jump
+  (function () {
+    var t = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0] || {}).type;
+    if (t === 'back_forward' || !document.documentElement.classList.contains('show-cap')) { instant = true; reopen(); instant = false; }
+  })();
   window.addEventListener('pageshow', function (e) {
     var navType = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0] || {}).type;
     if (e.persisted || navType === 'back_forward') reopen();

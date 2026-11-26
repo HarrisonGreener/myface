@@ -594,6 +594,11 @@ export function createDeck(container, opts = {}) {
   controls.autoRotate = false;
   controls.addEventListener('start', () => { controls.autoRotate = false; });
   controls.update();
+  // coming back to the page: face the same way you left it (no reset to the front)
+  if (opts.view && opts.view.length === 3) {
+    const d = new THREE.Vector3(opts.view[0], opts.view[1], opts.view[2]);
+    if (d.lengthSq() > 0.01) { camera.position.copy(controls.target).add(d.normalize().multiplyScalar(home.length())); controls.update(); }
+  }
 
   let flying = null, raf, view = null, inside = false, presses = [];
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
@@ -691,6 +696,11 @@ export function createDeck(container, opts = {}) {
       return { left, top, width: Math.max(...xs) - left, height: Math.max(...ys) - top };
     },
     isPhone,
+    // which way the camera faces the computer (outside the screen), to restore on the way back
+    getView() {
+      const p = inside ? saved.pos : camera.position, t = inside ? saved.tgt : controls.target;
+      const d = p.clone().sub(t); return [d.x, d.y, d.z];
+    },
     // what's under a tap: a keypad key (with the section it opens), the screen, or nothing
     pick(x, y) {
       const r = renderer.domElement.getBoundingClientRect();
