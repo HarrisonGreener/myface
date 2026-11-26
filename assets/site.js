@@ -316,10 +316,10 @@
       pie.appendChild(b); made.push(b);
     }
     var n = 0;
-    bubble(top, 'c', 0, -78, n++);
+    bubble(top, 'c', 0, -96, n++);
     var rows = Math.max(L.length, R.length);
     for (var i = 0; i < rows; i++) {
-      var t = rows === 1 ? 0 : i / (rows - 1), y = -36 + t * 150, x = 26 + Math.sin(t * Math.PI) * 34;
+      var t = rows === 1 ? 0 : i / (rows - 1), y = -46 + t * 200, x = 44 + Math.sin(t * Math.PI) * 46;
       if (L[i]) bubble(L[i], 'l', -x, y, n++);
       if (R[i]) bubble(R[i], 'r', x, y, n++);
     }
