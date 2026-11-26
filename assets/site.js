@@ -199,13 +199,14 @@
       // phone furniture: a status bar and an end-call key that logs off back to the 3D phone
       var sc = document.createElement('div'); sc.className = 'ph-scene'; sc.setAttribute('aria-hidden', 'true');
       sc.innerHTML = '<div class="ph-sun"></div><div class="ph-floor"><i></i></div>'; os.insertBefore(sc, os.firstChild);
+      // status bar drawn exactly like the lock screen's: signal bars, MYFACE, battery
       var st = document.createElement('div'); st.className = 'ph-status'; st.setAttribute('aria-hidden', 'true');
-      st.innerHTML = '<i>MYFACE</i><i class="ph-clock"></i><i>&#9646;&#9646;&#9646; 98%</i>'; os.appendChild(st);
-      var tick = function () { var d = new Date(); st.querySelector('.ph-clock').textContent = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); };
-      tick(); setInterval(tick, 20000);
-      var end = document.createElement('button'); end.type = 'button'; end.className = 'ph-end'; end.setAttribute('aria-label', 'Log off');
-      end.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M6.3 6.6a8 8 0 1 0 11.4 0"/></svg>';
-      end.addEventListener('click', zoomOut); os.appendChild(end);
+      st.innerHTML = '<span class="ph-sig"><i></i><i></i><i></i><i></i></span><b>MYFACE</b><span class="ph-bat"><i></i></span>'; os.appendChild(st);
+      // log off is an app on the home screen, like any other
+      var apps = os.querySelector('.apps');
+      if (apps) { var li = document.createElement('li');
+        li.innerHTML = '<button type="button" class="app logoff-btn"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v8"/><path d="M6.3 6.6a8 8 0 1 0 11.4 0"/></svg><span>Log off</span></button>';
+        li.firstChild.addEventListener('click', zoomOut); apps.appendChild(li); }
       var pd = document.getElementById('popD'); if (pd) pd.innerHTML = '<b>Your avatar needs customising!</b>Open the phone to customise your avatar and find your treatment x';
     }
     var c = D.canvas;
