@@ -12,6 +12,7 @@ const C = {
 function mat(color, o = {}) { return new THREE.MeshStandardMaterial({ color, roughness: 0.62, metalness: 0.04, ...o }); }
 
 // procedural grime: yellowed patches, dirt in the corners, specks and scratches
+try { const pf = new FontFace('Pirata One', `url(${new URL('./fonts/pirata-one.woff2', import.meta.url).href})`); document.fonts.add(pf); pf.load().catch(() => {}); } catch (e) {}
 function rnd(seed) { let x = seed; return () => (x = (x * 16807) % 2147483647) / 2147483647; }
 function grime(seed, base, tint = [150, 120, 70]) {
   const r = rnd(seed), S = 512;
@@ -189,6 +190,50 @@ function wordCanvas(text, fill, seed) {
   wear(c, 160, 56, seed);
   return cv;
 }
+// the captcha logo (same letters/transforms as the site's SVG logo), die-cut
+const LOGO_L = [
+  ['m', 72, 124, '108px "Bagel Fat One", "Arial Black", sans-serif', '#2a2630', -10, 116, 100, 0],
+  ['y', 156, 138, '700 112px "Courier New", Courier, monospace', '#3b3742', 14, 190, 100, 0],
+  ['F', 212, 116, '134px "Pirata One", serif', '#d23c86', -8, 240, 90, -12],
+  ['a', 262, 134, 'italic 104px Georgia, "Times New Roman", serif', '#b8306f', 9, 292, 105, 0],
+  ['c', 318, 122, '110px Impact, Haettenschweiler, "Arial Black", sans-serif', '#e0559b', -14, 348, 95, 8],
+  ['E', 370, 140, '96px "Bagel Fat One", "Arial Black", sans-serif', '#d23c86', 12, 402, 110, 0],
+];
+function drawLogo(cv, seed) {
+  const k = cv.width / 520, c = cv.getContext('2d');
+  c.clearRect(0, 0, cv.width, cv.height);
+  const tmp = document.createElement('canvas'); tmp.width = cv.width; tmp.height = cv.height;
+  const t = tmp.getContext('2d'); t.scale(k, k); t.translate(10, 10 - 4); t.lineJoin = 'round';
+  const pass = (fn) => LOGO_L.forEach(([ch, x, y, font, col, rot, cx, cy, sk]) => {
+    t.save(); t.font = font; t.translate(cx, cy); t.rotate(rot * Math.PI / 180); t.translate(-cx, -cy);
+    if (sk) t.transform(1, 0, Math.tan(sk * Math.PI / 180), 1, 0, 0);
+    fn(ch, x, y, col); t.restore();
+  });
+  t.save(); t.translate(3, 4); t.globalAlpha = 0.22; t.strokeStyle = t.fillStyle = '#000'; t.lineWidth = 30;
+  pass((ch, x, y) => { t.strokeText(ch, x, y); t.fillText(ch, x, y); }); t.restore();
+  t.strokeStyle = t.fillStyle = '#fff'; t.lineWidth = 28;
+  pass((ch, x, y) => { t.strokeText(ch, x, y); t.fillText(ch, x, y); });
+  pass((ch, x, y, col) => { t.fillStyle = col; t.fillText(ch, x, y); });
+  // captcha wobble: shift thin horizontal strips
+  const r = rnd(seed), ph = r() * 6;
+  for (let y = 0; y < cv.height; y += 2) c.drawImage(tmp, 0, y, cv.width, 2, Math.sin(y / 9 + ph) * 2.2 * k * 2, y, cv.width, 2);
+  wear(c, cv.width, cv.height, seed);
+}
+function logoCanvas(seed) {
+  const cv = document.createElement('canvas'); cv.width = 1040; cv.height = 380;
+  drawLogo(cv, seed);
+  return cv;
+}
+// a photo sticker from an already die-cut PNG
+function imageSticker(parent, url, w, pos, rot, roll) {
+  const cv = document.createElement('canvas'); cv.width = 402; cv.height = 640;
+  const mesh = addSticker(parent, cv, w, pos, rot, roll);
+  const img = new Image(); img.onload = () => {
+    const c = cv.getContext('2d'); c.drawImage(img, 0, 0, cv.width, cv.height); wear(c, cv.width, cv.height, 99);
+    mesh.material.map.needsUpdate = true;
+  }; img.src = url;
+  return mesh;
+}
 let _sk = 0;
 // add a sticker: parent group, canvas, width, position, rotation (euler), roll (deg)
 function addSticker(parent, cv, w, pos, rot, roll) {
@@ -343,8 +388,9 @@ function buildDeck() {
   addSticker(mon, stickerCanvas('heart', 'pink', 5), 0.08, [0.505, 0.2, 0.402], [0, 0], 12);
   addSticker(mon, stickerCanvas('star', 'chrome', 7), 0.09, [-0.505, 0.36, 0.402], [0, 0], -15);
   // tube sides
-  addSticker(mon, stickerCanvas('butterfly', 'holo', 9), 0.3, [sideX(-0.05), 0.08, -0.05], [0, sideY], -10);
-  addSticker(mon, stickerCanvas('lips', 'pink', 11), 0.22, [sideX(-0.33), -0.1, -0.33], [0, sideY], 8);
+  imageSticker(mon, new URL('./sticker-her.png', import.meta.url).href, 0.26, [sideX(-0.1), 0.0, -0.1], [0, sideY], -5);
+  addSticker(mon, stickerCanvas('butterfly', 'holo', 9), 0.15, [sideX(-0.38), 0.12, -0.38], [0, sideY], -14);
+  addSticker(mon, stickerCanvas('lips', 'pink', 11), 0.14, [sideX(-0.38), -0.13, -0.38], [0, sideY], 8);
   addSticker(mon, stickerCanvas('cherry', 'chrome', 13), 0.28, [-sideX(-0.12), 0.02, -0.12], [0, -sideY], -8);
   addSticker(mon, stickerCanvas('skull', 'chrome', 15), 0.16, [-sideX(-0.38), -0.1, -0.38], [0, -sideY], 14);
   // base unit
@@ -352,7 +398,10 @@ function buildDeck() {
   addSticker(deck, stickerCanvas('bolt', 'chrome', 19), 0.13, [0.38, 0.252, 0.27], [-Math.PI / 2, 0], -25);
   addSticker(deck, stickerCanvas('heart', 'holo', 21), 0.16, [0.503, 0.13, 0.28], [0, Math.PI / 2], -10);
   addSticker(deck, stickerCanvas('butterfly', 'pink', 23), 0.16, [-0.503, 0.13, 0.27], [0, -Math.PI / 2], 12);
-  addSticker(deck, wordCanvas('myface', 'black', 25), 0.4, [0.12, 0.13, -0.412], [0, Math.PI], 3);
+  const logoCv = logoCanvas(25);
+  const logoMesh = addSticker(deck, logoCv, 0.46, [0.1, 0.13, -0.412], [0, Math.PI], 3);
+  Promise.all(['108px "Bagel Fat One"', '134px "Pirata One"'].map(f => document.fonts.load(f).catch(() => {})))
+    .then(() => { drawLogo(logoCv, 25); logoMesh.material.map.needsUpdate = true; });
   addSticker(deck, stickerCanvas('star', 'pink', 27), 0.12, [-0.32, 0.14, -0.412], [0, Math.PI], -18);
 
   deck.traverse(o => { if (o.isMesh) { o.castShadow = !o.material.transparent; o.receiveShadow = true; } });
