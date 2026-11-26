@@ -536,3 +536,22 @@ html.bn-open,html.bn-open body{overflow:hidden}
   .top .bar .orb-btn .pk,.top .bar .btn .pk{left:7px;width:14px;height:14px;margin-top:-7px}
 }
 @media (max-width:380px){html.js .top .logo-svg{height:48px}}
+/* ---- inside the flip phone: a cyberpunk phone skin on the same desktop (phones only) */
+.zoomview.phone .os{background:
+  repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,79,163,.45) 38px 40px) bottom/100% 34% no-repeat,
+  repeating-linear-gradient(transparent 0 26px,rgba(255,79,163,.45) 26px 28px) bottom/100% 34% no-repeat,
+  radial-gradient(circle at 50% 66%,#ffd1ea 0 18%,#ff4fa3 19% 21%,transparent 22%),
+  linear-gradient(#1a0b1f,#2a0f2c 55%,#4a1240)!important;color:#ffd1ea}
+.zoomview.phone .os .wall{opacity:.9}
+.zoomview.phone .os .app{color:#ffd1ea}
+.zoomview.phone .os .app span{text-shadow:0 0 6px #ff4fa3,0 1px 0 #000}
+.zoomview.phone .os .app svg{filter:drop-shadow(0 0 4px #ff4fa3)}
+.zoomview.phone .os .taskbar{background:#120a14;box-shadow:inset 0 1px 0 #ff4fa3;color:#ffd1ea}
+.zoomview.phone .os .taskbar .start,.zoomview.phone .os .task{background:#2a1530;color:#ffd1ea;box-shadow:inset 0 0 0 1px #ff4fa3}
+.zoomview.phone .os .app-win{left:0!important;top:0!important;transform:none!important;width:100%!important;max-height:none;height:calc(100% - 30px);padding:0;
+  background:#1b1220;box-shadow:none;color:#ffe9f4}
+.zoomview.phone .os .titlebar{background:linear-gradient(90deg,#ff4fa3,#b3005e);padding:8px 8px;font-size:14px}
+.zoomview.phone .os .win-body{background:#1b1220;color:#ffe9f4;box-shadow:none;flex:1}
+.zoomview.phone .os .win-body a{color:#ff9ccc}
+.zoomview.phone .os .startmenu{background:#1b1220;color:#ffd1ea;box-shadow:inset 0 0 0 1px #ff4fa3}
+.zoomview.phone .os .startmenu a{color:#ffd1ea}
