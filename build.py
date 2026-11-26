@@ -315,14 +315,14 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bagel+Fat+One&family=Pixelify+Sans:wght@400;600&family=Inter:wght@400;600&family=VT323&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{rel(d, 'assets/style.css')}?v=64">
+<link rel="stylesheet" href="{rel(d, 'assets/style.css')}?v=65">
 <script>document.documentElement.className='js'</script>
 <script type="application/ld+json">{ld}</script>
 </head>
 <body{' class="home"' if home else ''}>
 {LOGO_DEFS}
 <a class="skip" href="#content">Skip to content</a>
-<header class="top"><div class="wrap bar"><div class="brand">{logo(d)}<svg class="tag-svg" viewBox="28 0 460 44" role="img" aria-label="{e(C['tagline'])}"><text class="tt" x="70" y="32" textLength="382" lengthAdjust="spacing" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="500" letter-spacing="1" font-size="34" fill="#1c1a1e">{e(C['tagline'])}</text></svg></div><nav class="nav" aria-label="Main">{navh}</nav><button type="button" class="orb-btn" id="menuBtn" aria-expanded="false" aria-controls="bubbleNav"><span class="pk"></span>Menu</button><a class="btn" href="{e(C['booking_url'])}"><span class="pk"></span>Book</a><button type="button" class="orb-btn search-btn" id="searchBtn" aria-label="Search the site" data-index="{rel(d, 'assets/search.json')}?v=64" data-root="{rel(d, '')}"><svg class="mg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/></svg><span class="sl">Search</span></button></div></header>
+<header class="top"><div class="wrap bar"><div class="brand">{logo(d)}<svg class="tag-svg" viewBox="28 0 460 44" role="img" aria-label="{e(C['tagline'])}"><text class="tt" x="70" y="32" textLength="382" lengthAdjust="spacing" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="500" letter-spacing="1" font-size="34" fill="#1c1a1e">{e(C['tagline'])}</text></svg></div><nav class="nav" aria-label="Main">{navh}</nav><button type="button" class="orb-btn" id="menuBtn" aria-expanded="false" aria-controls="bubbleNav"><span class="pk"></span>Menu</button><a class="btn" href="{e(C['booking_url'])}"><span class="pk"></span>Book</a><button type="button" class="orb-btn search-btn" id="searchBtn" aria-label="Search the site" data-index="{rel(d, 'assets/search.json')}?v=65" data-root="{rel(d, '')}"><svg class="mg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/></svg><span class="sl">Search</span></button></div></header>
 <nav class="bubble-nav" id="bubbleNav" aria-label="Menu" hidden><ul>{bubbles}</ul></nav>
 {body}
 <footer class="foot"><div class="wrap">
@@ -331,7 +331,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <p>&copy;2026 {e(C['brand'])}</p>
 <p class="credit">Designed &amp; built by <a href="https://harrisongreener.co.uk" target="_blank" rel="noopener">Harrison Greener</a></p>
 </div></footer>
-<script src="{rel(d, 'assets/site.js')}?v=64" defer></script>
+<script src="{rel(d, 'assets/site.js')}?v=65" defer></script>
 </body>
 </html>
 """
@@ -613,8 +613,7 @@ def customiser():
             '<mask id="ptMask"><rect width="400" height="400" fill="url(#ptFade)"/></mask></defs>'
             '<polygon points="200,8 247,140 392,145 277,232 318,380 200,295 82,380 123,232 8,145 153,140" fill="url(#ptDots)" mask="url(#ptMask)"/></svg>')
     deco = ('<svg class="pt-bang" viewBox="0 0 60 90" aria-hidden="true"><path d="M8 2l14 3-6 52-10-2zM34 8l13 4-12 44-9-3z"/><circle cx="12" cy="72" r="7"/><circle cx="30" cy="70" r="6"/></svg>'
-            '<svg class="pt-spark" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 0C54 38 62 46 100 50 62 54 54 62 50 100 46 62 38 54 0 50 38 46 46 38 50 0z"/></svg>'
-            '<img class="pt-cursor" src="assets/cursor.svg" alt="" aria-hidden="true">')
+            '<svg class="pt-spark" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 0C54 38 62 46 100 50 62 54 54 62 50 100 46 62 38 54 0 50 38 46 46 38 50 0z"/></svg>')
     return (f'<div class="cz paint">'
             f'<div class="pt-menu" aria-hidden="true"><span><u>F</u>ile</span><span><u>E</u>dit</span><span><u>V</u>iew</span><span><u>I</u>mage</span><span><u>C</u>olors</span><span><u>H</u>elp</span></div>'
             f'<div class="pt-body"><div class="pt-tools">{tools}<div class="pt-mini" aria-hidden="true"><span class="pt-mini-fig"></span></div></div>'
@@ -711,7 +710,7 @@ def computer():
 </div>
 </div>
 <script type="importmap">{{"imports":{{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}}}</script>
-<script type="module">import {{ createDeck }} from './assets/deck.js?v=64';
+<script type="module">import {{ createDeck }} from './assets/deck.js?v=65';
 try {{ window.MFDeck = createDeck(document.getElementById('deck3d'), {{ phone: matchMedia('(max-width: 620px)').matches && /[?&]phone\b/.test(location.search) }}); window.dispatchEvent(new Event('mfdeck')); }} catch (e) {{ console.warn('3D computer unavailable', e); }}</script>
 </div>
 <div class="zoomview" id="zoomview" hidden><div class="zv-mon" id="zvMon"><div class="zv-screen" id="zvScreen"><span class="glare"></span></div></div>
