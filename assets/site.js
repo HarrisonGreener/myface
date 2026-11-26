@@ -189,7 +189,7 @@
 
   function useDeck(d) {
     D = d; scene.classList.add('has-deck');
-    var hint = document.getElementById('hint'); if (hint && D.isPhone) hint.textContent = 'spin it · tap a key to go there';
+    var hint = document.getElementById('hint'); if (D.isPhone) { zv.classList.add('flip'); if (hint) hint.textContent = 'spin it · tap a key to go there'; }
     var c = D.canvas;
     c.tabIndex = 0; c.setAttribute('role', 'button'); c.setAttribute('aria-label', 'Turn on the computer (drag to spin it)');
     c.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); zoomIn(); } });
