@@ -314,7 +314,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Pixelify+Sans:wght@400;600&family=Inter:wght@400;600&family=VT323&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{rel(d, 'assets/style.css')}?v=28">
+<link rel="stylesheet" href="{rel(d, 'assets/style.css')}?v=29">
 <script>document.documentElement.className='js'</script>
 <script type="application/ld+json">{ld}</script>
 </head>
@@ -330,7 +330,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <p>&copy;2026 {e(C['brand'])}</p>
 <p class="credit">Designed &amp; built by <a href="https://harrisongreener.co.uk" target="_blank" rel="noopener">Harrison Greener</a></p>
 </div></footer>
-<script src="{rel(d, 'assets/site.js')}?v=28" defer></script>
+<script src="{rel(d, 'assets/site.js')}?v=29" defer></script>
 </body>
 </html>
 """
@@ -424,7 +424,7 @@ def myspace():
 </div>
 <div class="ms-right">
 <div class="ms-net"><b>{e(C['brand'])} is in your extended network</b></div>
-<div class="ms-player"><button type="button" id="radio" aria-label="Play">&#9654;</button><span><b>MyFace Radio</b><br><span id="np">press play for salon vibes</span></span></div>
+<div class="ms-player"><button type="button" id="radio" aria-label="Play">&#9654;</button><button type="button" id="radioNext" aria-label="Next track">&#9654;&#9654;</button><span class="np-wrap"><b>MyFace Radio</b> &middot; The Money Store<br><span id="np" aria-live="polite">press play x</span></span><a class="am-badge" id="amLink" href="https://music.apple.com/gb/album/the-money-store/515449028" target="_blank" rel="noopener">Listen on Apple&nbsp;Music</a></div>
 <div class="ms-box"><h3>{e(C['brand'])}'s Latest Blog Entries</h3><ul class="blog">
 <li>[OFFER] new client discount on your first set (<a href="nails/">view more</a>)</li>
 <li>[NEWS] new piercing jewellery just landed (<a href="piercing/">view more</a>)</li>
@@ -610,7 +610,7 @@ def computer():
 </div>
 </div>
 <script type="importmap">{{"imports":{{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}}}</script>
-<script type="module">import {{ createDeck }} from './assets/deck.js?v=28';
+<script type="module">import {{ createDeck }} from './assets/deck.js?v=29';
 try {{ window.MFDeck = createDeck(document.getElementById('deck3d'), {{ phone: matchMedia('(max-width: 620px)').matches && /[?&]phone\b/.test(location.search) }}); window.dispatchEvent(new Event('mfdeck')); }} catch (e) {{ console.warn('3D computer unavailable', e); }}</script>
 <p class="hint" id="hint">drag to spin it 360° · click to turn it on</p>
 </div>

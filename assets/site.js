@@ -330,11 +330,37 @@
   }
 
   // ---- Profile "song"
-  var radio = document.getElementById('radio'), np = document.getElementById('np'), on = false;
-  if (radio) radio.addEventListener('click', function () {
-    on = !on; radio.innerHTML = on ? '&#10074;&#10074;' : '&#9654;'; radio.setAttribute('aria-label', on ? 'Pause' : 'Play');
-    np.textContent = on ? 'now playing: [your salon playlist]' : 'press play for salon vibes';
-  });
+  // ---- MyFace Radio: 30-second Apple Music previews of The Money Store, track after track
+  var radio = document.getElementById('radio'), np = document.getElementById('np'), amLink = document.getElementById('amLink'),
+      skip = document.getElementById('radioNext'), audio = null, tracks = null, ti = 0;
+  var ALBUM = 515449028;   // Death Grips, The Money Store
+  function setBtn(playing) { radio.innerHTML = playing ? '&#10074;&#10074;' : '&#9654;'; radio.setAttribute('aria-label', playing ? 'Pause' : 'Play'); }
+  function playTrack(i) {
+    if (!tracks || !tracks.length) return;
+    ti = (i + tracks.length) % tracks.length;
+    var t = tracks[ti];
+    audio.src = t.previewUrl; audio.play().catch(function () {});
+    np.textContent = (ti + 1) + '. ' + t.trackName + ' — Death Grips';
+    if (amLink) amLink.href = t.trackViewUrl;
+  }
+  function load() {
+    np.textContent = 'tuning in...';
+    return fetch('https://itunes.apple.com/lookup?id=' + ALBUM + '&entity=song&country=gb')
+      .then(function (r) { return r.json(); })
+      .then(function (j) { tracks = j.results.filter(function (x) { return x.wrapperType === 'track' && x.previewUrl; }); });
+  }
+  if (radio) {
+    radio.addEventListener('click', function () {
+      if (audio && !audio.paused) { audio.pause(); setBtn(false); return; }
+      if (!audio) {
+        audio = new Audio(); audio.volume = 0.6;
+        audio.addEventListener('ended', function () { playTrack(ti + 1); });
+        setBtn(true);
+        load().then(function () { playTrack(0); }).catch(function () { np.textContent = 'radio is offline x'; setBtn(false); audio = null; });
+      } else { audio.play().catch(function () {}); setBtn(true); }
+    });
+    if (skip) skip.addEventListener('click', function () { if (audio && tracks) { playTrack(ti + 1); setBtn(true); } });
+  }
 })();
 
 // ---- Bubble menu (replaces the top nav): bubbles fan out round a centre, categories open a second ring
