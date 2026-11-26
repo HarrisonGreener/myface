@@ -131,6 +131,7 @@
     if (instant) zv.classList.add('show'); else requestAnimationFrame(function () { zv.classList.add('show'); });
     document.body.style.overflow = 'hidden'; document.body.classList.add('mf-zoomed');
     zoomed = true; busy = false; store.set('mf-in', '1');
+    if (!instant) openAvatar();
   }
   function clearScreen() { zvScreen.removeAttribute('style'); os.style.transform = ''; }
   function deckFull(on) {
@@ -330,6 +331,53 @@
   }
 
   // ---- Profile "song"
+  // ---- Customise your avatar: spin her round, click a part, get the services for it
+  var cz = document.querySelector('.cz'), czFig = document.getElementById('czFig'), czFrame = 0, czSpun = false;
+  var CZ_FRAMES = 6;
+  function czSet(f) {
+    czFrame = ((f % CZ_FRAMES) + CZ_FRAMES) % CZ_FRAMES;
+    czFig.style.backgroundPosition = (czFrame * 100 / (CZ_FRAMES - 1)) + '% 0';
+    czFig.classList.toggle('front', czFrame === 0);
+  }
+  function czPart(group) {
+    cz.querySelectorAll('.cz-part').forEach(function (p) { p.hidden = p.dataset.part !== (group || ''); });
+    czFig.querySelectorAll('.hs').forEach(function (h) { h.classList.toggle('on', !!group && h.dataset.part === group); });
+    var first = group && cz.querySelector('.cz-part[data-part="' + group + '"] a'); if (first) first.focus({ preventScroll: true });
+  }
+  function czSpinTo(target, done) {                      // turn frame by frame, like a character select
+    if (czFrame === target) { done && done(); return; }
+    var step = ((target - czFrame + CZ_FRAMES) % CZ_FRAMES) <= CZ_FRAMES / 2 ? 1 : -1;
+    var t = setInterval(function () { czSet(czFrame + step); if (czFrame === target) { clearInterval(t); done && done(); } }, 90);
+  }
+  function openAvatar() {
+    var w = document.getElementById('win-avatar'); if (!w || !cz) return;
+    openWin('avatar'); w.classList.add('maxed');
+    if (!czSpun && !reduce) { czSpun = true; czSet(1); var n = 0, t = setInterval(function () { czSet(czFrame + 1); if (++n >= CZ_FRAMES - 1) clearInterval(t); }, 110); }
+  }
+  if (cz) {
+    czSet(0);
+    czFig.querySelectorAll('.hs').forEach(function (h) {
+      h.addEventListener('click', function () { if (czDragged) return; czPart(h.dataset.part); });
+    });
+    cz.querySelectorAll('.cz-chip').forEach(function (c) {
+      c.addEventListener('click', function () { czSpinTo(0, function () { czPart(c.dataset.part); }); });
+    });
+    cz.querySelectorAll('.cz-reset').forEach(function (b) { b.addEventListener('click', function () { czPart(''); }); });
+    cz.querySelectorAll('.cz-turn').forEach(function (b) { b.addEventListener('click', function () { czSet(czFrame + (+b.dataset.d)); }); });
+    var czDown = null, czDragged = false, czStart = 0;
+    czFig.addEventListener('pointerdown', function (e) { czDown = e.clientX; czStart = czFrame; czDragged = false; });
+    window.addEventListener('pointermove', function (e) {
+      if (czDown === null) return;
+      var dx = e.clientX - czDown;
+      if (Math.abs(dx) > 8) czDragged = true;
+      if (czDragged) czSet(czStart - Math.round(dx / 45));
+    });
+    window.addEventListener('pointerup', function () { czDown = null; setTimeout(function () { czDragged = false; }, 0); });
+    czFig.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { czSet(czFrame + (e.key === 'ArrowLeft' ? -1 : 1)); e.preventDefault(); }
+    });
+  }
+
   // ---- MyFace Radio: 30-second Apple Music previews of The Money Store, track after track
   var radio = document.getElementById('radio'), np = document.getElementById('np'), amLink = document.getElementById('amLink'),
       skip = document.getElementById('radioNext'), audio = null, tracks = null, ti = 0;
