@@ -131,7 +131,6 @@
     if (instant) zv.classList.add('show'); else requestAnimationFrame(function () { zv.classList.add('show'); });
     document.body.style.overflow = 'hidden'; document.body.classList.add('mf-zoomed');
     zoomed = true; busy = false; store.set('mf-in', '1');
-    if (!instant && !demoing) openAvatar();
   }
   function clearScreen() { zvScreen.removeAttribute('style'); os.style.transform = ''; }
   function deckFull(on) {
@@ -394,6 +393,8 @@
     pop.querySelectorAll('.pop-x, .pop-ok').forEach(function (b) { b.addEventListener('click', hidePop); });
     pop.querySelector('.pop-go').addEventListener('click', function (e) { hidePop(); showHow(e.currentTarget); });
     pop.addEventListener('keydown', function (e) { if (e.key === 'Escape') hidePop(); });
+    // the pop-up sits over the computer: its clicks must not count as clicking the computer
+    ['pointerdown', 'pointerup', 'click'].forEach(function (t) { pop.addEventListener(t, function (e) { e.stopPropagation(); }); });
     var capEl = document.getElementById('captcha');
     if (capEl && !capEl.hidden) window.addEventListener('mf-human', showPop, { once: true });
     else showPop();
