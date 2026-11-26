@@ -677,3 +677,19 @@ body.home{background:#ece8e3}
   .cz-fig{height:min(48vh,420px)}
   .cz-panel{border-left:0;border-top:2px solid #ff4fa3}
 }
+/* ---- avatar.exe pop-up (old-Windows warning, part of the site) */
+.pop95{position:absolute;z-index:20;left:calc(50% + min(18vw,260px));top:16%;width:min(330px,86vw);transform:translateX(-50%) scale(.85);opacity:0;
+  transition:transform .18s cubic-bezier(.3,1.6,.5,1),opacity .12s;background:#c0c0c0;color:#000;
+  border:2px solid;border-color:#fff #404040 #404040 #fff;box-shadow:inset -1px -1px 0 #808080,inset 1px 1px 0 #dfdfdf,6px 8px 0 rgba(0,0,0,.35);
+  font:13px/1.35 Tahoma,"MS Sans Serif",Arial,sans-serif}
+.pop95.in{transform:translateX(-50%);opacity:1}
+.pop-bar{display:flex;align-items:center;justify-content:space-between;padding:3px 3px 3px 6px;color:#fff;font-weight:700;background:linear-gradient(90deg,#b3005e,#ff4fa3)}
+.pop-x{width:20px;height:18px;padding:0;border:2px solid;border-color:#fff #404040 #404040 #fff;background:#c0c0c0;font:700 14px/1 Arial,sans-serif;cursor:pointer}
+.pop-body{display:flex;gap:12px;align-items:flex-start;padding:14px 14px 6px}
+.pop-ic{flex:none;width:34px;height:34px}
+.pop-body p{margin:0}.pop-body b{display:block;margin-bottom:4px}
+.pop-btns{display:flex;justify-content:center;gap:10px;padding:10px 12px 14px}
+.pop-btns button{min-width:84px;height:26px;border:2px solid;border-color:#fff #404040 #404040 #fff;background:#c0c0c0;font:13px Tahoma,Arial,sans-serif;cursor:pointer}
+.pop-btns button:focus-visible{outline:1px dotted #000;outline-offset:-5px}
+.pop-btns button:active,.pop-x:active{border-color:#404040 #fff #fff #404040}
+@media (max-width:620px){.pop95{left:50%;top:auto;bottom:14%}}

@@ -24,6 +24,7 @@
   function pass() {
     try { sessionStorage.setItem('mf-human', '1'); } catch (e) {}
     cap.classList.add('done'); document.body.style.overflow = '';
+    window.dispatchEvent(new Event('mf-human'));
     setTimeout(function () { cap.hidden = true; }, 450);
   }
   check.addEventListener('click', function () {
@@ -331,6 +332,27 @@
   }
 
   // ---- Profile "song"
+  // ---- avatar.exe pop-up: an old-Windows warning telling you what to do (once per visit)
+  var pop = document.getElementById('avatarPop');
+  function showPop() {
+    if (!pop || zoomed || store.get('mf-pop')) return;
+    store.set('mf-pop', '1');
+    setTimeout(function () {
+      if (zoomed) return;
+      pop.hidden = false; requestAnimationFrame(function () { pop.classList.add('in'); });
+      pop.querySelector('.pop-go').focus({ preventScroll: true });
+    }, 900);
+  }
+  function hidePop() { pop.classList.remove('in'); setTimeout(function () { pop.hidden = true; }, 180); }
+  if (pop) {
+    pop.querySelectorAll('.pop-x, .pop-ok').forEach(function (b) { b.addEventListener('click', hidePop); });
+    pop.querySelector('.pop-go').addEventListener('click', function () { hidePop(); zoomIn(); });
+    pop.addEventListener('keydown', function (e) { if (e.key === 'Escape') hidePop(); });
+    var capEl = document.getElementById('captcha');
+    if (capEl && !capEl.hidden && !store.get('mf-in')) window.addEventListener('mf-human', showPop, { once: true });
+    else if (!store.get('mf-in')) showPop();
+  }
+
   // ---- Customise your avatar: spin her round, click a part, get the services for it
   var cz = document.querySelector('.cz'), czFig = document.getElementById('czFig'), czFrame = 0, czSpun = false;
   var CZ_FRAMES = 6;
