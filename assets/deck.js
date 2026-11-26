@@ -585,10 +585,10 @@ export function createDeck(container, opts = {}) {
   const built = isPhone ? buildPhone() : buildDeck();
   const { deck, leds, screen, scr, blades } = built, keys = built.keys || [];
   scene.add(deck);
-  if (isPhone) { home.set(1.1, 1.3, 3.4); camera.position.copy(home); }
+  if (isPhone) { home.set(1.1, 1.25, 4.3); camera.position.copy(home); }
 
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.target.set(0, isPhone ? 0.9 : 0.6, 0);
+  controls.target.set(0, isPhone ? 0.95 : 0.6, 0);
   controls.enableDamping = true; controls.enablePan = false; controls.enableZoom = false;
   controls.minPolarAngle = 0.5; controls.maxPolarAngle = 1.45;
   controls.autoRotate = true; controls.autoRotateSpeed = 0.9;
