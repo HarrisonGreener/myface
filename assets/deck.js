@@ -459,13 +459,19 @@ export function createDeck(container) {
   controls.addEventListener('start', () => { controls.autoRotate = false; });
   controls.update();
 
-  let flying = null, raf;
+  let flying = null, raf, view = null, inside = false;
+  const lerpView = (a, b, e) => ({ fw: a.fw + (b.fw - a.fw) * e, fh: a.fh + (b.fh - a.fh) * e, x: a.x + (b.x - a.x) * e, y: a.y + (b.y - a.y) * e });
+  function applyView() {
+    const w = container.clientWidth, h = container.clientHeight;
+    if (view) { camera.aspect = view.fw / view.fh; camera.setViewOffset(view.fw, view.fh, view.x, view.y, w, h); }
+    else { camera.aspect = w / h; camera.clearViewOffset(); }
+    camera.updateProjectionMatrix();
+  }
   function resize() {
     const w = container.clientWidth, h = container.clientHeight;
-    renderer.setSize(w, h, false); camera.aspect = w / h;
-    camera.fov = 32; camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false); camera.fov = 32; applyView();
     const a = w / h, k = a < 1.2 ? Math.pow(1.2 / a, 0.85) : 1;
-    if (!flying) { const dir = camera.position.clone().sub(controls.target).normalize(); camera.position.copy(controls.target).add(dir.multiplyScalar(home.length() * 0.92 * k)); }
+    if (!flying && !inside && !view) { const dir = camera.position.clone().sub(controls.target).normalize(); camera.position.copy(controls.target).add(dir.multiplyScalar(home.length() * 0.92 * k)); }
   }
   resize(); window.addEventListener('resize', resize);
 
@@ -475,10 +481,11 @@ export function createDeck(container) {
     leds.forEach((l, i) => { l.visible = Math.sin(t * (2 + i * 0.7) + i) > -0.3; });
     blades.rotation.z = t * 9;
     if (flying) {
-      const k = Math.min(1, (performance.now() - flying.start) / flying.ms);
+      const k = flying.ms ? Math.min(1, (performance.now() - flying.start) / flying.ms) : 1;
       const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
       camera.position.lerpVectors(flying.fromPos, flying.toPos, e);
       controls.target.lerpVectors(flying.fromTgt, flying.toTgt, e);
+      if (flying.v0) { view = lerpView(flying.v0, flying.v1, e); applyView(); }
       camera.lookAt(controls.target);
       if (k >= 1) { const d = flying.done; flying = null; d && d(); }
     } else controls.update();
@@ -488,23 +495,53 @@ export function createDeck(container) {
   tick();
 
   const saved = { pos: new THREE.Vector3(), tgt: new THREE.Vector3() };
-  function screenView() {
+  function screenView(aspect = camera.aspect) {
     const c = new THREE.Vector3(); screen.getWorldPosition(c);
     const vFov = THREE.MathUtils.degToRad(camera.fov);
-    const fitH = 0.6 / 2 / Math.tan(vFov / 2), fitW = 0.8 / 2 / (Math.tan(vFov / 2) * camera.aspect);
-    return { pos: c.clone().add(new THREE.Vector3(0, 0, Math.min(fitH, fitW) * 0.92)), tgt: c };
+    const fitH = 0.6 / 2 / Math.tan(vFov / 2), fitW = 0.8 / 2 / (Math.tan(vFov / 2) * aspect);
+    return { pos: c.clone().add(new THREE.Vector3(0, 0, Math.max(fitH, fitW) * 1.12)), tgt: c };
   }
-  function fly(toPos, toTgt, ms, done) {
+  function fly(toPos, toTgt, ms, done, v0, v1) {
     controls.enabled = false; controls.autoRotate = false;
-    flying = { fromPos: camera.position.clone(), fromTgt: controls.target.clone(), toPos, toTgt, ms, start: performance.now(), done };
+    flying = { fromPos: camera.position.clone(), fromTgt: controls.target.clone(), toPos, toTgt, ms, start: performance.now(), done, v0, v1 };
   }
+  const full = () => ({ fw: container.clientWidth, fh: container.clientHeight, x: 0, y: 0 });
+  const fromRect = r => ({ fw: r.width, fh: r.height, x: -r.left, y: -r.top });
   return {
     canvas: renderer.domElement,
-    flyIn(done) {
+    resize,
+    // from: where the canvas used to sit (viewport rect) before the container went full-window
+    flyIn(done, from, ms = 1100) {
       saved.pos.copy(camera.position); saved.tgt.copy(controls.target);
-      const v = screenView(); fly(v.pos, v.tgt, 1100, done);
+      inside = true;
+      const v1 = full(), v0 = from ? fromRect(from) : null;
+      if (v0) { view = v0; resize(); }
+      const v = screenView(v1.fw / v1.fh);
+      fly(v.pos, v.tgt, ms, () => { view = null; applyView(); done && done(); }, v0, v0 && v1);
     },
-    flyOut(done) { fly(saved.pos.clone(), saved.tgt.clone(), 900, () => { controls.enabled = true; done && done(); }); },
+    // to: the rect the canvas will shrink back into afterwards
+    flyOut(done, to, ms = 900) {
+      const v0 = to ? full() : null, v1 = to ? fromRect(to) : null;
+      if (v0) view = v0;
+      fly(saved.pos.clone(), saved.tgt.clone(), ms, () => { inside = false; view = null; controls.enabled = true; done && done(); }, v0, v1);
+    },
+    // jump straight to the screen (resizing while zoomed in, or arriving back on the desktop)
+    snapIn() {
+      if (!inside) { saved.pos.copy(camera.position); saved.tgt.copy(controls.target); inside = true; }
+      flying = null; view = null; controls.enabled = false; controls.autoRotate = false; resize();
+      const v = screenView(); camera.position.copy(v.pos); controls.target.copy(v.tgt); camera.lookAt(v.tgt);
+    },
+    // where the 3D screen is on the page, in CSS pixels
+    screenRect() {
+      screen.updateWorldMatrix(true, false); camera.updateMatrixWorld();
+      const r = renderer.domElement.getBoundingClientRect(), xs = [], ys = [];
+      [[-0.4, -0.3], [0.4, -0.3], [-0.4, 0.3], [0.4, 0.3]].forEach(([x, y]) => {
+        const p = new THREE.Vector3(x, y, 0).applyMatrix4(screen.matrixWorld).project(camera);
+        xs.push(r.left + (p.x + 1) / 2 * r.width); ys.push(r.top + (1 - p.y) / 2 * r.height);
+      });
+      const left = Math.min(...xs), top = Math.min(...ys);
+      return { left, top, width: Math.max(...xs) - left, height: Math.max(...ys) - top };
+    },
     dispose() { cancelAnimationFrame(raf); scr.stop(); renderer.dispose(); },
   };
 }

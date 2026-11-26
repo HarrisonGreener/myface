@@ -67,6 +67,8 @@
                 set: function (k, v) { try { v ? sessionStorage.setItem(k, v) : sessionStorage.removeItem(k); } catch (e) {} } };
 
   os.inert = true;
+  // the 3D computer (assets/deck.js) takes over from the CSS one once three.js has loaded
+  var deckBox = document.getElementById('deck3d'), D = null;
 
   function fit() { return Math.min(1, (scene.clientWidth - 24) / (scene.clientWidth < 600 ? 900 : 820), scene.clientHeight / 620); }
   function rest() { rig.style.transform = 'scale(' + fit() + ') rotateX(' + rx + 'deg) rotateY(' + ry + 'deg)'; }
@@ -77,6 +79,7 @@
   var down = null, moved = false;
   scene.addEventListener('pointerdown', function (e) {
     if (zoomed || busy || e.button > 0) return;
+    if (D) { down = { x: e.clientX, y: e.clientY }; moved = false; return; }
     e.preventDefault();                                     // no text/sticker selection while spinning
     down = { x: e.clientX, y: e.clientY, rx: rx, ry: ry }; moved = false;
     scene.setPointerCapture(e.pointerId); rig.classList.add('drag');
@@ -85,6 +88,7 @@
     if (!down) return;
     var dx = e.clientX - down.x, dy = e.clientY - down.y;
     if (Math.abs(dx) + Math.abs(dy) > 6) moved = true;
+    if (D) return;
     ry = down.ry + dx * 0.5;
     rx = Math.max(-40, Math.min(25, down.rx - dy * 0.3));
     rest();
@@ -109,7 +113,11 @@
   function bigScale() { return Math.min(window.innerWidth / 500, window.innerHeight / 420) * 0.98; }
   function phone() { return window.innerWidth <= 620; }
   function sizeZoom() { zvMon.style.setProperty('--S', phone() ? 1 : bigScale()); zv.classList.toggle('phone', phone()); }
-  window.addEventListener('resize', function () { if (zoomed) sizeZoom(); });
+  window.addEventListener('resize', function () {
+    if (!zoomed) return;
+    sizeZoom();
+    if (D) { D.snapIn(); zv.classList.toggle('deck', !phone()); if (phone()) clearScreen(); else placeScreen(); }
+  });
   function showDesktop(instant) {
     sizeZoom();
     zvScreen.insertBefore(os, zvScreen.firstChild); os.inert = false;
@@ -118,8 +126,28 @@
     document.body.style.overflow = 'hidden';
     zoomed = true; busy = false; store.set('mf-in', '1');
   }
+  function placeScreen() {
+    var r = D.screenRect(), S = zvScreen;
+    S.style.left = r.left + 'px'; S.style.top = r.top + 'px'; S.style.width = r.width + 'px'; S.style.height = r.height + 'px';
+    os.style.transform = 'scale(' + (r.width / 860) + ')';
+  }
+  function clearScreen() { zvScreen.removeAttribute('style'); os.style.transform = ''; }
+  function deckFull(on) {
+    var r = deckBox.getBoundingClientRect();
+    deckBox.classList.toggle('full', on); D.resize(); return r;
+  }
   function zoomIn() {
     if (zoomed || busy) return;
+    if (D) {
+      busy = true; scene.parentNode.classList.add('zooming');
+      var from = deckFull(true), ph = phone();
+      D.flyIn(function () {
+        zv.classList.toggle('deck', !ph);
+        if (!ph) placeScreen();
+        showDesktop(false); bootUp();
+      }, from, reduce ? 0 : 1100);
+      return;
+    }
     busy = true; scene.parentNode.classList.add('zooming');
     ry = ((ry % 360) + 540) % 360 - 180; rest();             // take the short way back round
     var s = fit(), vw = window.innerWidth, vh = window.innerHeight;
@@ -135,6 +163,20 @@
   }
   function zoomOut() {
     if (!zoomed || busy) return;
+    if (D) {
+      busy = true; zv.classList.remove('show'); closeAll(); closeStart(); store.set('mf-in', '');
+      setTimeout(function () {
+        zv.hidden = true; zv.classList.remove('deck'); clearScreen();
+        screen.insertBefore(os, screen.firstChild); os.inert = true;
+        document.body.style.overflow = '';
+        var to = deckBox.parentNode.getBoundingClientRect();
+        D.flyOut(function () {
+          deckFull(false); scene.parentNode.classList.remove('zooming');
+          zoomed = false; busy = false; D.canvas.focus();
+        }, to, reduce ? 0 : 900);
+      }, reduce ? 0 : 350);
+      return;
+    }
     busy = true; zv.classList.remove('show'); closeAll(); closeStart(); store.set('mf-in', '');
     setTimeout(function () {
       zv.hidden = true; screen.insertBefore(os, screen.firstChild); os.inert = true;
@@ -144,6 +186,19 @@
     }, reduce ? 0 : 350);
   }
   document.querySelectorAll('.logoff-btn').forEach(function (b) { b.addEventListener('click', zoomOut); });
+
+  function useDeck(d) {
+    D = d; scene.classList.add('has-deck');
+    var c = D.canvas;
+    c.tabIndex = 0; c.setAttribute('role', 'button'); c.setAttribute('aria-label', 'Turn on the computer (drag to spin it)');
+    c.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); zoomIn(); } });
+    if (zoomed) {                                           // already on the desktop (came back from another page)
+      deckFull(true); D.snapIn();
+      if (!phone()) { zv.classList.add('deck'); placeScreen(); }
+    }
+  }
+  if (window.MFDeck) useDeck(window.MFDeck);
+  else window.addEventListener('mfdeck', function () { useDeck(window.MFDeck); }, { once: true });
 
   // ---- Boot text the first time you turn it on
   var boot = document.getElementById('boot'), log = document.getElementById('bootlog'), hasBooted = false;
