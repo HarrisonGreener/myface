@@ -1021,3 +1021,12 @@ html.mf-phone .pop95{left:50%;top:70px}
 .ph-floor{height:42%}
 .zoomview.phone.flip .os .wall{inset:40px 0 58%;align-items:center}
 .zoomview.phone.flip .os .wall-logo{width:80%}
+/* homepage on phones: small readable banner up top instead of the giant bands behind the phone */
+.home-bands{display:none}
+@media (max-width:620px){
+  .home .home-bands{display:block;margin:0}
+  .home .home-bands .band.b2{height:64px}
+  .home .home-bands .band.thin{height:34px}
+  .home .scene .bands{display:none}
+  .home .scene{height:calc(100svh - var(--top-h,90px) - 98px);min-height:380px}
+}
