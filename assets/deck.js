@@ -382,7 +382,7 @@ function buildDeck() {
   const fs = new THREE.Mesh(new RoundedBoxGeometry(0.08, 0.04, 0.05, 2, 0.01), mat(C.pink));
   fs.position.set(-0.3, 0.075 + B, 0.33); deck.add(fs);
   const ns = new THREE.Mesh(new RoundedBoxGeometry(0.08, 0.06, 0.05, 2, 0.01), mat(C.pink));
-  ns.position.set(0, 0.38 + B, -0.19); deck.add(ns);
+  ns.position.set(0, 0.38, -0.19); deck.add(ns);
 
   // --- stickers (Harry's sticker sheet + her + the logo)
   const TAP = 0.269, sideY = Math.atan2(1, -TAP);           // tube side faces lean back a touch
