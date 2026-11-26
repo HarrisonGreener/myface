@@ -939,3 +939,28 @@ body:not(.home) .crumbs a{color:#c2246f}
 .zoomview.phone.flip .os #win-avatar .pt-parts{width:70px;padding:6px}
 .zoomview.phone.flip .os #win-avatar .pt-palette{justify-content:center}
 .zoomview.phone.flip .os .win-body .menu li{display:block}
+/* ==== Flip phone v2: no taskbar, leopard-to-sky home screen, app tiles, an end-call key to log off ==== */
+.zoomview.phone.flip .os{background:#9fb6cf url(bg-sky.jpg) center/cover no-repeat!important}
+.zoomview.phone.flip .os .taskbar{display:none}
+.zoomview.phone.flip .os .app-win{height:100%}
+.zoomview.phone.flip .os .wall{inset:auto 0 96px;height:auto}
+.zoomview.phone.flip .os .wall-logo{width:78%;opacity:1;filter:drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff) drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 6px 10px rgba(0,0,0,.3))}
+.zoomview.phone.flip .os .apps{padding:58px 18px 0;display:grid;grid-template-columns:repeat(4,1fr);gap:16px 8px;align-content:start}
+.zoomview.phone.flip .os .app{color:#fff;font:700 11px/1.2 "Trebuchet MS",Tahoma,Arial,sans-serif;text-shadow:0 1px 2px #000,0 0 4px rgba(0,0,0,.6)}
+.zoomview.phone.flip .os .app .ic{width:56px;height:56px;padding:13px;border-radius:16px;border:1.5px solid #000;stroke:#ff9ccc;filter:none;
+  background:linear-gradient(#5a5560 0%,#26222b 40%,#0c0a0e 53%,#1d1a21 80%,#34303a 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 3px 8px rgba(0,0,0,.35)}
+.zoomview.phone.flip .os .app span{background:none;padding:0}
+.zoomview.phone.flip .os .app:focus-visible .ic,.zoomview.phone.flip .os .app:active .ic{box-shadow:0 0 0 2px #ff4fa3,0 0 14px rgba(255,79,163,.7)}
+/* status bar along the top, like a phone */
+.ph-status{position:absolute;left:0;right:0;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;height:34px;padding:0 16px;
+  font:700 13px "Trebuchet MS",Tahoma,Arial,sans-serif;color:#fff;background:linear-gradient(rgba(0,0,0,.45),transparent);pointer-events:none}
+.ph-status i{font-style:normal;letter-spacing:1px}
+/* end-call key: log off back to the 3D phone */
+.ph-end{position:absolute;left:50%;bottom:18px;z-index:5;width:64px;height:64px;margin-left:-32px;border-radius:50%;border:2px solid #000;cursor:pointer;
+  display:grid;place-items:center;color:#fff;background:radial-gradient(circle at 40% 30%,#ffb3d9 0 12%,#ff4fa3 45%,#b3005e 100%);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.5),0 4px 0 #1c1a1e,0 0 18px rgba(255,79,163,.6)}
+.ph-end svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:2.6;stroke-linecap:round}
+.ph-end:active{transform:translateY(3px);box-shadow:0 1px 0 #1c1a1e}
+.zoomview.phone.flip .os .app-win:not([hidden])~.ph-end{display:none}
+/* phone: the pop-up sits up top, clear of the keypad */
+html.mf-phone .pop95{left:50%;top:70px}

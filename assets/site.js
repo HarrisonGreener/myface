@@ -194,7 +194,18 @@
   window.addEventListener('pagehide', function () { if (D && D.getView) store.set('mf-view', JSON.stringify(D.getView())); });
   function useDeck(d) {
     D = d; scene.classList.add('has-deck');
-    var hint = document.getElementById('hint'); if (D.isPhone) { zv.classList.add('flip'); if (hint) hint.textContent = 'spin it · tap a key to go there'; }
+    if (D.isPhone) {
+      zv.classList.add('flip'); document.documentElement.classList.add('mf-phone');
+      // phone furniture: a status bar and an end-call key that logs off back to the 3D phone
+      var st = document.createElement('div'); st.className = 'ph-status'; st.setAttribute('aria-hidden', 'true');
+      st.innerHTML = '<i>MYFACE</i><i class="ph-clock"></i><i>&#9646;&#9646;&#9646; 98%</i>'; os.appendChild(st);
+      var tick = function () { var d = new Date(); st.querySelector('.ph-clock').textContent = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); };
+      tick(); setInterval(tick, 20000);
+      var end = document.createElement('button'); end.type = 'button'; end.className = 'ph-end'; end.setAttribute('aria-label', 'Log off');
+      end.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M6.3 6.6a8 8 0 1 0 11.4 0"/></svg>';
+      end.addEventListener('click', zoomOut); os.appendChild(end);
+      var pd = document.getElementById('popD'); if (pd) pd.innerHTML = '<b>Your avatar needs customising!</b>Open the phone to customise your avatar and find your treatment x';
+    }
     var c = D.canvas;
     c.tabIndex = 0; c.setAttribute('role', 'button'); c.setAttribute('aria-label', 'Turn on the computer (drag to spin it)');
     c.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); zoomIn(); } });

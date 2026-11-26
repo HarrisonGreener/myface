@@ -638,7 +638,7 @@ export function createDeck(container, opts = {}) {
       if (flying.v0) { view = lerpView(flying.v0, flying.v1, e); applyView(); }
       camera.lookAt(controls.target);
       if (k >= 1) { const d = flying.done; flying = null; d && d(); }
-    } else controls.update();
+    } else if (!inside) controls.update();          // while you're 'inside' the screen, leave the camera exactly where it is
     renderer.render(scene, camera);
     raf = requestAnimationFrame(tick);
   }
@@ -674,6 +674,8 @@ export function createDeck(container, opts = {}) {
     },
     // to: the rect the canvas will shrink back into afterwards
     flyOut(done, to, ms = 900) {
+      // safety: if there's no sensible 'outside' view saved, come back to the normal front view
+      if (saved.pos.distanceTo(saved.tgt) < 0.5) { saved.tgt.set(0, isPhone ? 0.95 : 0.6, 0); saved.pos.copy(saved.tgt).add(home.clone().sub(new THREE.Vector3(0, 0, 0)).setLength(home.length())); }
       const v0 = to ? full() : null, v1 = to ? fromRect(to) : null;
       if (v0) view = v0;
       fly(saved.pos.clone(), saved.tgt.clone(), ms, () => { inside = false; view = null; controls.enabled = true; done && done(); }, v0, v1);
