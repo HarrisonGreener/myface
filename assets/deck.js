@@ -130,6 +130,35 @@ function wire(points, color = C.pink, radius = 0.013) {
 
 
 // ---------------------------------------------------------------- chrome stickers (same designs as the old computer)
+const GRAD = {
+  chrome: [[0, '#fff'], [.32, '#d8d8e6'], [.48, '#85859c'], [.53, '#f6f6ff'], [.78, '#b4b4c8'], [1, '#6c6c82']],
+  pink: [[0, '#fff2f9'], [.32, '#ffb3d9'], [.48, '#c23f7c'], [.53, '#ffe3f1'], [.78, '#ff86c3'], [1, '#9c2c5c']],
+  holo: [[0, '#fff'], [.2, '#d7c6ff'], [.38, '#8a6cd8'], [.5, '#c9fff0'], [.66, '#ffc2e6'], [.82, '#9ad8ff'], [1, '#6d58b0']],
+  black: [[0, '#8b8796'], [.45, '#2a2630'], [.52, '#050406'], [.58, '#6d6878'], [1, '#141117']],
+  red: [[0, '#ffd0dc'], [.4, '#ff3d6e'], [.52, '#8f0f33'], [.6, '#ff8aa8'], [1, '#a3123c']],
+  green: [[0, '#eaffd0'], [.5, '#6fbf3a'], [1, '#2f6a18']],
+};
+const SHAPES = {
+  heart: [['M50 88C20 66 7 48 7 31 7 17 18 8 31 8c9 0 15 5 19 12 4-7 10-12 19-12 13 0 24 9 24 23 0 17-13 35-43 57Z', 'main']],
+  star: [['M50 5l11.5 31.5H95L68 57l10 34-28-20-28 20 10-34L5 36.5h33.5Z', 'main']],
+  bolt: [['M60 3 18 57h28l-9 40 46-58H55Z', 'main']],
+  butterfly: [['M49 50C40 18 8 8 8 33c0 14 18 20 41 17ZM51 50c9-32 41-42 41-17 0 14-18 20-41 17ZM49 52C30 52 14 62 20 78c6 14 24 4 29-26ZM51 52c19 0 35 10 29 26-6 14-24 4-29-26Z', 'main']],
+  lips: [['M6 50c12-16 26-22 44-11 18-11 32-5 44 11-12 20-28 30-44 30S18 70 6 50Z', 'main']],
+  bow: [['M50 48 12 24c-8 10-8 38 0 48ZM50 48l38-24c8 10 8 38 0 48ZM44 56l-12 34 12-6 6 10 6-10 12 6-12-34ZM61 50a11 11 0 1 1-22 0a11 11 0 1 1 22 0Z', 'main']],
+  cherry: [['M49 72a17 17 0 1 1-34 0a17 17 0 1 1 34 0ZM85 76a17 17 0 1 1-34 0a17 17 0 1 1 34 0Z', 'red'], ['M62 10q22-10 30 6-18 6-30-6Z', 'green']],
+  skull: [['M50 16c-22 0-35 15-35 33 0 12 6 21 14 25v10c0 4 3 7 7 7h28c4 0 7-3 7-7V74c8-4 14-13 14-25 0-18-13-33-35-33Z', 'main']],
+};
+const DETAIL = {
+  butterfly: c => { c.strokeStyle = '#1c1a1e'; c.lineWidth = 4; c.lineCap = 'round'; c.stroke(new Path2D('M50 32v44')); },
+  lips: c => { c.strokeStyle = '#5a1636'; c.lineWidth = 3; c.lineCap = 'round'; c.stroke(new Path2D('M12 50q38 10 76 0')); },
+  cherry: c => { c.strokeStyle = '#3b5d1f'; c.lineWidth = 4; c.lineCap = 'round'; c.stroke(new Path2D('M32 55q4-30 30-45M68 59q-8-28-6-49')); },
+  skull: c => { c.fillStyle = '#1c1a1e'; c.fill(new Path2D('M45 52a8 8 0 1 1-16 0a8 8 0 1 1 16 0ZM71 52a8 8 0 1 1-16 0a8 8 0 1 1 16 0ZM50 60l-4 8h8Z')); },
+};
+function grad(c, name, w = 100, h = 100) {
+  const g = c.createLinearGradient(0, 0, w * 0.3, h);
+  GRAD[name].forEach(([o, col]) => g.addColorStop(o, col));
+  return g;
+}
 function wear(c, w, h, seed) {
   const r = rnd(seed);
   c.globalCompositeOperation = 'destination-out';
@@ -137,6 +166,29 @@ function wear(c, w, h, seed) {
   c.lineWidth = 0.5;
   for (let i = 0; i < 5; i++) { c.globalAlpha = 0.5; c.beginPath(); const x = r() * w, y = r() * h; c.moveTo(x, y); c.lineTo(x + (r() - .5) * 30, y + (r() - .5) * 8); c.stroke(); }
   c.globalAlpha = 1; c.globalCompositeOperation = 'source-over';
+}
+function stickerCanvas(design, fill, seed) {
+  const S = 256, cv = document.createElement('canvas'); cv.width = cv.height = S;
+  const c = cv.getContext('2d'); c.scale(S / 110, S / 110); c.translate(5, 5);
+  const parts = SHAPES[design], all = new Path2D(); parts.forEach(([d]) => all.addPath(new Path2D(d)));
+  c.lineJoin = 'round';
+  c.save(); c.translate(1.5, 2); c.globalAlpha = 0.22; c.strokeStyle = c.fillStyle = '#000'; c.lineWidth = 13; c.stroke(all); c.fill(all); c.restore();
+  c.strokeStyle = c.fillStyle = '#fff'; c.lineWidth = 12; c.stroke(all); c.fill(all);
+  parts.forEach(([d, f]) => { const p = new Path2D(d); c.fillStyle = grad(c, f === 'main' ? fill : f); c.fill(p); c.strokeStyle = '#4d4a5a'; c.lineWidth = 1.2; c.stroke(p); });
+  DETAIL[design]?.(c);
+  c.save(); c.clip(all); c.globalAlpha = 0.7; c.fillStyle = '#fff'; c.beginPath(); c.ellipse(32, 26, 15, 6, -0.52, 0, 7); c.fill(); c.restore();
+  wear(c, 100, 100, seed);
+  return cv;
+}
+function wordCanvas(text, fill, seed) {
+  const cv = document.createElement('canvas'); cv.width = 512; cv.height = 180;
+  const c = cv.getContext('2d'); c.scale(512 / 160, 180 / 56);
+  c.font = '900 34px "Arial Black", Impact, sans-serif'; c.textAlign = 'center'; c.lineJoin = 'round';
+  c.save(); c.translate(1.5, 2); c.globalAlpha = 0.22; c.strokeStyle = c.fillStyle = '#000'; c.lineWidth = 13; c.strokeText(text, 80, 38); c.fillText(text, 80, 38); c.restore();
+  c.strokeStyle = c.fillStyle = '#fff'; c.lineWidth = 12; c.strokeText(text, 80, 38); c.fillText(text, 80, 38);
+  c.fillStyle = grad(c, fill, 160, 40); c.fillText(text, 80, 38); c.strokeStyle = '#3a1a2c'; c.lineWidth = 1.2; c.strokeText(text, 80, 38);
+  wear(c, 160, 56, seed);
+  return cv;
 }
 // the captcha logo (same letters/transforms as the site's SVG logo), die-cut
 const LOGO_L = [
@@ -336,7 +388,7 @@ function buildDeck() {
   // monitor front frame
   const logoCv = logoCanvas(25);
   const logos = [
-    addSticker(mon, logoCv, 0.36, [-0.24, -0.392, 0.402], [0, 0], -3),
+    addSticker(deck, logoCv, 0.26, [-0.355, 0.252, -0.12], FLAT, 12),
     addSticker(deck, logoCv, 0.62, [0.08, 0.13, -0.412], [0, Math.PI], 3),
   ];
   Promise.all(['108px "Bagel Fat One"', '134px "Pirata One"'].map(f => document.fonts.load(f).catch(() => {})))
@@ -350,9 +402,19 @@ function buildDeck() {
   imageSticker(mon, 'stk-cat.png', 411 / 512, 0.27, [-sideX(-0.1), -0.02, -0.1], [0, -sideY], 4, 9);
   imageSticker(mon, 'stk-megaphone.png', 467 / 458, 0.18, [-sideX(-0.37), 0.06, -0.37], [0, -sideY], -10, 11);
   // base unit
-  imageSticker(deck, 'stk-ella.png', 443 / 245, 0.25, [-0.35, 0.252, -0.12], FLAT, 12, 13);
+  imageSticker(mon, 'stk-ella.png', 443 / 245, 0.17, [-0.33, -0.392, 0.402], [0, 0], -4, 13);
   imageSticker(deck, 'stk-phone.png', 265 / 512, 0.11, [0.503, 0.13, 0.26], [0, Math.PI / 2], 78, 15);
   imageSticker(deck, 'stk-barbell.png', 454 / 325, 0.15, [-0.503, 0.13, 0.25], [0, -Math.PI / 2], 20, 17);
+
+  // small chrome filler stickers
+  addSticker(mon, stickerCanvas('star', 'chrome', 31), 0.06, [-0.505, 0.33, 0.402], [0, 0], -15);
+  addSticker(mon, stickerCanvas('heart', 'pink', 33), 0.055, [0.505, -0.15, 0.402], [0, 0], 12);
+  addSticker(mon, stickerCanvas('bolt', 'chrome', 35), 0.07, [sideX(0.12), -0.26, 0.12], [0, sideY], 15);
+  addSticker(mon, stickerCanvas('skull', 'chrome', 37), 0.07, [-sideX(0.12), 0.24, 0.12], [0, -sideY], -12);
+  addSticker(mon, stickerCanvas('star', 'holo', 39), 0.06, [-sideX(-0.4), -0.17, -0.4], [0, -sideY], 20);
+  addSticker(deck, stickerCanvas('cherry', 'chrome', 41), 0.09, [0.36, 0.252, 0.26], FLAT, -20);
+  addSticker(deck, stickerCanvas('heart', 'holo', 43), 0.07, [-0.38, 0.16, -0.412], [0, Math.PI], -14);
+  addSticker(deck, stickerCanvas('star', 'pink', 45), 0.06, [0.42, 0.06, -0.412], [0, Math.PI], 10);
 
   deck.traverse(o => { if (o.isMesh) { o.castShadow = !o.material.transparent; o.receiveShadow = true; } });
   return { deck, leds, screen, scr, blades };
@@ -378,8 +440,13 @@ export function createDeck(container) {
   const pinkRim = new THREE.PointLight(0xff4fa3, 6, 8); pinkRim.position.set(-2.5, 1.6, -1.5); scene.add(pinkRim);
   const cyanRim = new THREE.PointLight(0x5ff6ff, 4, 8); cyanRim.position.set(2.5, 1.2, -2); scene.add(cyanRim);
 
-  const ground = new THREE.Mesh(new THREE.CircleGeometry(2.2, 48), new THREE.ShadowMaterial({ opacity: 0.28 }));
-  ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+  // soft contact shadow directly under the base (no long cast shadow on the background)
+  const sh = document.createElement('canvas'); sh.width = sh.height = 256;
+  const sg = sh.getContext('2d'), rg = sg.createRadialGradient(128, 128, 10, 128, 128, 128);
+  rg.addColorStop(0, 'rgba(20,10,20,0.55)'); rg.addColorStop(0.55, 'rgba(20,10,20,0.25)'); rg.addColorStop(1, 'rgba(20,10,20,0)');
+  sg.fillStyle = rg; sg.fillRect(0, 0, 256, 256);
+  const blob = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 1.4), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(sh), transparent: true, depthWrite: false }));
+  blob.rotation.x = -Math.PI / 2; blob.position.y = -0.088; scene.add(blob);
 
   const { deck, leds, screen, scr, blades } = buildDeck();
   scene.add(deck);
@@ -441,4 +508,3 @@ export function createDeck(container) {
     dispose() { cancelAnimationFrame(raf); scr.stop(); renderer.dispose(); },
   };
 }
-export { logoCanvas };
