@@ -230,6 +230,7 @@
   function openWin(key, from) {
     var w = document.getElementById('win-' + key);
     if (!w) return false;
+    if (key === 'avatar') { w.classList.add('maxed'); if (typeof czPreload === 'function') czPreload(); }
     closeStart();
     if (!task(w)) {
       var t = document.createElement('button'); t.type = 'button'; t.className = 'task'; t.dataset.win = w.id; t.textContent = w.dataset.label;
@@ -482,7 +483,7 @@
   var czHair = store.get('mf-hair') || '';
   function czSetHair(key) {
     czHair = key || ''; store.set('mf-hair', czHair);
-    var url = 'url(assets/avatar-turn' + (czHair ? '-' + czHair : '') + '.webp?v=55)';
+    var url = 'url("' + new URL('assets/avatar-turn' + (czHair ? '-' + czHair : '') + '.webp?v=55', document.baseURI).href + '")';   // absolute, so it works from the stylesheet too
     czFig.style.backgroundImage = url; if (cz) cz.style.setProperty('--sprite', url);
     if (cz) cz.querySelectorAll('.pt-hair').forEach(function (b) { b.classList.toggle('on', b.dataset.hair === czHair); });
     var fg = cz && cz.querySelector('.pt-fg'), sw = cz && cz.querySelector('.pt-hair[data-hair="' + czHair + '"]'); if (fg && sw) fg.style.background = sw.style.background;
