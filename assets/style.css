@@ -600,3 +600,22 @@ html.js .top .bar #menuBtn{margin-left:auto;margin-right:0}
 .sr-item{overflow:hidden}
 .sr-item b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .top .bar .btn{min-height:0}
+/* ---- homepage background: three bands of huge type sliding behind the computer */
+body.home{background:#ece8e3}
+.home .scene{background:#ece8e3;container-type:size;overflow:hidden}
+.bands{position:absolute;inset:0;z-index:0;display:grid;grid-template-rows:repeat(3,1fr);overflow:hidden;pointer-events:none;user-select:none}
+.band{display:flex;align-items:center;overflow:hidden;white-space:nowrap}
+.band .track{display:flex;width:max-content;animation:band-l 90s linear infinite}
+.band.b2 .track{animation-name:band-r;animation-duration:110s}
+.band.b3 .track{animation-duration:130s}
+.band p{margin:0;padding-right:.35em;font:400 22vh/0.8 Anton,"Arial Narrow",Impact,sans-serif;font-size:31cqh;text-transform:uppercase;letter-spacing:-.005em}
+.band span{margin-right:.35em}
+.band i{font-style:normal;font-size:.42em;vertical-align:.38em;margin-right:.35em}
+.band.b1{color:#1c1a1e}
+.band.b1 i{color:#ff4fa3}
+.band.b2{background:#ff4fa3;color:#1c1a1e}
+.band.b3{background:#1c1a1e;color:#ff4fa3}
+.band.b3 i{color:#ece8e3}
+@keyframes band-l{to{transform:translateX(-50%)}}
+@keyframes band-r{from{transform:translateX(-50%)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){.band .track{animation:none}}
