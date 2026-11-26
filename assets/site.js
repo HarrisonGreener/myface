@@ -197,6 +197,8 @@
     if (D.isPhone) {
       zv.classList.add('flip'); document.documentElement.classList.add('mf-phone');
       // phone furniture: a status bar and an end-call key that logs off back to the 3D phone
+      var sc = document.createElement('div'); sc.className = 'ph-scene'; sc.setAttribute('aria-hidden', 'true');
+      sc.innerHTML = '<div class="ph-sun"></div><div class="ph-floor"><i></i></div>'; os.insertBefore(sc, os.firstChild);
       var st = document.createElement('div'); st.className = 'ph-status'; st.setAttribute('aria-hidden', 'true');
       st.innerHTML = '<i>MYFACE</i><i class="ph-clock"></i><i>&#9646;&#9646;&#9646; 98%</i>'; os.appendChild(st);
       var tick = function () { var d = new Date(); st.querySelector('.ph-clock').textContent = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); };

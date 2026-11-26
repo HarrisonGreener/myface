@@ -977,3 +977,21 @@ html.mf-phone .pop95{left:50%;top:70px}
   #menuBtn[aria-expanded="true"] .hb i:nth-child(3){transform:translateY(-5.75px) rotate(-45deg)}
   html.bn-open .top{z-index:3001}
 }
+/* ==== Flip phone v3: same synthwave world as the lock screen (no leopard) ==== */
+.zoomview.phone.flip .os{background:linear-gradient(#1a0b1f 0%,#2a0f2c 55%,#4a1240 100%)!important}
+.ph-scene{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.ph-sun{position:absolute;left:50%;bottom:28%;width:230px;height:115px;margin-left:-115px;border-radius:115px 115px 0 0;
+  background:linear-gradient(#ffd1ea,#ff4fa3);box-shadow:0 0 40px rgba(255,79,163,.55);
+  -webkit-mask:linear-gradient(#000 0 46%,transparent 46% 50%,#000 50% 60%,transparent 60% 66%,#000 66% 74%,transparent 74% 82%,#000 82% 88%,transparent 88% 97%,#000 97%);
+          mask:linear-gradient(#000 0 46%,transparent 46% 50%,#000 50% 60%,transparent 60% 66%,#000 66% 74%,transparent 74% 82%,#000 82% 88%,transparent 88% 97%,#000 97%)}
+.ph-floor{position:absolute;left:-60%;right:-60%;bottom:0;height:28%;perspective:220px;perspective-origin:50% 0}
+.ph-floor i{position:absolute;inset:0 0 -60%;transform:rotateX(62deg);transform-origin:50% 0;
+  background:linear-gradient(rgba(255,79,163,.75) 2px,transparent 2px) 0 0/100% 34px,linear-gradient(90deg,rgba(255,79,163,.75) 2px,transparent 2px) 50% 0/40px 100%;
+  animation:ph-run 1.6s linear infinite;box-shadow:inset 0 30px 30px -10px #2a0f2c}
+.ph-floor::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:#ff9ccc;box-shadow:0 0 12px #ff4fa3;z-index:1}
+@keyframes ph-run{to{background-position:0 34px,50% 0}}
+.zoomview.phone.flip .os .wall{inset:46px 0 auto;height:auto;z-index:1}
+.zoomview.phone.flip .os .wall-logo{width:72%;filter:drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 0 16px rgba(255,79,163,.8))}
+.zoomview.phone.flip .os .apps{position:relative;z-index:2;padding-top:170px}
+.zoomview.phone.flip .os .app .ic{border-color:#ff4fa3;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 10px rgba(255,79,163,.45)}
+.ph-status{background:rgba(0,0,0,.45);color:#ffd1ea;font-family:"Courier New",monospace}
