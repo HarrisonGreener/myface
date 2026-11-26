@@ -625,8 +625,7 @@
     var list = items.slice(); if (nested) list.push({ label: 'Back', back: true });
     // phones: Book and Search live in the menu, not the header
     if (!nested && matchMedia('(max-width: 620px)').matches) {
-      var bk = document.querySelector('.top .bar .btn'), sb = document.getElementById('searchBtn');
-      if (bk) list.splice(1, 0, { label: 'Book', href: bk.getAttribute('href') });
+      var sb = document.getElementById('searchBtn');
       if (sb) list.push({ label: 'Search', act: function () { sb.click(); } });
     }
     var top = list.shift(), L = [], R = [], made = [];
