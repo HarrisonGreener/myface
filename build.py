@@ -315,14 +315,14 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bagel+Fat+One&family=Pixelify+Sans:wght@400;600&family=Inter:wght@400;600&family=VT323&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{rel(d, 'assets/style.css')}?v=44">
+<link rel="stylesheet" href="{rel(d, 'assets/style.css')}?v=45">
 <script>document.documentElement.className='js'</script>
 <script type="application/ld+json">{ld}</script>
 </head>
 <body{' class="home"' if home else ''}>
 {LOGO_DEFS}
 <a class="skip" href="#content">Skip to content</a>
-<header class="top"><div class="wrap bar"><div class="brand">{logo(d)}<svg class="tag-svg" viewBox="28 0 460 44" role="img" aria-label="{e(C['tagline'])}"><text class="tt" x="70" y="32" textLength="382" lengthAdjust="spacing" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="500" letter-spacing="1" font-size="34" fill="#1c1a1e">{e(C['tagline'])}</text></svg></div><nav class="nav" aria-label="Main">{navh}</nav><button type="button" class="orb-btn" id="menuBtn" aria-expanded="false" aria-controls="bubbleNav"><span class="pk"></span>Menu</button><a class="btn" href="{e(C['booking_url'])}"><span class="pk"></span>Book</a><button type="button" class="orb-btn search-btn" id="searchBtn" aria-label="Search the site" data-index="{rel(d, 'assets/search.json')}?v=44" data-root="{rel(d, '')}"><svg class="mg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/></svg><span class="sl">Search</span></button></div></header>
+<header class="top"><div class="wrap bar"><div class="brand">{logo(d)}<svg class="tag-svg" viewBox="28 0 460 44" role="img" aria-label="{e(C['tagline'])}"><text class="tt" x="70" y="32" textLength="382" lengthAdjust="spacing" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="500" letter-spacing="1" font-size="34" fill="#1c1a1e">{e(C['tagline'])}</text></svg></div><nav class="nav" aria-label="Main">{navh}</nav><button type="button" class="orb-btn" id="menuBtn" aria-expanded="false" aria-controls="bubbleNav"><span class="pk"></span>Menu</button><a class="btn" href="{e(C['booking_url'])}"><span class="pk"></span>Book</a><button type="button" class="orb-btn search-btn" id="searchBtn" aria-label="Search the site" data-index="{rel(d, 'assets/search.json')}?v=45" data-root="{rel(d, '')}"><svg class="mg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/></svg><span class="sl">Search</span></button></div></header>
 <nav class="bubble-nav" id="bubbleNav" aria-label="Menu" hidden><ul>{bubbles}</ul></nav>
 {body}
 <footer class="foot"><div class="wrap">
@@ -331,7 +331,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <p>&copy;2026 {e(C['brand'])}</p>
 <p class="credit">Designed &amp; built by <a href="https://harrisongreener.co.uk" target="_blank" rel="noopener">Harrison Greener</a></p>
 </div></footer>
-<script src="{rel(d, 'assets/site.js')}?v=44" defer></script>
+<script src="{rel(d, 'assets/site.js')}?v=45" defer></script>
 </body>
 </html>
 """
@@ -538,14 +538,15 @@ def back_stickers():
 # ---- Customise your avatar: clickable parts of her turnaround, each opening the services for that part
 AVATAR_PARTS = [
     # key, label, hotspot box on the front view as % (left, top, width, height), services as (category, service slug)
-    ("hair", "Hair", (35, 1.4, 34, 6.8), [("hair", "cuts-and-styling"), ("hair", "colour"), ("hair", "extensions")]),
-    ("eyes", "Lashes & brows", (43.5, 10.8, 15, 1.9), [("beauty", "lashes"), ("beauty", "brows")]),
-    ("nose", "Piercing", (47.8, 12.8, 5.8, 1.7), [("piercing", "nose-piercing"), ("piercing", "ear-piercing"), ("piercing", "navel-piercing")]),
-    ("lips", "Lips", (46.6, 14.6, 8.8, 1.6), [("filler", "lip-filler")]),
-    ("face", "Face", (41.4, 8.6, 19.3, 8.5), [("beauty", "makeup"), ("filler", "dermal-filler"), ("beauty", "waxing")]),
-    ("navel", "Piercing", (44.6, 37, 10.8, 4.4), [("piercing", "navel-piercing"), ("piercing", "ear-piercing"), ("piercing", "nose-piercing")]),
-    ("hand-l", "Nails", (2, 45.5, 19.5, 9.7), [("nails", "gel-nails"), ("nails", "biab"), ("nails", "acrylic-nails"), ("nails", "nail-art")]),
-    ("hand-r", "Nails", (80.4, 45.5, 18, 9.7), [("nails", "gel-nails"), ("nails", "biab"), ("nails", "acrylic-nails"), ("nails", "nail-art")]),
+    ("hair", "Hair", (36.8, 1.8, 32.9, 6.2), [("hair", "cuts-and-styling"), ("hair", "colour"), ("hair", "extensions")]),
+    ("eyes", "Lashes & brows", (42.1, 10.9, 17.1, 1.5), [("beauty", "lashes"), ("beauty", "brows")]),
+    ("nose", "Piercing", (47.9, 12.7, 4.7, 2.0), [("piercing", "nose-piercing"), ("piercing", "ear-piercing"), ("piercing", "navel-piercing")]),
+    ("ear", "Piercing", (35.5, 10.7, 4.5, 3.7), [("piercing", "ear-piercing"), ("piercing", "nose-piercing"), ("piercing", "navel-piercing")]),
+    ("lips", "Lips", (46.1, 14.7, 9.2, 1.5), [("filler", "lip-filler")]),
+    ("face", "Face", (40.8, 8.4, 20.3, 8.9), [("beauty", "makeup"), ("filler", "dermal-filler"), ("beauty", "waxing")]),
+    ("navel", "Piercing", (45.3, 38.2, 10.5, 3.5), [("piercing", "navel-piercing"), ("piercing", "ear-piercing"), ("piercing", "nose-piercing")]),
+    ("hand-l", "Nails", (3.9, 45.2, 11, 11), [("nails", "gel-nails"), ("nails", "biab"), ("nails", "acrylic-nails"), ("nails", "nail-art")]),
+    ("hand-r", "Nails", (84.2, 45.2, 13.2, 11), [("nails", "gel-nails"), ("nails", "biab"), ("nails", "acrylic-nails"), ("nails", "nail-art")]),
 ]
 
 
@@ -658,7 +659,7 @@ def computer():
 </div>
 </div>
 <script type="importmap">{{"imports":{{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}}}</script>
-<script type="module">import {{ createDeck }} from './assets/deck.js?v=44';
+<script type="module">import {{ createDeck }} from './assets/deck.js?v=45';
 try {{ window.MFDeck = createDeck(document.getElementById('deck3d'), {{ phone: matchMedia('(max-width: 620px)').matches && /[?&]phone\b/.test(location.search) }}); window.dispatchEvent(new Event('mfdeck')); }} catch (e) {{ console.warn('3D computer unavailable', e); }}</script>
 </div>
 <div class="zoomview" id="zoomview" hidden><div class="zv-mon" id="zvMon"><div class="zv-screen" id="zvScreen"><span class="glare"></span></div></div>

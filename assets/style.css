@@ -632,7 +632,7 @@ body.home{background:#ece8e3}
 .cz-stage::after{content:"";position:absolute;left:-20%;right:-20%;bottom:0;height:22%;pointer-events:none;opacity:.55;transform:perspective(220px) rotateX(55deg);transform-origin:bottom;
   background:repeating-linear-gradient(90deg,transparent 0 34px,#ff4fa3 34px 36px),repeating-linear-gradient(transparent 0 22px,#ff4fa3 22px 24px)}
 .cz-hud{position:relative;z-index:2;margin:0;font:400 clamp(20px,3.2vw,34px)/1 Anton,Impact,sans-serif;letter-spacing:.06em;color:#fff;text-shadow:0 0 12px #ff4fa3,0 2px 0 #000}
-.cz-fig{position:relative;z-index:1;height:min(62vh,560px);max-height:100%;aspect-ratio:280/725;background:url(avatar-turn.webp?v=44) 0 0/600% 100% no-repeat;cursor:grab;touch-action:pan-y;user-select:none}
+.cz-fig{position:relative;z-index:1;height:min(62vh,560px);max-height:100%;aspect-ratio:380/1007;background:url(avatar-turn.webp?v=45) 0 0/600% 100% no-repeat;cursor:grab;touch-action:pan-y;user-select:none}
 .cz-fig:active{cursor:grabbing}
 .cz-fig .hs{position:absolute;z-index:2;padding:0;border:0;border-radius:45%;background:transparent;cursor:pointer}
 .cz-fig .hs-face{z-index:1}
@@ -702,3 +702,5 @@ body.home{background:#ece8e3}
 .hs-face .hs-dot{left:50%;top:50%}
 .cz-list a b{color:#fff}
 .cz-list a:hover b,.cz-list a:focus-visible b{color:#ffb3d9}
+
+.hs-ear .hs-dot{display:none}
