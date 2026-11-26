@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Cyberdeck test | MyFace</title>
+<style>
+html,body{margin:0;height:100%;background:#9fb6cf url(../assets/bg-sky.jpg) center/cover;font:14px Arial,sans-serif}
+#deck{position:fixed;inset:0;cursor:grab}
+#deck:active{cursor:grabbing}
+.bar{position:fixed;left:12px;bottom:12px;display:flex;gap:8px;z-index:2}
+.bar button{padding:8px 14px;border:1.5px solid #1c1a1e;background:#fbf8f5;cursor:pointer}
+#msg{position:fixed;top:12px;left:12px;background:#fff;padding:6px 10px;border:1px solid #ccc;z-index:2}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+</head>
+<body>
+<div id="msg">loading…</div>
+<div id="deck"></div>
+<div class="bar"><button id="in">Fly in</button><button id="out">Fly out</button></div>
+<script type="module">
+import { createDeck } from '../assets/deck.js';
+const msg = document.getElementById('msg');
+try {
+  const d = createDeck(document.getElementById('deck'));
+  msg.textContent = 'drag to spin';
+  document.getElementById('in').onclick = () => d.flyIn(() => msg.textContent = 'flew in');
+  document.getElementById('out').onclick = () => d.flyOut(() => msg.textContent = 'flew out');
+} catch (e) { msg.textContent = 'error: ' + e.message; }
+</script>
+</body>
+</html>
