@@ -56,6 +56,9 @@
     });
   });
 
+  var topBar = document.querySelector('.top');
+  function setTopH() { if (topBar) document.documentElement.style.setProperty('--top-h', topBar.offsetHeight + 'px'); }
+  setTopH(); window.addEventListener('resize', setTopH);
   var scene = document.getElementById('scene');
   if (!scene) return;
   var rig = document.getElementById('rig'), screen = document.getElementById('screen'), os = document.getElementById('os'),
@@ -112,24 +115,19 @@
   var zvMon = document.getElementById('zvMon');
   function bigScale() { return Math.min(window.innerWidth / 500, window.innerHeight / 420) * 0.98; }
   function phone() { return window.innerWidth <= 620; }
-  function sizeZoom() { zvMon.style.setProperty('--S', phone() ? 1 : bigScale()); zv.classList.toggle('phone', phone()); }
+  function sizeZoom() { zvMon.style.setProperty('--S', phone() ? 1 : bigScale()); zv.classList.toggle('phone', phone()); zv.classList.add('full'); }
   window.addEventListener('resize', function () {
     if (!zoomed) return;
     sizeZoom();
-    if (D) { D.snapIn(); zv.classList.toggle('deck', !phone()); if (phone()) clearScreen(); else placeScreen(); }
+    if (D) D.snapIn();
   });
   function showDesktop(instant) {
     sizeZoom();
     zvScreen.insertBefore(os, zvScreen.firstChild); os.inert = false;
     zv.hidden = false;
     if (instant) zv.classList.add('show'); else requestAnimationFrame(function () { zv.classList.add('show'); });
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden'; document.body.classList.add('mf-zoomed');
     zoomed = true; busy = false; store.set('mf-in', '1');
-  }
-  function placeScreen() {
-    var r = D.screenRect(), S = zvScreen;
-    S.style.left = r.left + 'px'; S.style.top = r.top + 'px'; S.style.width = r.width + 'px'; S.style.height = r.height + 'px';
-    os.style.transform = 'scale(' + (r.width / 860) + ')';
   }
   function clearScreen() { zvScreen.removeAttribute('style'); os.style.transform = ''; }
   function deckFull(on) {
@@ -140,10 +138,8 @@
     if (zoomed || busy) return;
     if (D) {
       busy = true; scene.parentNode.classList.add('zooming');
-      var from = deckFull(true), ph = phone();
+      var from = deckFull(true);
       D.flyIn(function () {
-        zv.classList.toggle('deck', !ph);
-        if (!ph) placeScreen();
         showDesktop(false); bootUp();
       }, from, reduce ? 0 : 1100);
       return;
@@ -168,7 +164,7 @@
       setTimeout(function () {
         zv.hidden = true; zv.classList.remove('deck'); clearScreen();
         screen.insertBefore(os, screen.firstChild); os.inert = true;
-        document.body.style.overflow = '';
+        document.body.style.overflow = ''; document.body.classList.remove('mf-zoomed');
         var to = deckBox.parentNode.getBoundingClientRect();
         D.flyOut(function () {
           deckFull(false); scene.parentNode.classList.remove('zooming');
@@ -180,7 +176,7 @@
     busy = true; zv.classList.remove('show'); closeAll(); closeStart(); store.set('mf-in', '');
     setTimeout(function () {
       zv.hidden = true; screen.insertBefore(os, screen.firstChild); os.inert = true;
-      document.body.style.overflow = '';
+      document.body.style.overflow = ''; document.body.classList.remove('mf-zoomed');
       rx = RX; ry = RY; rest(); scene.parentNode.classList.remove('zooming');
       setTimeout(function () { zoomed = false; busy = false; zoomBtn.focus(); }, reduce ? 0 : 1000);
     }, reduce ? 0 : 350);
@@ -194,7 +190,6 @@
     c.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); zoomIn(); } });
     if (zoomed) {                                           // already on the desktop (came back from another page)
       deckFull(true); D.snapIn();
-      if (!phone()) { zv.classList.add('deck'); placeScreen(); }
     }
   }
   if (window.MFDeck) useDeck(window.MFDeck);

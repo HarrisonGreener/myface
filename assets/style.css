@@ -480,3 +480,15 @@ body.home,.zoomview{background:#9fb6cf url(bg-sky.jpg) center/cover no-repeat fi
 .zoomview.deck .zv-mon{position:static;width:auto;height:auto;margin:0;transform:none;background:none;box-shadow:none}
 .zoomview.deck .zv-stk{display:none}
 .zoomview.deck .zv-screen{position:absolute;border-radius:4px;box-shadow:none}
+/* ---- the computer is the star: full-height stage, intro text kept for search engines only */
+.home .room{position:relative;padding:0}
+.home .scene{height:calc(100svh - var(--top-h,90px));min-height:420px}
+.home .hint{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);margin:0;z-index:3;white-space:nowrap}
+.home .caption{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* zoomed in: the desktop takes over the whole window */
+.zoomview.full{z-index:1000;background:#000}
+.zoomview.full .zv-mon{position:absolute;inset:0;width:auto;height:auto;margin:0;transform:none;border-radius:0;background:none;box-shadow:none}
+.zoomview.full .zv-screen{position:absolute;inset:0;width:auto;height:auto;border-radius:0;box-shadow:none}
+.zoomview.full .zv-screen .os{width:100%;height:100%;transform:none}
+.zoomview.full .zv-stk{display:none}
+body.mf-zoomed .top{visibility:hidden}

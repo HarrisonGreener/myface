@@ -495,7 +495,7 @@ export function createDeck(container) {
     const c = new THREE.Vector3(); screen.getWorldPosition(c);
     const vFov = THREE.MathUtils.degToRad(camera.fov);
     const fitH = 0.6 / 2 / Math.tan(vFov / 2), fitW = 0.8 / 2 / (Math.tan(vFov / 2) * aspect);
-    return { pos: c.clone().add(new THREE.Vector3(0, 0, Math.max(fitH, fitW) * 1.12)), tgt: c };
+    return { pos: c.clone().add(new THREE.Vector3(0, 0, Math.min(fitH, fitW) * 0.96)), tgt: c };
   }
   function fly(toPos, toTgt, ms, done, v0, v1) {
     controls.enabled = false; controls.autoRotate = false;

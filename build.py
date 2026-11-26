@@ -304,7 +304,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Pixelify+Sans:wght@400;600&family=Inter:wght@400;600&family=VT323&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{rel(d, 'assets/style.css')}?v=18">
+<link rel="stylesheet" href="{rel(d, 'assets/style.css')}?v=20">
 <script>document.documentElement.className='js'</script>
 <script type="application/ld+json">{ld}</script>
 </head>
@@ -319,7 +319,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <p>&copy;2026 {e(C['brand'])}</p>
 <p class="credit">Designed &amp; built by <a href="https://harrisongreener.co.uk" target="_blank" rel="noopener">Harrison Greener</a></p>
 </div></footer>
-<script src="{rel(d, 'assets/site.js')}?v=18" defer></script>
+<script src="{rel(d, 'assets/site.js')}?v=20" defer></script>
 </body>
 </html>
 """
@@ -551,10 +551,24 @@ def desktop():
     menu = "".join(f'<li><a href="{e(href)}" data-app="{k}">{icon(ic, "mic")}{e(label)}</a></li>' for k, label, ic, href, _ in apps)
     menu += "".join(f'<li><a href="{h}">{icon(ic, "mic")}{n}</a></li>' for n, h, ic in
                     [("All treatments", "services/", "nails"), ("Aftercare", "aftercare/", "beauty"), ("FAQ", "faq/", "about"), ("Areas", "areas/", "web"), ("Gallery", "gallery/", "her")])
+    # Sims-style pie menu: top level + a sub-ring for each treatment category
+    pie = [{"label": "Book a slot", "app": "book"}]
+    for c in CATEGORIES:
+        pie.append({"label": c["name"] + "...", "sub": [{"label": sv["name"], "href": f'{c["slug"]}/{sv["slug"]}/'} for sv in c["services"]]
+                    + [{"label": "See all " + c["name"].lower(), "app": c["slug"]}]})
+    pie += [{"label": "Check prices", "app": "prices"}, {"label": "Visit myface.com", "app": "web"},
+            {"label": "Talk to her.exe", "app": "her"}, {"label": "Info on Ella...", "app": "about"},
+            {"label": "Contact...", "app": "contact"}, {"label": "Log off", "act": "logoff"}]
+    pie_json = json.dumps(pie).replace("</", "<\\/")
+    note = (f'<div class="sim-note" id="simNote" role="status" hidden><span class="sn-i" aria-hidden="true">i</span>'
+            f'<div class="sn-box"><img src="assets/ella-px.png" alt="" width="40" height="40"><p><b>Your sim has gained a Glow-Up Memory!</b>'
+            f'Click anywhere on the desktop to see what {e(C["owner"].split()[0])} can do for you.</p></div>'
+            f'<button type="button" class="sn-x" aria-label="Close message">&times;</button></div>')
     return f"""<div class="os" id="os">
 <div class="wall" aria-hidden="true"><svg class="wall-logo" viewBox="{LOGO_VB}"><use href="#mf-logo"/></svg></div>
 <ul class="apps">{icons}</ul>
 {wins}
+{note}<script type="application/json" id="pieData">{pie_json}</script>
 <nav class="startmenu" id="startmenu" hidden aria-label="Start menu"><p class="sm-head">{e(C["brand"])} 95</p><ul>{menu}<li class="sm-sep"><button type="button" class="logoff-btn">&#9211; Log off</button></li></ul></nav>
 <div class="taskbar"><button type="button" class="start" id="startBtn" aria-expanded="false" aria-controls="startmenu"><svg class="start-logo" viewBox="{LOGO_VB}" aria-hidden="true"><use href="#mf-logo"/></svg>Start</button><div class="tasks" id="tasks" aria-label="Open windows"></div><div class="tray"><svg class="mic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1"/></svg><svg class="mic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4zM16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg><span id="clock">--:--</span><button type="button" class="tray-off logoff-btn" aria-label="Log off"><svg class="mic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v8M6.3 6.3a8 8 0 1 0 11.4 0"/></svg></button></div></div>
 </div>"""
@@ -599,7 +613,7 @@ def computer():
 </div>
 </div>
 <script type="importmap">{{"imports":{{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}}}</script>
-<script type="module">import {{ createDeck }} from './assets/deck.js?v=19';
+<script type="module">import {{ createDeck }} from './assets/deck.js?v=20';
 try {{ window.MFDeck = createDeck(document.getElementById('deck3d')); window.dispatchEvent(new Event('mfdeck')); }} catch (e) {{ console.warn('3D computer unavailable', e); }}</script>
 <p class="hint" id="hint">drag to spin it 360° · click to turn it on</p>
 </div>
@@ -609,7 +623,6 @@ try {{ window.MFDeck = createDeck(document.getElementById('deck3d')); window.dis
 <p class="cap-tag">{e(C['tagline'])}</p>
 <h1>Hair, nails, lashes, piercing &amp; lip filler in {e(C['town'])}</h1>
 <p>An appointment-only home beauty studio in {e(C['town'])}, also covering Droylsden, Oldham, Stockport and the surrounding areas.</p>
-<p><a class="btn" href="{e(C['booking_url'])}">Book a slot</a> <a class="btn ghost" href="services/">All treatments</a></p>
 </div>
 </main>"""
 
