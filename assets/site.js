@@ -71,7 +71,7 @@
 
   os.inert = true;
   // the 3D computer (assets/deck.js) takes over from the CSS one once three.js has loaded
-  var deckBox = document.getElementById('deck3d'), D = null;
+  var deckBox = document.getElementById('deck3d'), D = null, demoing = false;
 
   function fit() { return Math.min(1, (scene.clientWidth - 24) / (scene.clientWidth < 600 ? 900 : 820), scene.clientHeight / 620); }
   function rest() { rig.style.transform = 'scale(' + fit() + ') rotateX(' + rx + 'deg) rotateY(' + ry + 'deg)'; }
@@ -131,7 +131,7 @@
     if (instant) zv.classList.add('show'); else requestAnimationFrame(function () { zv.classList.add('show'); });
     document.body.style.overflow = 'hidden'; document.body.classList.add('mf-zoomed');
     zoomed = true; busy = false; store.set('mf-in', '1');
-    if (!instant) openAvatar();
+    if (!instant && !demoing) openAvatar();
   }
   function clearScreen() { zvScreen.removeAttribute('style'); os.style.transform = ''; }
   function deckFull(on) {
@@ -331,6 +331,49 @@
   }
 
   // ---- Profile "song"
+  // ---- "Show me how": a pretend cursor clicks the computer, then the Customise icon on the desktop
+  function showHow(fromEl) {
+    if (reduce || zoomed || busy) { zoomIn(); return; }
+    var cur = document.createElement('div'); cur.className = 'demo-cursor'; cur.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(cur);
+    var r0 = fromEl.getBoundingClientRect();
+    function at(x, y) { cur.style.transform = 'translate(' + x + 'px,' + y + 'px)'; }
+    function click(then) {
+      cur.classList.add('press');
+      var ring = document.createElement('span'); ring.className = 'demo-ring'; cur.appendChild(ring);
+      setTimeout(function () { cur.classList.remove('press'); }, 180);
+      setTimeout(function () { ring.remove(); then && then(); }, 420);
+    }
+    cur.style.transition = 'none'; at(r0.left + r0.width / 2, r0.top + r0.height / 2);
+    void cur.offsetWidth; cur.style.transition = '';
+    // 1) over to the computer's screen
+    var sr = D && D.screenRect ? D.screenRect() : document.getElementById('scene').getBoundingClientRect();
+    setTimeout(function () { at(sr.left + sr.width * 0.5, sr.top + sr.height * 0.5); }, 60);
+    setTimeout(function () {
+      click(function () {
+        demoing = true; zoomIn();
+        // 2) once the desktop is up, over to the Customise icon
+        var wait = setInterval(function () {
+          if (!zoomed || busy) return;
+          clearInterval(wait);
+          var icon = os.querySelector('.app[data-app="avatar"]');
+          if (!icon) { demoing = false; cur.remove(); openAvatar(); return; }
+          setTimeout(function () {
+            var ir = icon.getBoundingClientRect();
+            at(ir.left + ir.width / 2, ir.top + ir.height * 0.4);
+            setTimeout(function () {
+              icon.classList.add('sel');
+              click(function () {
+                demoing = false; icon.classList.remove('sel'); openAvatar();
+                cur.classList.add('bye'); setTimeout(function () { cur.remove(); }, 400);
+              });
+            }, 950);
+          }, 450);
+        }, 80);
+      });
+    }, 1050);
+  }
+
   // ---- avatar.exe pop-up: an old-Windows warning telling you what to do (once per visit)
   var pop = document.getElementById('avatarPop');
   function showPop() {
@@ -344,7 +387,7 @@
   function hidePop() { pop.classList.remove('in'); setTimeout(function () { pop.hidden = true; }, 180); }
   if (pop) {
     pop.querySelectorAll('.pop-x, .pop-ok').forEach(function (b) { b.addEventListener('click', hidePop); });
-    pop.querySelector('.pop-go').addEventListener('click', function () { hidePop(); zoomIn(); });
+    pop.querySelector('.pop-go').addEventListener('click', function (e) { hidePop(); showHow(e.currentTarget); });
     pop.addEventListener('keydown', function (e) { if (e.key === 'Escape') hidePop(); });
     var capEl = document.getElementById('captcha');
     if (capEl && !capEl.hidden) window.addEventListener('mf-human', showPop, { once: true });

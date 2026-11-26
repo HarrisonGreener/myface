@@ -745,3 +745,12 @@ body.home{background:#ece8e3}
 .cz-sw:hover,.cz-sw:focus-visible{outline:none;transform:scale(1.15)}
 .cz-sw.on{box-shadow:inset 0 3px 4px rgba(255,255,255,.55),0 0 0 2px #fff,0 0 0 4px #ff4fa3,0 0 12px #ff4fa3}
 .pie.nt,.pie.nt *{transition:none!important}
+/* pretend cursor for the "how it works" demo */
+.demo-cursor{position:fixed;left:0;top:0;z-index:6000;width:30px;height:30px;margin:-3px 0 0 -5px;pointer-events:none;
+  background:url(cursor.svg) 0 0/contain no-repeat;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5));
+  transition:transform .9s cubic-bezier(.45,.05,.25,1),opacity .3s}
+.demo-cursor.press{scale:.82}
+.demo-cursor.bye{opacity:0}
+.demo-ring{position:absolute;left:5px;top:3px;width:10px;height:10px;margin:-5px;border-radius:50%;border:3px solid #ff4fa3;animation:demo-ring .42s ease-out forwards}
+@keyframes demo-ring{from{transform:scale(.4);opacity:1}to{transform:scale(4);opacity:0}}
+.os .app.sel{background:rgba(255,79,163,.35);outline:1px dotted #fff}
