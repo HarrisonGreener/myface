@@ -728,3 +728,6 @@ body.home{background:#ece8e3}
 .pie-item.cz-bookb{color:#fff;text-shadow:0 1px 0 #7a0c43;background:linear-gradient(#ffb3d9 0%,#ff6fb5 40%,#e0288a 53%,#ff4fa3 80%,#ff8cc8 100%)}
 .pie-item.cz-bookb .pk{border-color:#fff;background:radial-gradient(circle at 40% 35%,#fff 0 25%,#ffd1ea 60%,#ff9ccc 100%)}
 @media (max-width:760px){.cz-stage{height:calc(100vh - 110px)}}
+.cz-pie .pie-item,.cz-pie .pie-item:visited{color:#fff;text-decoration:none}
+.cz-pie .pie-item:hover,.cz-pie .pie-item:focus-visible{color:#ffb3d9}
+.cz-pie .pie-item.cz-bookb:hover,.cz-pie .pie-item.cz-bookb:focus-visible{color:#fff}

@@ -393,9 +393,9 @@
       ring.appendChild(el); made.push(el);
     }
     var n = 0, rows = Math.max(L.length, R.length);
-    bubble(top, 'c', 0, -62, n++);
+    bubble(top, 'c', 0, -78, n++);
     for (var i = 0; i < rows; i++) {
-      var t = rows === 1 ? 0 : i / (rows - 1), y = -18 + t * Math.max(70, rows * 34), x = 22 + Math.sin(t * Math.PI) * 26;
+      var t = rows === 1 ? 0 : i / (rows - 1), y = -26 + t * Math.max(90, (rows - 1) * 46), x = 34 + Math.sin(t * Math.PI) * 34;
       if (L[i]) bubble(L[i], 'l', -x, y, n++);
       if (R[i]) bubble(R[i], 'r', x, y, n++);
     }
