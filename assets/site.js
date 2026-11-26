@@ -623,11 +623,20 @@
     var head = document.createElement('span'); head.className = 'pie-head'; ring.appendChild(head);
     if (nested) ring.dataset.nested = '1';
     var list = items.slice(); if (nested) list.push({ label: 'Back', back: true });
+    // phones: Book and Search live in the menu, not the header
+    if (!nested && matchMedia('(max-width: 620px)').matches) {
+      var bk = document.querySelector('.top .bar .btn'), sb = document.getElementById('searchBtn');
+      if (bk) list.splice(1, 0, { label: 'Book', href: bk.getAttribute('href') });
+      if (sb) list.push({ label: 'Search', act: function () { sb.click(); } });
+    }
     var top = list.shift(), L = [], R = [], made = [];
     list.forEach(function (it, i) { (i % 2 ? R : L).push(it); });
     function bubble(it, side, x, y, i) {
       var el;
-      if (it.sub || it.back) {
+      if (it.act) {
+        el = document.createElement('button'); el.type = 'button';
+        el.addEventListener('click', function () { close(); setTimeout(it.act, 220); });
+      } else if (it.sub || it.back) {
         el = document.createElement('button'); el.type = 'button';
         el.addEventListener('click', function () { it.back ? show(ROOT, false) : show(it.sub, true, it.label); });
       } else {

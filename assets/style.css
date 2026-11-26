@@ -964,3 +964,16 @@ body:not(.home) .crumbs a{color:#c2246f}
 .zoomview.phone.flip .os .app-win:not([hidden])~.ph-end{display:none}
 /* phone: the pop-up sits up top, clear of the keypad */
 html.mf-phone .pop95{left:50%;top:70px}
+/* ==== Header: no tagline; on phones a single hamburger (Book + Search move into the menu) ==== */
+.top .bar .orb-btn .hb{display:none}
+@media (max-width:620px){
+  html.js .top .bar .btn,html.js .top .bar .search-btn{display:none}
+  html.js .top .bar #menuBtn{width:44px;height:44px;padding:0;border-radius:50%;justify-content:center;margin-left:auto}
+  html.js .top .bar #menuBtn .pk,html.js .top .bar #menuBtn .ml{display:none}
+  html.js .top .bar #menuBtn .hb{display:flex;flex-direction:column;justify-content:space-between;width:20px;height:14px}
+  #menuBtn .hb i{display:block;height:2.5px;border-radius:2px;background:#ff9ccc;box-shadow:0 0 4px rgba(255,79,163,.8);transition:transform .2s,opacity .2s}
+  #menuBtn[aria-expanded="true"] .hb i:nth-child(1){transform:translateY(5.75px) rotate(45deg)}
+  #menuBtn[aria-expanded="true"] .hb i:nth-child(2){opacity:0}
+  #menuBtn[aria-expanded="true"] .hb i:nth-child(3){transform:translateY(-5.75px) rotate(-45deg)}
+  html.bn-open .top{z-index:3001}
+}
