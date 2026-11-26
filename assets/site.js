@@ -446,7 +446,7 @@
     return fetch(btn.dataset.index).then(function (r) { return r.json(); }).then(function (j) { idx = j; return j; });
   }
   function score(p, terms) {
-    var t = p.t.toLowerCase(), d = (p.d + ' ' + p.u.replace(/[\/-]/g, ' ')).toLowerCase(), s = 0;
+    var t = p.t.toLowerCase(), d = (p.u ? p.d + ' ' + p.u.replace(/[\/-]/g, ' ') : '').toLowerCase(), s = 0;   // the homepage only matches 'home'
     for (var i = 0; i < terms.length; i++) {
       var w = terms[i];
       if (t.indexOf(w) >= 0) s += t.indexOf(w) === 0 ? 6 : 4;

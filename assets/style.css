@@ -599,3 +599,4 @@ html.js .top .bar #menuBtn{margin-left:auto;margin-right:0}
 .sr-list li{min-width:0}
 .sr-item{overflow:hidden}
 .sr-item b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top .bar .btn{min-height:0}
