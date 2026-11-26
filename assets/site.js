@@ -333,7 +333,7 @@
   // ---- Profile "song"
   // ---- "Show me how": a pretend cursor clicks the computer, then the Customise icon on the desktop
   function showHow(fromEl) {
-    if (reduce || zoomed || busy) { zoomIn(); return; }
+    if (zoomed || busy) { zoomIn(); return; }
     var cur = document.createElement('div'); cur.className = 'demo-cursor'; cur.setAttribute('aria-hidden', 'true');
     document.body.appendChild(cur);
     var r0 = fromEl.getBoundingClientRect();
