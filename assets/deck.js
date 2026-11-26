@@ -300,7 +300,17 @@ function buildDeck() {
   const smudge = grime(77, 'rgba(0,0,0,0)', [255, 255, 255]);
   const glass = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.6), new THREE.MeshPhysicalMaterial({ color: 0xffffff, transparent: true, opacity: 0.1, roughness: 0.25, clearcoat: 1, alphaMap: smudge.rough }));
   glass.position.set(0, 0.03, 0.415); mon.add(glass);
-  const glow = new THREE.PointLight(0xa9c8ff, 0.5, 1.6); glow.position.set(0, 0.03, 0.7); mon.add(glow);
+  const glow = new THREE.PointLight(0xa9c8ff, 0.9, 1.4); glow.position.set(0, 0.03, 0.6); mon.add(glow);
+  // soft halo: the lit screen bleeds a little light onto the bezel round it
+  const hc = document.createElement('canvas'); hc.width = 256; hc.height = 200;
+  const hx = hc.getContext('2d');
+  hx.filter = 'blur(14px)'; hx.fillStyle = 'rgba(170,205,255,0.9)'; hx.fillRect(24, 22, 208, 156);
+  const halo = new THREE.Mesh(new THREE.PlaneGeometry(0.98, 0.765), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(hc), transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
+  halo.position.set(0, 0.03, 0.4135); mon.add(halo);
+  // faint shimmer so it reads as a lit screen, not a print
+  const sheen = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.6), new THREE.MeshBasicMaterial({ color: 0xcfe2ff, transparent: true, opacity: 0.06, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
+  sheen.position.set(0, 0.03, 0.4138); mon.add(sheen);
+  leds.flicker = (t) => { sheen.material.opacity = 0.05 + 0.015 * Math.sin(t * 7) + 0.01 * Math.sin(t * 23); halo.material.opacity = 0.33 + 0.03 * Math.sin(t * 3); };
   const pwr = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.02, 20), mat(C.pink));
   pwr.rotation.x = Math.PI / 2; pwr.position.set(0.44, -0.38, 0.405); mon.add(pwr);
   // side sockets (pink port blocks the wires plug into)
@@ -464,6 +474,7 @@ export function createDeck(container) {
   function tick() {
     const t = clock.getElapsedTime();
     leds.forEach((l, i) => { l.visible = Math.sin(t * (2 + i * 0.7) + i) > -0.3; });
+    leds.flicker && leds.flicker(t);
     blades.rotation.z = t * 9;
     if (flying) {
       const k = flying.ms ? Math.min(1, (performance.now() - flying.start) / flying.ms) : 1;
