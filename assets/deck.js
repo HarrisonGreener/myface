@@ -510,7 +510,7 @@ function buildPhone() {
   });
 
   // --- upper half (screen), hinged and tipped back a little
-  const lid = new THREE.Group(); lid.position.set(0, LH, -0.004); lid.rotation.x = -0.2; phone.add(lid);
+  const lid = new THREE.Group(); lid.position.set(0, LH, -0.004); lid.rotation.x = 0.24; phone.add(lid);   // open like a real flip phone: the screen half leans slightly towards you
   const upper = new THREE.Mesh(new RoundedBoxGeometry(W, UH, UD, 5, 0.035), shell); upper.position.y = UH / 2 + 0.02; lid.add(upper);
   const UZ = UD / 2;
   const bez = new THREE.Mesh(new RoundedBoxGeometry(0.55, 0.74, 0.012, 3, 0.03), dirty(109, '#16131a', { tint: [140, 110, 120] })); bez.position.set(0, 0.47, UZ); lid.add(bez);
