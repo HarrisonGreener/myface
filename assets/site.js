@@ -594,7 +594,9 @@
     setTimeout(function () { l.remove(); }, 200);
     btn.setAttribute('aria-expanded', 'false'); document.documentElement.classList.remove('bn-open'); btn.focus();
   }
-  function show(items, nested) {
+  var ringLabel = '';                                    // which ring is showing ('' = the main one)
+  function show(items, nested, label) {
+    ringLabel = nested ? (label || '') : '';
     if (!layer) {
       layer = document.createElement('div'); layer.className = 'bn-layer'; layer.setAttribute('role', 'dialog'); layer.setAttribute('aria-label', 'Menu');
       layer.addEventListener('click', function (e) { if (e.target === layer) close(); });
@@ -613,8 +615,12 @@
       var el;
       if (it.sub || it.back) {
         el = document.createElement('button'); el.type = 'button';
-        el.addEventListener('click', function () { it.back ? show(ROOT, false) : show(it.sub, true); });
-      } else { el = document.createElement('a'); el.href = it.href; if (it.cur) el.setAttribute('aria-current', 'page'); }
+        el.addEventListener('click', function () { it.back ? show(ROOT, false) : show(it.sub, true, it.label); });
+      } else {
+        el = document.createElement('a'); el.href = it.href; if (it.cur) el.setAttribute('aria-current', 'page');
+        // remember the menu was open here, so Back brings you back to it
+        el.addEventListener('click', function () { try { sessionStorage.setItem('mf-menu', JSON.stringify({ at: location.pathname, ring: ringLabel })); } catch (err) {} });
+      }
       el.className = 'pie-item ' + side;
       el.innerHTML = '<span class="pk"></span><span class="pl"></span>';
       el.querySelector('.pl').textContent = it.label + (it.sub || it.back ? '...' : '');
@@ -641,6 +647,19 @@
     made[0].focus({ preventScroll: true });
   }
   btn.addEventListener('click', function () { layer ? close() : show(ROOT, false); });
+  // coming back to the page you left from the menu: open the menu again, on the same ring
+  function reopen() {
+    var m = null; try { m = JSON.parse(sessionStorage.getItem('mf-menu')); } catch (err) {}
+    if (!m || m.at !== location.pathname) return;
+    try { sessionStorage.removeItem('mf-menu'); } catch (err) {}
+    if (layer) return;
+    var sub = m.ring && ROOT.filter(function (it) { return it.label === m.ring && it.sub; })[0];
+    sub ? show(sub.sub, true, sub.label) : show(ROOT, false);
+  }
+  window.addEventListener('pageshow', function (e) {
+    var navType = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0] || {}).type;
+    if (e.persisted || navType === 'back_forward') reopen();
+  });
   document.addEventListener('keydown', function (e) {
     if (!layer) return;
     if (e.key === 'Escape') { e.preventDefault(); if (ring.dataset.nested) show(ROOT, false); else close(); }
