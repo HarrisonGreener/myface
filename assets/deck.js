@@ -402,7 +402,7 @@ function buildDeck() {
   imageSticker(mon, 'stk-cat.png', 411 / 512, 0.27, [-sideX(-0.1), -0.02, -0.1], [0, -sideY], 4, 9);
   imageSticker(mon, 'stk-megaphone.png', 467 / 458, 0.18, [-sideX(-0.37), 0.06, -0.37], [0, -sideY], -10, 11);
   // base unit
-  imageSticker(mon, 'stk-ella.png', 443 / 245, 0.17, [-0.33, -0.392, 0.402], [0, 0], -4, 13);
+  imageSticker(mon, 'stk-ella.png', 443 / 245, 0.15, [-0.33, -0.362, 0.402], [0, 0], -3, 13);
   imageSticker(deck, 'stk-phone.png', 265 / 512, 0.11, [0.503, 0.13, 0.26], [0, Math.PI / 2], 78, 15);
   imageSticker(deck, 'stk-barbell.png', 454 / 325, 0.15, [-0.503, 0.13, 0.25], [0, -Math.PI / 2], 20, 17);
 
