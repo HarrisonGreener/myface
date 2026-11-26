@@ -473,8 +473,8 @@ function phoneScreenTexture() {
 }
 function buildPhone() {
   const deck = new THREE.Group(), leds = [], keys = [];
-  const shell = dirty(101, '#eaa3c4', { tint: [120, 60, 80] }), shell2 = dirty(103, '#dc93b6', { tint: [120, 60, 80] });
-  const face = dirty(107, '#2a262f', { tint: [150, 110, 130] });
+  const shell = dirty(101, '#ece2cf'), shell2 = dirty(103, '#e3d8c3');
+  const face = dirty(107, '#2a262f', { tint: [120, 110, 100] });
   const phone = new THREE.Group(); phone.position.y = 0.06; phone.rotation.x = -0.1; deck.add(phone);
   const W = 0.64, LH = 0.92, LD = 0.075, UH = 0.88, UD = 0.06, FZ = LD / 2;
 
