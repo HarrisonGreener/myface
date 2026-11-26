@@ -361,10 +361,58 @@
     czFig.style.backgroundPosition = (czFrame * 100 / (CZ_FRAMES - 1)) + '% 0';
     czFig.classList.toggle('front', czFrame === 0);
   }
-  function czPart(group) {
-    cz.querySelectorAll('.cz-part').forEach(function (p) { p.hidden = p.dataset.part !== (group || ''); });
-    czFig.querySelectorAll('.hs').forEach(function (h) { h.classList.toggle('on', !!group && h.dataset.part === group); });
-    var first = group && cz.querySelector('.cz-part[data-part="' + group + '"] a'); if (first) first.focus({ preventScroll: true });
+  // clicking a part pops a ring of bubbles out of that spot (same style as the site menu)
+  var czRingEl = null;
+  function czClose() {
+    if (czRingEl) { var r = czRingEl; czRingEl = null; r.classList.remove('open'); setTimeout(function () { r.remove(); }, 180); }
+    czFig.querySelectorAll('.hs').forEach(function (h) { h.classList.remove('on'); });
+  }
+  function czPart(group, hs) {
+    czClose();
+    if (!group) return;
+    var sec = cz.querySelector('.cz-part[data-part="' + group + '"]'); if (!sec) return;
+    hs = hs || czFig.querySelector('.hs[data-part="' + group + '"]');
+    czFig.querySelectorAll('.hs').forEach(function (h) { h.classList.toggle('on', h.dataset.part === group); });
+    var items = Array.prototype.map.call(sec.querySelectorAll('.cz-list a'), function (a) {
+      return { label: a.querySelector('b').textContent + '  ' + a.querySelector('em').textContent, href: a.getAttribute('href') };
+    });
+    var book = sec.querySelector('.cz-book');
+    items.unshift({ label: sec.querySelector('h3').textContent, title: true });
+    if (book) items.push({ label: 'Book this', href: book.getAttribute('href'), book: true });
+    var stage = cz.querySelector('.cz-stage'), sr = stage.getBoundingClientRect(), hr = hs.getBoundingClientRect();
+    var ring = document.createElement('div'); ring.className = 'pie cz-pie'; ring.setAttribute('role', 'menu');
+    var pin = document.createElement('span'); pin.className = 'pie-pin'; ring.appendChild(pin);
+    var top = items.shift(), L = [], R = [], made = [];
+    items.forEach(function (it, i) { (i % 2 ? R : L).push(it); });
+    function bubble(it, side, x, y, i) {
+      var el = document.createElement(it.title ? 'span' : 'a');
+      if (!it.title) { el.href = it.href; el.setAttribute('role', 'menuitem'); }
+      el.className = 'pie-item ' + side + (it.title ? ' cz-title' : '') + (it.book ? ' cz-bookb' : '');
+      el.innerHTML = '<span class="pk"></span><span class="pl"></span>'; el.querySelector('.pl').textContent = it.label;
+      el.style.setProperty('--x', x + 'px'); el.style.setProperty('--y', y + 'px'); el.style.transitionDelay = (i * 22) + 'ms';
+      ring.appendChild(el); made.push(el);
+    }
+    var n = 0, rows = Math.max(L.length, R.length);
+    bubble(top, 'c', 0, -62, n++);
+    for (var i = 0; i < rows; i++) {
+      var t = rows === 1 ? 0 : i / (rows - 1), y = -18 + t * Math.max(70, rows * 34), x = 22 + Math.sin(t * Math.PI) * 26;
+      if (L[i]) bubble(L[i], 'l', -x, y, n++);
+      if (R[i]) bubble(R[i], 'r', x, y, n++);
+    }
+    stage.appendChild(ring);
+    var cx = hr.left + hr.width / 2 - sr.left, cy = hr.top + hr.height / 2 - sr.top;
+    ring.style.left = cx + 'px'; ring.style.top = cy + 'px';
+    // keep the whole ring inside the stage (shrink a little on small screens)
+    var o = ring.getBoundingClientRect(), minX = 0, maxX = 0, minY = 0, maxY = 0;
+    made.forEach(function (el) { var r = el.getBoundingClientRect();
+      minX = Math.min(minX, r.left - o.left); maxX = Math.max(maxX, r.right - o.left); minY = Math.min(minY, r.top - o.top); maxY = Math.max(maxY, r.bottom - o.top); });
+    var k = Math.min(1, (sr.width - 16) / (maxX - minX), (sr.height - 16) / (maxY - minY));
+    ring.style.setProperty('--k', k);
+    var lx = Math.min(Math.max(cx, 8 - minX * k), sr.width - 8 - maxX * k), ly = Math.min(Math.max(cy, 8 - minY * k), sr.height - 8 - maxY * k);
+    ring.style.left = lx + 'px'; ring.style.top = ly + 'px';
+    czRingEl = ring;
+    requestAnimationFrame(function () { ring.classList.add('open'); });
+    var first = ring.querySelector('a'); if (first) first.focus({ preventScroll: true });
   }
   function czSpinTo(target, done) {                      // turn frame by frame, like a character select
     if (czFrame === target) { done && done(); return; }
@@ -379,20 +427,24 @@
   if (cz) {
     czSet(0);
     czFig.querySelectorAll('.hs').forEach(function (h) {
-      h.addEventListener('click', function () { if (czDragged) return; czPart(h.dataset.part); });
+      h.addEventListener('click', function (e) { e.stopPropagation(); if (czDragged) return; czPart(h.dataset.part, h); });
     });
     cz.querySelectorAll('.cz-chip').forEach(function (c) {
       c.addEventListener('click', function () { czSpinTo(0, function () { czPart(c.dataset.part); }); });
     });
     cz.querySelectorAll('.cz-reset').forEach(function (b) { b.addEventListener('click', function () { czPart(''); }); });
-    cz.querySelectorAll('.cz-turn').forEach(function (b) { b.addEventListener('click', function () { czSet(czFrame + (+b.dataset.d)); }); });
+    cz.querySelectorAll('.cz-turn').forEach(function (b) { b.addEventListener('click', function () { czClose(); czSet(czFrame + (+b.dataset.d)); }); });
+    cz.querySelector('.cz-stage').addEventListener('click', function (e) { if (czRingEl && !czRingEl.contains(e.target)) czClose(); });
+    cz.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && czRingEl) { e.stopPropagation(); var on = czFig.querySelector('.hs.on'); czClose(); if (on) on.focus(); }
+    });
     var czDown = null, czDragged = false, czStart = 0;
     czFig.addEventListener('pointerdown', function (e) { czDown = e.clientX; czStart = czFrame; czDragged = false; });
     window.addEventListener('pointermove', function (e) {
       if (czDown === null) return;
       var dx = e.clientX - czDown;
       if (Math.abs(dx) > 8) czDragged = true;
-      if (czDragged) czSet(czStart - Math.round(dx / 45));
+      if (czDragged) { czClose(); czSet(czStart - Math.round(dx / 45)); }
     });
     window.addEventListener('pointerup', function () { czDown = null; setTimeout(function () { czDragged = false; }, 0); });
     czFig.addEventListener('keydown', function (e) {

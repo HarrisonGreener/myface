@@ -713,3 +713,18 @@ body.home{background:#ece8e3}
 .cz-fig{position:absolute;top:3%;bottom:2%;left:50%;height:auto;max-height:none;transform:translateX(-50%)}
 .cz-rot{position:absolute;right:16px;bottom:14px;padding:6px 10px;border-radius:18px;background:rgba(18,10,20,.6)}
 @media (max-width:760px){.cz-stage{height:62vh;min-height:0}}
+/* customiser v3: no side panel, parts open a bubble ring where you click */
+.cz-main{grid-template-columns:1fr}
+.cz-panel{display:none}
+.cz-stage{min-height:0}
+.cz-pie{z-index:5}
+.cz-pie .pie-item{height:30px;font-size:14px;padding:0 16px}
+.pie-pin{position:absolute;left:-7px;top:-7px;width:14px;height:14px;border-radius:50%;background:#ff4fa3;box-shadow:0 0 0 3px #fff,0 0 14px #ff4fa3;
+  transform:scale(.3);opacity:0;transition:transform .2s cubic-bezier(.3,1.6,.5,1),opacity .15s}
+.cz-pie.open .pie-pin{transform:none;opacity:1}
+.pie-item.cz-title{cursor:default;font:400 18px/1 Anton,Impact,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#fff;text-shadow:0 1px 0 #7a0c43;
+  background:linear-gradient(#ffb3d9 0%,#ff6fb5 40%,#e0288a 53%,#ff4fa3 80%,#ff8cc8 100%)}
+.pie-item.cz-title:hover{color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 3px 0 rgba(0,0,0,.35)}
+.pie-item.cz-bookb{color:#fff;text-shadow:0 1px 0 #7a0c43;background:linear-gradient(#ffb3d9 0%,#ff6fb5 40%,#e0288a 53%,#ff4fa3 80%,#ff8cc8 100%)}
+.pie-item.cz-bookb .pk{border-color:#fff;background:radial-gradient(circle at 40% 35%,#fff 0 25%,#ffd1ea 60%,#ff9ccc 100%)}
+@media (max-width:760px){.cz-stage{height:calc(100vh - 110px)}}
