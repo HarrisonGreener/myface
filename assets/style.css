@@ -1027,6 +1027,6 @@ html.mf-phone .pop95{left:50%;top:70px}
   .home .home-bands{display:block;margin:0}
   .home .home-bands .band.b2{height:64px}
   .home .home-bands .band.thin{height:34px}
-  .home .scene .bands{display:none}
+
   .home .scene{height:calc(100svh - var(--top-h,90px) - 98px);min-height:380px}
 }
