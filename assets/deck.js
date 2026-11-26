@@ -305,7 +305,7 @@ function buildDeck() {
   tube.position.z = -0.12; mon.add(tube);
   for (let i = 0; i < 7; i++) {
     const v = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.008, 0.025), mat(0x6b5f52));
-    v.position.set(0, 0.405 - i * 0.012, -0.02 - i * 0.07); v.rotation.x = -0.12; mon.add(v);
+    const vz = -0.02 - i * 0.07; v.position.set(0, 0.42 - (0.24 - vz) * 0.1778 + 0.002, vz); v.rotation.x = -Math.atan(0.1778); mon.add(v);
   }
   const bezel = new THREE.Mesh(new RoundedBoxGeometry(0.9, 0.7, 0.04, 4, 0.04), dirty(51, '#2a2730', { tint: [120, 110, 100] }));
   bezel.position.set(0, 0.03, 0.39); mon.add(bezel);
