@@ -693,3 +693,10 @@ body.home{background:#ece8e3}
 .pop-btns button:focus-visible{outline:1px dotted #000;outline-offset:-5px}
 .pop-btns button:active,.pop-x:active{border-color:#404040 #fff #fff #404040}
 @media (max-width:620px){.pop95{left:50%;top:auto;bottom:14%}}
+#win-avatar{display:flex;flex-direction:column}
+#win-avatar[hidden]{display:none}
+#win-avatar .win-body{flex:1;display:flex;min-height:0}
+#win-avatar .cz{flex:1}
+.cz-fig{height:min(70vh,640px)}
+.hs-eyes .hs-dot,.hs-nose .hs-dot,.hs-lips .hs-dot{display:none}
+.hs-face .hs-dot{left:50%;top:50%}
