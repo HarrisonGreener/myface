@@ -315,14 +315,14 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bagel+Fat+One&family=Pixelify+Sans:wght@400;600&family=Inter:wght@400;600&family=VT323&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{rel(d, 'assets/style.css')}?v=36">
+<link rel="stylesheet" href="{rel(d, 'assets/style.css')}?v=37">
 <script>document.documentElement.className='js'</script>
 <script type="application/ld+json">{ld}</script>
 </head>
 <body{' class="home"' if home else ''}>
 {LOGO_DEFS}
 <a class="skip" href="#content">Skip to content</a>
-<header class="top"><div class="wrap bar"><div class="brand">{logo(d)}<svg class="tag-svg" viewBox="28 0 460 44" role="img" aria-label="{e(C['tagline'])}"><text class="tt" x="70" y="32" textLength="382" lengthAdjust="spacing" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="500" letter-spacing="1" font-size="34" fill="#1c1a1e">{e(C['tagline'])}</text></svg></div><nav class="nav" aria-label="Main">{navh}</nav><button type="button" class="orb-btn" id="menuBtn" aria-expanded="false" aria-controls="bubbleNav"><span class="pk"></span>Menu</button><a class="btn" href="{e(C['booking_url'])}"><span class="pk"></span>Book</a><button type="button" class="orb-btn search-btn" id="searchBtn" aria-label="Search the site" data-index="{rel(d, 'assets/search.json')}?v=36" data-root="{rel(d, '')}"><svg class="mg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/></svg><span class="sl">Search</span></button></div></header>
+<header class="top"><div class="wrap bar"><div class="brand">{logo(d)}<svg class="tag-svg" viewBox="28 0 460 44" role="img" aria-label="{e(C['tagline'])}"><text class="tt" x="70" y="32" textLength="382" lengthAdjust="spacing" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="500" letter-spacing="1" font-size="34" fill="#1c1a1e">{e(C['tagline'])}</text></svg></div><nav class="nav" aria-label="Main">{navh}</nav><button type="button" class="orb-btn" id="menuBtn" aria-expanded="false" aria-controls="bubbleNav"><span class="pk"></span>Menu</button><a class="btn" href="{e(C['booking_url'])}"><span class="pk"></span>Book</a><button type="button" class="orb-btn search-btn" id="searchBtn" aria-label="Search the site" data-index="{rel(d, 'assets/search.json')}?v=37" data-root="{rel(d, '')}"><svg class="mg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/></svg><span class="sl">Search</span></button></div></header>
 <nav class="bubble-nav" id="bubbleNav" aria-label="Menu" hidden><ul>{bubbles}</ul></nav>
 {body}
 <footer class="foot"><div class="wrap">
@@ -331,7 +331,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <p>&copy;2026 {e(C['brand'])}</p>
 <p class="credit">Designed &amp; built by <a href="https://harrisongreener.co.uk" target="_blank" rel="noopener">Harrison Greener</a></p>
 </div></footer>
-<script src="{rel(d, 'assets/site.js')}?v=36" defer></script>
+<script src="{rel(d, 'assets/site.js')}?v=37" defer></script>
 </body>
 </html>
 """
@@ -596,7 +596,7 @@ def computer():
 <main id="content" class="room">
 {CHROME_DEFS}
 <div class="scene" id="scene">
-<div class="bands" aria-hidden="true"><div class="band b1"><div class="track"><p><span>NAILS</span><i>&#9632;</i> <span>HAIR</span><i>&#9632;</i> <span>LASHES</span><i>&#9632;</i> <span>BROWS</span><i>&#9632;</i> <span>PIERCING</span><i>&#9632;</i> <span>LIP FILLER</span><i>&#9632;</i></p><p><span>NAILS</span><i>&#9632;</i> <span>HAIR</span><i>&#9632;</i> <span>LASHES</span><i>&#9632;</i> <span>BROWS</span><i>&#9632;</i> <span>PIERCING</span><i>&#9632;</i> <span>LIP FILLER</span><i>&#9632;</i></p></div></div><div class="band b2"><div class="track"><p><span>HOME BEAUTY STUDIO</span><i>&#9632;</i> <span>MANCHESTER</span><i>&#9632;</i> <span>BY APPOINTMENT ONLY</span><i>&#9632;</i></p><p><span>HOME BEAUTY STUDIO</span><i>&#9632;</i> <span>MANCHESTER</span><i>&#9632;</i> <span>BY APPOINTMENT ONLY</span><i>&#9632;</i></p></div></div><div class="band b3"><div class="track"><p><span>ELLA MOORE</span><i>&#9632;</i> <span>CUSTOMISE YOUR AVATAR</span><i>&#9632;</i> <span>DROYLSDEN</span><i>&#9632;</i> <span>OLDHAM</span><i>&#9632;</i> <span>STOCKPORT</span><i>&#9632;</i></p><p><span>ELLA MOORE</span><i>&#9632;</i> <span>CUSTOMISE YOUR AVATAR</span><i>&#9632;</i> <span>DROYLSDEN</span><i>&#9632;</i> <span>OLDHAM</span><i>&#9632;</i> <span>STOCKPORT</span><i>&#9632;</i></p></div></div></div>
+<div class="bands" aria-hidden="true"><div class="band b1"><div class="track"><p><span>NAILS</span><i>&#9632;</i> <span>PIERCING</span><i>&#9632;</i> <span>HAIR</span><i>&#9632;</i> <span>MAKEUP</span><i>&#9632;</i> <span>LASHES</span><i>&#9632;</i> <span>BROWS</span><i>&#9632;</i> <span>LIP FILLER</span><i>&#9632;</i></p><p><span>NAILS</span><i>&#9632;</i> <span>PIERCING</span><i>&#9632;</i> <span>HAIR</span><i>&#9632;</i> <span>MAKEUP</span><i>&#9632;</i> <span>LASHES</span><i>&#9632;</i> <span>BROWS</span><i>&#9632;</i> <span>LIP FILLER</span><i>&#9632;</i></p></div></div><div class="band b2"><div class="track"><p><span>HOME BEAUTY STUDIO</span><i>&#9632;</i> <span>MANCHESTER</span><i>&#9632;</i> <span>BY APPOINTMENT ONLY</span><i>&#9632;</i></p><p><span>HOME BEAUTY STUDIO</span><i>&#9632;</i> <span>MANCHESTER</span><i>&#9632;</i> <span>BY APPOINTMENT ONLY</span><i>&#9632;</i></p></div></div><div class="band b3"><div class="track"><p><span>ELLA MOORE</span><i>&#9632;</i> <span>CUSTOMISE YOUR AVATAR</span><i>&#9632;</i> <span>DROYLSDEN</span><i>&#9632;</i> <span>OLDHAM</span><i>&#9632;</i> <span>STOCKPORT</span><i>&#9632;</i></p><p><span>ELLA MOORE</span><i>&#9632;</i> <span>CUSTOMISE YOUR AVATAR</span><i>&#9632;</i> <span>DROYLSDEN</span><i>&#9632;</i> <span>OLDHAM</span><i>&#9632;</i> <span>STOCKPORT</span><i>&#9632;</i></p></div></div></div>
 <div class="deck3d" id="deck3d"></div>
 <div class="rig" id="rig">
 <div class="monitor box">
@@ -613,7 +613,7 @@ def computer():
 </div>
 </div>
 <script type="importmap">{{"imports":{{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}}}</script>
-<script type="module">import {{ createDeck }} from './assets/deck.js?v=36';
+<script type="module">import {{ createDeck }} from './assets/deck.js?v=37';
 try {{ window.MFDeck = createDeck(document.getElementById('deck3d'), {{ phone: matchMedia('(max-width: 620px)').matches && /[?&]phone\b/.test(location.search) }}); window.dispatchEvent(new Event('mfdeck')); }} catch (e) {{ console.warn('3D computer unavailable', e); }}</script>
 <p class="hint" id="hint">drag to spin it 360° · click to turn it on</p>
 </div>
