@@ -132,21 +132,53 @@ function buildDeck() {
   const leds = [];
   const shell = dirty(11, '#ece2cf'), shell2 = dirty(23, '#e3d8c3'), shell3 = dirty(37, '#d6c9b1');
 
-  // --- stand: foot + neck (no desk unit)
-  const foot = new THREE.Mesh(new RoundedBoxGeometry(0.8, 0.07, 0.7, 4, 0.03), shell3);
-  foot.position.y = 0.035; deck.add(foot);
+  // --- base unit: chunky system box with a floppy drive (raised everything by B)
+  const B = 0.17;
+  deck.position.y = -0.09;
+  const base = new THREE.Group(); deck.add(base);
+  const body = new THREE.Mesh(new RoundedBoxGeometry(1.0, 0.24, 0.82, 4, 0.035), shell3);
+  body.position.y = 0.13; base.add(body);
+  [[-0.42, -0.34], [0.42, -0.34], [-0.42, 0.34], [0.42, 0.34]].forEach(([x, z]) => {
+    const f = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.04, 0.02, 14), mat(0x2a2629)); f.position.set(x, 0.01, z); base.add(f);
+  });
+  const F = 0.411; // front face z
+  // 3.5" floppy bay with a disk half in it
+  const bay = new THREE.Mesh(new RoundedBoxGeometry(0.4, 0.085, 0.02, 2, 0.008), dirty(71, '#bfb197'));
+  bay.position.set(-0.2, 0.16, F); base.add(bay);
+  const slot = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.014, 0.02), mat(0x0d0c10));
+  slot.position.set(-0.22, 0.17, F + 0.005); base.add(slot);
+  const disk = new THREE.Group(); disk.position.set(-0.22, 0.17, F + 0.03); disk.rotation.x = -0.04; base.add(disk);
+  const dk = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.008, 0.11), mat(C.pinkHot, { roughness: 0.5 })); disk.add(dk);
+  const shut = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.0095, 0.05), mat(C.metal, { metalness: 0.8, roughness: 0.35 }));
+  shut.position.set(0.0, 0, -0.03); disk.add(shut);
+  const lab = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.0092, 0.05), dirty(83, '#f4eee2')); lab.position.set(0, 0, 0.03); disk.add(lab);
+  const ej = new THREE.Mesh(new RoundedBoxGeometry(0.04, 0.02, 0.015, 2, 0.005), mat(C.pink)); ej.position.set(-0.05, 0.135, F + 0.012); base.add(ej);
+  const act = new THREE.Mesh(new THREE.SphereGeometry(0.009, 10, 8), new THREE.MeshBasicMaterial({ color: 0x6dffb0 })); act.position.set(-0.36, 0.135, F + 0.012); base.add(act); leds.push(act);
+  // 5.25" blank bay with a little lever
+  const bay2 = new THREE.Mesh(new RoundedBoxGeometry(0.34, 0.085, 0.02, 2, 0.008), dirty(73, '#d0c3a9'));
+  bay2.position.set(0.24, 0.16, F); base.add(bay2);
+  const lever = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.016, 0.02), mat(0x3a3438)); lever.position.set(0.24, 0.165, F + 0.015); base.add(lever);
+  // grille slots, power rocker, LED and a pink trim stripe
+  for (let i = 0; i < 9; i++) {
+    const g = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.05, 0.01), mat(0x3a3236)); g.position.set(-0.36 + i * 0.03, 0.06, F + 0.001); base.add(g);
+  }
+  const rock = new THREE.Mesh(new RoundedBoxGeometry(0.06, 0.04, 0.02, 2, 0.006), mat(0x2a2629)); rock.position.set(0.3, 0.065, F + 0.008); base.add(rock);
+  const pled = new THREE.Mesh(new THREE.SphereGeometry(0.012, 12, 8), new THREE.MeshBasicMaterial({ color: C.pinkHot })); pled.position.set(0.4, 0.065, F + 0.01); base.add(pled); leds.push(pled);
+  const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.94, 0.012, 0.004), mat(C.pink)); stripe.position.set(0, 0.215, F + 0.002); base.add(stripe);
+  for (let i = 0; i < 6; i++) {
+    const v = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.12, 0.05), mat(0x5a5048)); v.position.set(0.502, 0.13, -0.25 + i * 0.07); base.add(v);
+    const v2 = v.clone(); v2.position.x = -0.502; base.add(v2);
+  }
   const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.22, 0.26, 28), shell2);
-  neck.position.y = 0.2; deck.add(neck);
+  neck.position.y = 0.2 + B; deck.add(neck);
   // swivel collar + tilt mount: neck runs up into the underside of the case
   const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.035, 28), dirty(61, '#c9bba1'));
-  collar.position.y = 0.345; deck.add(collar);
+  collar.position.y = 0.345 + B; deck.add(collar);
   const mount = new THREE.Mesh(new RoundedBoxGeometry(0.46, 0.16, 0.5, 3, 0.03), shell3);
-  mount.position.set(0, 0.42, 0.04); deck.add(mount);
-  const footLed = new THREE.Mesh(new THREE.SphereGeometry(0.013, 12, 8), new THREE.MeshBasicMaterial({ color: C.pinkHot }));
-  footLed.position.set(0.3, 0.06, 0.352); deck.add(footLed); leds.push(footLed);
+  mount.position.set(0, 0.42 + B, 0.04); deck.add(mount);
 
   // --- monitor
-  const mon = new THREE.Group(); mon.position.y = 0.74; deck.add(mon);
+  const mon = new THREE.Group(); mon.position.y = 0.74 + B; deck.add(mon);
   const front = new THREE.Mesh(new RoundedBoxGeometry(1.12, 0.92, 0.16, 5, 0.06), shell);
   front.position.z = 0.32; mon.add(front);
   const tube = new THREE.Mesh(frustum(1.02, 0.84, 0.72, { x: 0.62, y: 0.6, dy: 0.04 }), shell2);
@@ -187,8 +219,16 @@ function buildDeck() {
   }
   const mod = new THREE.Mesh(new RoundedBoxGeometry(0.1, 0.12, 0.05, 2, 0.01), new THREE.MeshStandardMaterial({ color: 0x9dffd8, emissive: 0x4dffc0, emissiveIntensity: 0.6, roughness: 0.4 }));
   mod.position.set(-0.17, -0.1, 0.04); back.add(mod);
+  const housing = new THREE.Mesh(new RoundedBoxGeometry(0.19, 0.19, 0.045, 2, 0.012), dirty(91, '#26232a'));
+  housing.position.set(0.13, -0.13, 0.03); back.add(housing);
   const fanRing = new THREE.Mesh(new THREE.TorusGeometry(0.075, 0.012, 10, 32), mat(C.pink));
-  fanRing.position.set(0.13, -0.13, 0.04); back.add(fanRing);
+  fanRing.position.set(0.13, -0.13, 0.055); back.add(fanRing);
+  const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.02, 14), mat(C.pink));
+  hub.rotation.x = Math.PI / 2; hub.position.set(0.13, -0.13, 0.062); back.add(hub);
+  [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([a, b]) => {
+    const sc = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.01, 8), mat(C.metal, { metalness: 0.8 }));
+    sc.rotation.x = Math.PI / 2; sc.position.set(0.13 + a * 0.078, -0.13 + b * 0.078, 0.055); back.add(sc);
+  });
   const blades = new THREE.Group(); blades.position.copy(fanRing.position); back.add(blades);
   for (let i = 0; i < 5; i++) {
     const b = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.018, 0.005), mat(C.chip));
@@ -219,7 +259,7 @@ function buildDeck() {
   W.forEach((pts, i) => mon.add(wire(pts, cols[i], i === 4 ? 0.009 : 0.013)));
   // socket on the foot for the last wire
   const fs = new THREE.Mesh(new RoundedBoxGeometry(0.08, 0.04, 0.05, 2, 0.01), mat(C.pink));
-  fs.position.set(-0.3, 0.075, 0.33); deck.add(fs);
+  fs.position.set(-0.3, 0.075 + B, 0.33); deck.add(fs);
 
   deck.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
   return { deck, leds, screen, scr, blades };
