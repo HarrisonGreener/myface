@@ -16,8 +16,7 @@
 (function () {
   var cap = document.getElementById('captcha');
   if (!cap) return;
-  var seen = false; try { seen = sessionStorage.getItem('mf-human'); } catch (e) {}
-  if (seen) { cap.hidden = true; return; }
+  // shown on every load of the homepage
   var check = document.getElementById('capCheck'), letters = document.querySelector('#capLetters use');
   document.body.style.overflow = 'hidden';
   setTimeout(function () { check.focus(); }, 50);
@@ -335,8 +334,7 @@
   // ---- avatar.exe pop-up: an old-Windows warning telling you what to do (once per visit)
   var pop = document.getElementById('avatarPop');
   function showPop() {
-    if (!pop || zoomed || store.get('mf-pop')) return;
-    store.set('mf-pop', '1');
+    if (!pop || zoomed) return;
     setTimeout(function () {
       if (zoomed) return;
       pop.hidden = false; requestAnimationFrame(function () { pop.classList.add('in'); });
@@ -349,8 +347,8 @@
     pop.querySelector('.pop-go').addEventListener('click', function () { hidePop(); zoomIn(); });
     pop.addEventListener('keydown', function (e) { if (e.key === 'Escape') hidePop(); });
     var capEl = document.getElementById('captcha');
-    if (capEl && !capEl.hidden && !store.get('mf-in')) window.addEventListener('mf-human', showPop, { once: true });
-    else if (!store.get('mf-in')) showPop();
+    if (capEl && !capEl.hidden) window.addEventListener('mf-human', showPop, { once: true });
+    else showPop();
   }
 
   // ---- Customise your avatar: spin her round, click a part, get the services for it
