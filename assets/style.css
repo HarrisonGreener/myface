@@ -938,3 +938,4 @@ body:not(.home) .crumbs a{color:#c2246f}
 .zoomview.phone.flip .os #win-avatar .pt-menu,.zoomview.phone.flip .os #win-avatar .pt-tools,.zoomview.phone.flip .os #win-avatar .pt-scroll,.zoomview.phone.flip .os #win-avatar .pt-status span:first-child{display:none}
 .zoomview.phone.flip .os #win-avatar .pt-parts{width:70px;padding:6px}
 .zoomview.phone.flip .os #win-avatar .pt-palette{justify-content:center}
+.zoomview.phone.flip .os .win-body .menu li{display:block}
