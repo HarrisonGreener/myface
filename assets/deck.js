@@ -441,3 +441,4 @@ export function createDeck(container) {
     dispose() { cancelAnimationFrame(raf); scr.stop(); renderer.dispose(); },
   };
 }
+export { logoCanvas };
