@@ -890,3 +890,52 @@ body:not(.home) .crumbs a{color:#c2246f}
   .pg-bands .band.thin{height:36px}
 }
 .bn-layer.nt{transition:none!important}
+/* ==== Inside the flip phone: apps restyled to fit a phone (only with the flip phone) ==== */
+.zoomview.phone.flip .os .tasks{display:none}
+.zoomview.phone.flip .os .taskbar{height:44px;padding:0 10px;align-items:center}
+.zoomview.phone.flip .os .taskbar .start{height:32px;padding:0 14px;border-radius:16px;font:700 13px "Trebuchet MS",Tahoma,Arial,sans-serif}
+.zoomview.phone.flip .os .app-win{height:calc(100% - 44px)}
+/* title bar: glossy black with a pink-knob Back pill, like the rest of the site */
+.zoomview.phone.flip .os .titlebar{min-height:46px;padding:6px 8px;border-bottom:2px solid #ff4fa3;color:#ff9ccc;font:700 15px "Trebuchet MS",Tahoma,Arial,sans-serif;
+  background:linear-gradient(#5a5560 0%,#26222b 40%,#0c0a0e 53%,#1d1a21 80%,#34303a 100%)}
+.zoomview.phone.flip .os .titlebar .back{position:relative;height:32px;padding:0 14px 0 30px;border-radius:16px;border:1.5px solid #000;color:#fff;
+  font:700 13px "Trebuchet MS",Tahoma,Arial,sans-serif;background:linear-gradient(#6a6470 0%,#2c2832 40%,#0c0a0e 53%,#1d1a21 80%,#3b3641 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}
+.zoomview.phone.flip .os .titlebar .back::before{content:"";position:absolute;left:8px;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:50%;border:1.5px solid #6d0f3c;
+  background:radial-gradient(circle at 40% 35%,#ffe3f1 0 18%,#ff6fb5 45%,#c2246f 100%)}
+.zoomview.phone.flip .os .wctl{display:none}
+.zoomview.phone.flip .os .win-body{padding:16px 14px 20px;font-size:15px;line-height:1.45}
+/* treatment lists: tappable glossy bubbles */
+.zoomview.phone.flip .os .win-body .menu{display:grid;gap:9px;margin:12px 0}
+.zoomview.phone.flip .os .win-body .menu li{position:relative;padding:0;border:0}
+.zoomview.phone.flip .os .win-body .menu li a{display:block;padding:14px 96px 14px 42px;border-radius:24px;border:1.5px solid #000;color:#fff;text-decoration:none;
+  font:700 15px "Trebuchet MS",Tahoma,Arial,sans-serif;background:linear-gradient(#5a5560 0%,#26222b 40%,#0c0a0e 53%,#1d1a21 80%,#34303a 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 0 1px rgba(255,79,163,.35)}
+.zoomview.phone.flip .os .win-body .menu li a::before{content:"";position:absolute;left:14px;top:50%;width:18px;height:18px;margin-top:-9px;border-radius:50%;border:1.5px solid #6d0f3c;
+  background:radial-gradient(circle at 40% 35%,#ffe3f1 0 18%,#ff6fb5 45%,#c2246f 100%)}
+.zoomview.phone.flip .os .win-body .menu li span{position:absolute;right:16px;top:50%;transform:translateY(-50%);pointer-events:none;font:700 14px "Courier New",monospace;color:#ff9ccc}
+/* price list: rows with a glossy price tag */
+.zoomview.phone.flip .os .win-body table.prices{border-collapse:separate;border-spacing:0 6px}
+.zoomview.phone.flip .os .win-body .prices th,.zoomview.phone.flip .os .win-body .prices td{border:0;padding:12px 14px;background:#2a1a2c}
+.zoomview.phone.flip .os .win-body .prices th{border-radius:20px 0 0 20px}
+.zoomview.phone.flip .os .win-body .prices th a{color:#fff;text-decoration:none;font-weight:700}
+.zoomview.phone.flip .os .win-body .prices td{border-radius:0 20px 20px 0;width:1%;white-space:nowrap;font:700 14px "Courier New",monospace;color:#ff9ccc;
+  background:linear-gradient(#5a5560 0%,#26222b 40%,#0c0a0e 53%,#1d1a21 80%,#34303a 100%)}
+/* book button + footer links */
+.zoomview.phone.flip .os .win-body .btn{position:relative;display:inline-flex;align-items:center;height:48px;padding:0 24px 0 44px;border-radius:25px;border:1.5px solid #000;
+  font:700 17px "Trebuchet MS",Tahoma,Arial,sans-serif;color:#fff;text-decoration:none;text-shadow:0 1px 0 #7a0c43;
+  background:linear-gradient(#ffb3d9 0%,#ff6fb5 40%,#e0288a 53%,#ff4fa3 80%,#ff8cc8 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 0 18px rgba(255,79,163,.45)}
+.zoomview.phone.flip .os .win-body .btn::before{content:"";position:absolute;left:14px;top:50%;width:18px;height:18px;margin-top:-9px;border-radius:50%;border:1.5px solid #fff;
+  background:radial-gradient(circle at 40% 35%,#fff 0 25%,#ffd1ea 60%,#ff9ccc 100%)}
+.zoomview.phone.flip .os .win-body .win-foot{border-top:0;margin-top:16px}
+.zoomview.phone.flip .os .win-body .win-foot a{display:inline-flex;align-items:center;height:36px;padding:0 16px;border-radius:18px;border:1.5px solid #ff4fa3;color:#ff9ccc;text-decoration:none;font-weight:700}
+/* contact: big tappable rows */
+.zoomview.phone.flip .os .win-body .plain{display:grid;gap:9px}
+.zoomview.phone.flip .os .win-body .plain li a{display:block;padding:14px 16px;border-radius:22px;border:1.5px solid #000;color:#fff;text-decoration:none;font-weight:700;
+  background:linear-gradient(#5a5560 0%,#26222b 40%,#0c0a0e 53%,#1d1a21 80%,#34303a 100%)}
+/* her.exe: keep her speech bubble in view */
+.zoomview.phone.flip .os #win-her .win-body{padding:0}
+/* Paint on the phone: drop the toolbox and menu, bigger canvas */
+.zoomview.phone.flip .os #win-avatar .pt-menu,.zoomview.phone.flip .os #win-avatar .pt-tools,.zoomview.phone.flip .os #win-avatar .pt-scroll,.zoomview.phone.flip .os #win-avatar .pt-status span:first-child{display:none}
+.zoomview.phone.flip .os #win-avatar .pt-parts{width:62px;padding:6px 4px}
+.zoomview.phone.flip .os #win-avatar .pt-thumb{width:50px;height:50px;background-size:auto;}
+.zoomview.phone.flip .os #win-avatar .pt-palette{justify-content:center}
