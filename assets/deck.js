@@ -65,46 +65,31 @@ function frustum(w, h, d, backScale) {
   return g;
 }
 
+// the screen shows the MyFace 95 desktop (a still of the real one) with a live clock
 function screenTexture() {
-  const cv = document.createElement('canvas'); cv.width = 768; cv.height = 576;
+  const cv = document.createElement('canvas'); cv.width = 800; cv.height = 600;
   const ctx = cv.getContext('2d');
-  const lines = [
-    'MYFACE OS v4.0 // ella.moore',
-    '----------------------------------',
-    '> boot sequence ......... OK',
-    '> lashes.drv ............ OK',
-    '> nails.drv ............. OK',
-    '> piercing.drv .......... OK',
-    '> filler.drv ............ OK',
-    '> location: MANCHESTER',
-    '',
-    '> customise your avatar',
-    '',
-  ];
-  let blink = true;
+  const img = new Image(); let ready = false;
+  img.onload = () => { ready = true; draw(); };
+  img.src = new URL('./desktop-screen.jpg', import.meta.url).href;
   function draw() {
-    const g = ctx.createRadialGradient(384, 288, 60, 384, 288, 480);
-    g.addColorStop(0, '#1a0f22'); g.addColorStop(1, '#07040a');
-    ctx.fillStyle = g; ctx.fillRect(0, 0, 768, 576);
-    ctx.font = 'bold 30px "Courier New", monospace';
-    lines.forEach((l, i) => {
-      ctx.fillStyle = i === 0 ? '#ff7cc0' : (l.startsWith('> customise') ? '#ffffff' : '#7dffd1');
-      ctx.shadowColor = ctx.fillStyle; ctx.shadowBlur = 10;
-      ctx.fillText(l, 40, 64 + i * 40);
-    });
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = '#ff7cc0';
-    ctx.font = 'bold 30px "Courier New", monospace';
-    ctx.fillText('> CLICK TO LOG IN' + (blink ? ' _' : ''), 40, 64 + lines.length * 40);
-    // scanlines
-    ctx.fillStyle = 'rgba(0,0,0,.22)';
-    for (let y = 0; y < 576; y += 4) ctx.fillRect(0, y, 768, 2);
+    if (!ready) { ctx.fillStyle = '#3a6ea5'; ctx.fillRect(0, 0, 800, 600); tex.needsUpdate = true; return; }
+    ctx.drawImage(img, 0, 0, 800, 600);
+    const d = new Date(), t = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+    ctx.fillStyle = '#000'; ctx.font = '12px Tahoma, Arial, sans-serif'; ctx.textBaseline = 'top';
+    ctx.fillText(t, 738, 580);
+    // faint CRT scanlines and glow
+    ctx.fillStyle = 'rgba(0,0,0,.08)';
+    for (let y = 0; y < 600; y += 3) ctx.fillRect(0, y, 800, 1);
+    const g = ctx.createRadialGradient(400, 300, 200, 400, 300, 520);
+    g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.28)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, 800, 600);
     tex.needsUpdate = true;
   }
   const tex = new THREE.CanvasTexture(cv);
   tex.colorSpace = THREE.SRGBColorSpace;
   draw();
-  const timer = setInterval(() => { blink = !blink; draw(); }, 550);
+  const timer = setInterval(draw, 20000);
   return { tex, stop: () => clearInterval(timer) };
 }
 
@@ -315,7 +300,7 @@ function buildDeck() {
   const smudge = grime(77, 'rgba(0,0,0,0)', [255, 255, 255]);
   const glass = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.6), new THREE.MeshPhysicalMaterial({ color: 0xffffff, transparent: true, opacity: 0.1, roughness: 0.25, clearcoat: 1, alphaMap: smudge.rough }));
   glass.position.set(0, 0.03, 0.415); mon.add(glass);
-  const glow = new THREE.PointLight(0x9bffe0, 0.6, 1.6); glow.position.set(0, 0.03, 0.7); mon.add(glow);
+  const glow = new THREE.PointLight(0xa9c8ff, 0.5, 1.6); glow.position.set(0, 0.03, 0.7); mon.add(glow);
   const pwr = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.02, 20), mat(C.pink));
   pwr.rotation.x = Math.PI / 2; pwr.position.set(0.44, -0.38, 0.405); mon.add(pwr);
   // side sockets (pink port blocks the wires plug into)

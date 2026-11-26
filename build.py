@@ -304,7 +304,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Pixelify+Sans:wght@400;600&family=Inter:wght@400;600&family=VT323&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{rel(d, 'assets/style.css')}?v=17">
+<link rel="stylesheet" href="{rel(d, 'assets/style.css')}?v=18">
 <script>document.documentElement.className='js'</script>
 <script type="application/ld+json">{ld}</script>
 </head>
@@ -319,7 +319,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <p>&copy;2026 {e(C['brand'])}</p>
 <p class="credit">Designed &amp; built by <a href="https://harrisongreener.co.uk" target="_blank" rel="noopener">Harrison Greener</a></p>
 </div></footer>
-<script src="{rel(d, 'assets/site.js')}?v=17" defer></script>
+<script src="{rel(d, 'assets/site.js')}?v=18" defer></script>
 </body>
 </html>
 """
@@ -557,7 +557,6 @@ def desktop():
 {wins}
 <nav class="startmenu" id="startmenu" hidden aria-label="Start menu"><p class="sm-head">{e(C["brand"])} 95</p><ul>{menu}<li class="sm-sep"><button type="button" class="logoff-btn">&#9211; Log off</button></li></ul></nav>
 <div class="taskbar"><button type="button" class="start" id="startBtn" aria-expanded="false" aria-controls="startmenu"><svg class="start-logo" viewBox="{LOGO_VB}" aria-hidden="true"><use href="#mf-logo"/></svg>Start</button><div class="tasks" id="tasks" aria-label="Open windows"></div><div class="tray"><svg class="mic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1"/></svg><svg class="mic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4zM16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg><span id="clock">--:--</span><button type="button" class="tray-off logoff-btn" aria-label="Log off"><svg class="mic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v8M6.3 6.3a8 8 0 1 0 11.4 0"/></svg></button></div></div>
-<div class="boot" id="boot" aria-hidden="true"><pre id="bootlog"></pre><div class="splash"><svg viewBox="{LOGO_VB}"><use href="#mf-logo"/></svg><div class="bar"><i></i></div></div></div>
 </div>"""
 
 
@@ -600,7 +599,7 @@ def computer():
 </div>
 </div>
 <script type="importmap">{{"imports":{{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}}}</script>
-<script type="module">import {{ createDeck }} from './assets/deck.js?v=17';
+<script type="module">import {{ createDeck }} from './assets/deck.js?v=18';
 try {{ window.MFDeck = createDeck(document.getElementById('deck3d')); window.dispatchEvent(new Event('mfdeck')); }} catch (e) {{ console.warn('3D computer unavailable', e); }}</script>
 <p class="hint" id="hint">drag to spin it 360° · click to turn it on</p>
 </div>

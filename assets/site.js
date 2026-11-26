@@ -201,22 +201,9 @@
   else window.addEventListener('mfdeck', function () { useDeck(window.MFDeck); }, { once: true });
 
   // ---- Boot text the first time you turn it on
-  var boot = document.getElementById('boot'), log = document.getElementById('bootlog'), hasBooted = false;
-  var LINES = ['MYFACE BIOS v4.00.950', 'checking lashes........ ok', 'checking nails......... ok',
-               'loading glitter.drv.... ok', 'mounting /hair /piercing /filler', '', 'welcome x'];
-  function bootUp() {
-    var first = os.querySelector('.app');
-    if (hasBooted || reduce) { hasBooted = true; first.focus(); return; }
-    hasBooted = true; boot.classList.add('on'); log.textContent = '';
-    var i = 0;
-    (function next() {
-      if (i >= LINES.length) return setTimeout(function () {
-        boot.classList.add('splashing');
-        setTimeout(function () { boot.classList.remove('on', 'splashing'); first.focus(); }, 1500);
-      }, 300);
-      log.textContent += LINES[i++] + '\n'; setTimeout(next, 150);
-    })();
-  }
+  var hasBooted = false;
+  // straight into the desktop (no boot text)
+  function bootUp() { hasBooted = true; var first = os.querySelector('.app'); if (first) first.focus({ preventScroll: true }); }
 
   // ---- Clock
   var clock = document.getElementById('clock');
