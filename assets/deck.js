@@ -127,6 +127,80 @@ function wire(points, color = C.pink, radius = 0.013) {
   return g;
 }
 
+
+// ---------------------------------------------------------------- chrome stickers (same designs as the old computer)
+const GRAD = {
+  chrome: [[0, '#fff'], [.32, '#d8d8e6'], [.48, '#85859c'], [.53, '#f6f6ff'], [.78, '#b4b4c8'], [1, '#6c6c82']],
+  pink: [[0, '#fff2f9'], [.32, '#ffb3d9'], [.48, '#c23f7c'], [.53, '#ffe3f1'], [.78, '#ff86c3'], [1, '#9c2c5c']],
+  holo: [[0, '#fff'], [.2, '#d7c6ff'], [.38, '#8a6cd8'], [.5, '#c9fff0'], [.66, '#ffc2e6'], [.82, '#9ad8ff'], [1, '#6d58b0']],
+  black: [[0, '#8b8796'], [.45, '#2a2630'], [.52, '#050406'], [.58, '#6d6878'], [1, '#141117']],
+  red: [[0, '#ffd0dc'], [.4, '#ff3d6e'], [.52, '#8f0f33'], [.6, '#ff8aa8'], [1, '#a3123c']],
+  green: [[0, '#eaffd0'], [.5, '#6fbf3a'], [1, '#2f6a18']],
+};
+const SHAPES = {
+  heart: [['M50 88C20 66 7 48 7 31 7 17 18 8 31 8c9 0 15 5 19 12 4-7 10-12 19-12 13 0 24 9 24 23 0 17-13 35-43 57Z', 'main']],
+  star: [['M50 5l11.5 31.5H95L68 57l10 34-28-20-28 20 10-34L5 36.5h33.5Z', 'main']],
+  bolt: [['M60 3 18 57h28l-9 40 46-58H55Z', 'main']],
+  butterfly: [['M49 50C40 18 8 8 8 33c0 14 18 20 41 17ZM51 50c9-32 41-42 41-17 0 14-18 20-41 17ZM49 52C30 52 14 62 20 78c6 14 24 4 29-26ZM51 52c19 0 35 10 29 26-6 14-24 4-29-26Z', 'main']],
+  lips: [['M6 50c12-16 26-22 44-11 18-11 32-5 44 11-12 20-28 30-44 30S18 70 6 50Z', 'main']],
+  bow: [['M50 48 12 24c-8 10-8 38 0 48ZM50 48l38-24c8 10 8 38 0 48ZM44 56l-12 34 12-6 6 10 6-10 12 6-12-34ZM61 50a11 11 0 1 1-22 0a11 11 0 1 1 22 0Z', 'main']],
+  cherry: [['M49 72a17 17 0 1 1-34 0a17 17 0 1 1 34 0ZM85 76a17 17 0 1 1-34 0a17 17 0 1 1 34 0Z', 'red'], ['M62 10q22-10 30 6-18 6-30-6Z', 'green']],
+  skull: [['M50 16c-22 0-35 15-35 33 0 12 6 21 14 25v10c0 4 3 7 7 7h28c4 0 7-3 7-7V74c8-4 14-13 14-25 0-18-13-33-35-33Z', 'main']],
+};
+const DETAIL = {
+  butterfly: c => { c.strokeStyle = '#1c1a1e'; c.lineWidth = 4; c.lineCap = 'round'; c.stroke(new Path2D('M50 32v44')); },
+  lips: c => { c.strokeStyle = '#5a1636'; c.lineWidth = 3; c.lineCap = 'round'; c.stroke(new Path2D('M12 50q38 10 76 0')); },
+  cherry: c => { c.strokeStyle = '#3b5d1f'; c.lineWidth = 4; c.lineCap = 'round'; c.stroke(new Path2D('M32 55q4-30 30-45M68 59q-8-28-6-49')); },
+  skull: c => { c.fillStyle = '#1c1a1e'; c.fill(new Path2D('M45 52a8 8 0 1 1-16 0a8 8 0 1 1 16 0ZM71 52a8 8 0 1 1-16 0a8 8 0 1 1 16 0ZM50 60l-4 8h8Z')); },
+};
+function grad(c, name, w = 100, h = 100) {
+  const g = c.createLinearGradient(0, 0, w * 0.3, h);
+  GRAD[name].forEach(([o, col]) => g.addColorStop(o, col));
+  return g;
+}
+function wear(c, w, h, seed) {
+  const r = rnd(seed);
+  c.globalCompositeOperation = 'destination-out';
+  for (let i = 0; i < 26; i++) { c.globalAlpha = 0.25 + r() * 0.5; c.beginPath(); c.arc(r() * w, r() * h, 0.4 + r() * 1.6, 0, 7); c.fill(); }
+  c.lineWidth = 0.5;
+  for (let i = 0; i < 5; i++) { c.globalAlpha = 0.5; c.beginPath(); const x = r() * w, y = r() * h; c.moveTo(x, y); c.lineTo(x + (r() - .5) * 30, y + (r() - .5) * 8); c.stroke(); }
+  c.globalAlpha = 1; c.globalCompositeOperation = 'source-over';
+}
+function stickerCanvas(design, fill, seed) {
+  const S = 256, cv = document.createElement('canvas'); cv.width = cv.height = S;
+  const c = cv.getContext('2d'); c.scale(S / 110, S / 110); c.translate(5, 5);
+  const parts = SHAPES[design], all = new Path2D(); parts.forEach(([d]) => all.addPath(new Path2D(d)));
+  c.lineJoin = 'round';
+  c.save(); c.translate(1.5, 2); c.globalAlpha = 0.22; c.strokeStyle = c.fillStyle = '#000'; c.lineWidth = 13; c.stroke(all); c.fill(all); c.restore();
+  c.strokeStyle = c.fillStyle = '#fff'; c.lineWidth = 12; c.stroke(all); c.fill(all);
+  parts.forEach(([d, f]) => { const p = new Path2D(d); c.fillStyle = grad(c, f === 'main' ? fill : f); c.fill(p); c.strokeStyle = '#4d4a5a'; c.lineWidth = 1.2; c.stroke(p); });
+  DETAIL[design]?.(c);
+  c.save(); c.clip(all); c.globalAlpha = 0.7; c.fillStyle = '#fff'; c.beginPath(); c.ellipse(32, 26, 15, 6, -0.52, 0, 7); c.fill(); c.restore();
+  wear(c, 100, 100, seed);
+  return cv;
+}
+function wordCanvas(text, fill, seed) {
+  const cv = document.createElement('canvas'); cv.width = 512; cv.height = 180;
+  const c = cv.getContext('2d'); c.scale(512 / 160, 180 / 56);
+  c.font = '900 34px "Arial Black", Impact, sans-serif'; c.textAlign = 'center'; c.lineJoin = 'round';
+  c.save(); c.translate(1.5, 2); c.globalAlpha = 0.22; c.strokeStyle = c.fillStyle = '#000'; c.lineWidth = 13; c.strokeText(text, 80, 38); c.fillText(text, 80, 38); c.restore();
+  c.strokeStyle = c.fillStyle = '#fff'; c.lineWidth = 12; c.strokeText(text, 80, 38); c.fillText(text, 80, 38);
+  c.fillStyle = grad(c, fill, 160, 40); c.fillText(text, 80, 38); c.strokeStyle = '#3a1a2c'; c.lineWidth = 1.2; c.strokeText(text, 80, 38);
+  wear(c, 160, 56, seed);
+  return cv;
+}
+let _sk = 0;
+// add a sticker: parent group, canvas, width, position, rotation (euler), roll (deg)
+function addSticker(parent, cv, w, pos, rot, roll) {
+  const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
+  const m = new THREE.MeshStandardMaterial({ map: tex, transparent: true, alphaTest: 0.4, roughness: 0.28, metalness: 0.12,
+    polygonOffset: true, polygonOffsetFactor: -2 - (_sk++ % 4), polygonOffsetUnits: -2 });
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, w * cv.height / cv.width), m);
+  mesh.position.set(...pos); mesh.rotation.set(rot[0], rot[1], 0, 'YXZ');
+  mesh.rotateZ(roll * Math.PI / 180);
+  parent.add(mesh); return mesh;
+}
+
 function buildDeck() {
   const deck = new THREE.Group();
   const leds = [];
@@ -261,7 +335,27 @@ function buildDeck() {
   const fs = new THREE.Mesh(new RoundedBoxGeometry(0.08, 0.04, 0.05, 2, 0.01), mat(C.pink));
   fs.position.set(-0.3, 0.075 + B, 0.33); deck.add(fs);
 
-  deck.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+  // --- stickers
+  const TAP = 0.269, sideY = Math.atan2(1, -TAP);           // tube side faces lean back a touch
+  const sideX = z => 0.445 + TAP * z + 0.003;
+  // monitor front frame
+  addSticker(mon, wordCanvas('ella x', 'pink', 3), 0.26, [-0.3, -0.395, 0.402], [0, 0], -4);
+  addSticker(mon, stickerCanvas('heart', 'pink', 5), 0.08, [0.505, 0.2, 0.402], [0, 0], 12);
+  addSticker(mon, stickerCanvas('star', 'chrome', 7), 0.07, [-0.5, 0.36, 0.402], [0, 0], -15);
+  // tube sides
+  addSticker(mon, stickerCanvas('butterfly', 'holo', 9), 0.2, [sideX(-0.12), 0.05, -0.12], [0, sideY], -10);
+  addSticker(mon, stickerCanvas('lips', 'pink', 11), 0.14, [sideX(-0.3), -0.15, -0.3], [0, sideY], 8);
+  addSticker(mon, stickerCanvas('cherry', 'chrome', 13), 0.17, [-sideX(-0.15), 0.0, -0.15], [0, -sideY], -8);
+  addSticker(mon, stickerCanvas('skull', 'chrome', 15), 0.1, [-sideX(-0.36), -0.13, -0.36], [0, -sideY], 14);
+  // base unit
+  addSticker(deck, stickerCanvas('bow', 'pink', 17), 0.16, [-0.38, 0.252, -0.08], [-Math.PI / 2, 0], 20);
+  addSticker(deck, stickerCanvas('bolt', 'chrome', 19), 0.09, [0.4, 0.252, 0.3], [-Math.PI / 2, 0], -25);
+  addSticker(deck, stickerCanvas('heart', 'holo', 21), 0.1, [0.503, 0.13, 0.3], [0, Math.PI / 2], -10);
+  addSticker(deck, stickerCanvas('butterfly', 'pink', 23), 0.11, [-0.503, 0.13, 0.28], [0, -Math.PI / 2], 12);
+  addSticker(deck, wordCanvas('myface', 'black', 25), 0.3, [0.1, 0.13, -0.412], [0, Math.PI], 3);
+  addSticker(deck, stickerCanvas('star', 'pink', 27), 0.08, [-0.3, 0.15, -0.412], [0, Math.PI], -18);
+
+  deck.traverse(o => { if (o.isMesh) { o.castShadow = !o.material.transparent; o.receiveShadow = true; } });
   return { deck, leds, screen, scr, blades };
 }
 
