@@ -620,3 +620,5 @@ body.home{background:#ece8e3}
 @keyframes band-r{from{transform:translateX(-50%)}to{transform:none}}
 /* reduced motion: a much gentler drift instead of stopping */
 @media (prefers-reduced-motion:reduce){.band.b1 .track{animation-duration:300s}.band.b2 .track{animation-duration:360s}.band.b3 .track{animation-duration:420s}}
+.band.still{justify-content:center}
+.band.still p{padding:0}
