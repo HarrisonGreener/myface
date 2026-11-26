@@ -492,38 +492,39 @@ body.home,.zoomview{background:#9fb6cf url(bg-sky.jpg) center/cover no-repeat fi
 .zoomview.full .zv-screen .os{width:100%;height:100%;transform:none}
 .zoomview.full .zv-stk{display:none}
 body.mf-zoomed .top{visibility:hidden}
-/* ---- Bubble menu (replaces the top nav) */
+/* ---- Bubble menu (replaces the top nav): glossy black bubbles, pink knobs */
 .orb-btn{display:none}
 html.js .top .nav{display:none}
-html.js .orb-btn{position:relative;display:inline-flex;align-items:center;height:36px;margin-left:auto;margin-right:12px;padding:0 20px 0 30px;border-radius:19px;border:1.5px solid #3b31ad;
-  font:700 15px/1 "Trebuchet MS",Tahoma,Arial,sans-serif;color:#fff;cursor:pointer;text-shadow:0 1px 0 #2a1f88;
-  background:linear-gradient(#c2c4ff 0%,#8d8cf6 38%,#615ae0 52%,#6f6aec 78%,#8d8af5 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),inset 0 -2px 3px rgba(40,20,140,.35),0 3px 0 rgba(30,15,100,.35)}
-html.js .orb-btn .pk{position:absolute;left:7px;top:50%;width:16px;height:16px;margin-top:-8px;border-radius:50%;border:1.5px solid #3b31ad;
-  background:radial-gradient(circle at 40% 35%,#e4e5ff 0 18%,#8b8af5 45%,#4d46d0 100%)}
-html.js .orb-btn:hover,html.js .orb-btn[aria-expanded="true"]{color:#fff6a8;box-shadow:inset 0 1px 0 #fff,0 0 0 2px #ff9bd0,0 0 12px rgba(255,120,200,.6)}
-.bn-layer{position:fixed;inset:0;z-index:3000;background:rgba(40,25,80,.28);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:0;transition:opacity .2s}
+.top .bar .orb-btn,.top .bar .btn{position:relative;display:inline-flex;align-items:center;height:38px;padding:0 20px 0 32px;border-radius:20px;border:1.5px solid #000;
+  font:700 15px/1 "Trebuchet MS",Tahoma,Arial,sans-serif;color:#fff;cursor:pointer;text-decoration:none;text-shadow:0 1px 0 #000;
+  background:linear-gradient(#6a6470 0%,#2c2832 40%,#0c0a0e 53%,#1d1a21 80%,#3b3641 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -2px 3px rgba(0,0,0,.5),0 3px 0 rgba(0,0,0,.35)}
+html.js .top .bar .orb-btn{display:inline-flex;margin-left:auto;margin-right:10px}
+.top .bar .orb-btn .pk,.top .bar .btn .pk{position:absolute;left:8px;top:50%;width:17px;height:17px;margin-top:-9px;border-radius:50%;border:1.5px solid #6d0f3c;
+  background:radial-gradient(circle at 40% 35%,#ffe3f1 0 18%,#ff6fb5 45%,#c2246f 100%)}
+.top .bar .orb-btn:hover,.top .bar .orb-btn[aria-expanded="true"],.top .bar .btn:hover{color:#ffb3d9;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 0 0 2px #ff4fa3,0 0 12px rgba(255,79,163,.6)}
+.bn-layer{position:fixed;inset:0;z-index:3000;background:rgba(28,10,22,.3);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:0;transition:opacity .2s}
 .bn-layer.open{opacity:1}
 html.bn-open,html.bn-open body{overflow:hidden}
 .pie{position:absolute;width:0;height:0;transform:scale(var(--k,1));transform-origin:0 0}
 .pie-head{position:absolute;left:-28px;top:-28px;width:56px;height:56px;border-radius:50%;background:#fff url(ella-px.png) center/cover;image-rendering:pixelated;
-  box-shadow:0 0 0 3px #4b44c9,0 0 0 6px #b9bcff,0 6px 14px rgba(20,10,80,.45);transform:scale(.3);opacity:0;transition:transform .2s cubic-bezier(.3,1.6,.5,1),opacity .15s}
+  box-shadow:0 0 0 3px #1c1a1e,0 0 0 6px #ff7cc0,0 6px 14px rgba(0,0,0,.45);transform:scale(.3);opacity:0;transition:transform .2s cubic-bezier(.3,1.6,.5,1),opacity .15s}
 .pie.open .pie-head{transform:none;opacity:1}
-.pie-item{position:absolute;top:var(--y);display:flex;align-items:center;height:32px;padding:0 20px;border-radius:17px;border:1.5px solid #3b31ad;
+.pie-item{position:absolute;top:var(--y);display:flex;align-items:center;height:32px;padding:0 20px;border-radius:17px;border:1.5px solid #000;
   font:700 15px/1 "Trebuchet MS",Tahoma,Arial,sans-serif;letter-spacing:.2px;color:#fff;white-space:nowrap;cursor:pointer;text-decoration:none;
-  text-shadow:0 1px 0 #2a1f88,0 0 3px rgba(40,20,140,.6);
-  background:linear-gradient(#c2c4ff 0%,#8d8cf6 38%,#615ae0 52%,#6f6aec 78%,#8d8af5 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),inset 0 -2px 3px rgba(40,20,140,.35),0 3px 0 rgba(30,15,100,.35),0 6px 10px rgba(20,10,80,.25);
+  text-shadow:0 1px 0 #000;
+  background:linear-gradient(#6a6470 0%,#2c2832 40%,#0c0a0e 53%,#1d1a21 80%,#3b3641 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -2px 3px rgba(0,0,0,.5),0 3px 0 rgba(0,0,0,.35),0 6px 10px rgba(0,0,0,.25);
   opacity:0;transform:translateY(-50%) scale(.3);transition:transform .22s cubic-bezier(.3,1.6,.5,1),opacity .15s}
 .pie-item.l{right:calc(var(--x) * -1);transform-origin:right center}
 .pie-item.r{left:var(--x);transform-origin:left center}
 .pie-item.c{left:0;transform:translate(-50%,-50%) scale(.3);transform-origin:center bottom}
 .pie.open .pie-item{opacity:1;transform:translateY(-50%)}
 .pie.open .pie-item.c{transform:translate(-50%,-50%)}
-.pie-item .pk{position:absolute;width:22px;height:22px;border-radius:50%;border:1.5px solid #3b31ad;top:50%;margin-top:-12px;
-  background:radial-gradient(circle at 40% 35%,#e4e5ff 0 18%,#8b8af5 45%,#4d46d0 100%);box-shadow:0 2px 3px rgba(20,10,80,.35)}
+.pie-item .pk{position:absolute;width:22px;height:22px;border-radius:50%;border:1.5px solid #6d0f3c;top:50%;margin-top:-12px;
+  background:radial-gradient(circle at 40% 35%,#ffe3f1 0 18%,#ff6fb5 45%,#c2246f 100%);box-shadow:0 2px 3px rgba(0,0,0,.35)}
 .pie-item.l .pk{right:-15px}.pie-item.r .pk{left:-15px}
 .pie-item.c .pk{left:50%;top:auto;bottom:-17px;margin:0 0 0 -11px}
-.pie-item[aria-current]{color:#fff6a8}
-.pie-item:hover,.pie-item:focus-visible{outline:none;color:#fff6a8;background:linear-gradient(#e0e1ff 0%,#a9a8ff 38%,#7a72f0 52%,#8b86f6 78%,#a8a5ff 100%);
-  box-shadow:inset 0 1px 0 #fff,0 0 0 2px #ff9bd0,0 0 14px rgba(255,120,200,.7),0 3px 0 rgba(30,15,100,.35)}
+.pie-item[aria-current]{color:#ff9ccc}
+.pie-item:hover,.pie-item:focus-visible{outline:none;color:#ffb3d9;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 0 0 2px #ff4fa3,0 0 14px rgba(255,79,163,.7),0 3px 0 rgba(0,0,0,.35)}
