@@ -595,7 +595,7 @@ export function createDeck(container, opts = {}) {
   controls.addEventListener('start', () => { controls.autoRotate = false; });
   controls.update();
   // coming back to the page: face the same way you left it (no reset to the front)
-  if (opts.view && opts.view.length === 3) {
+  if (opts.view && opts.view.length === 3 && !isPhone) {
     const d = new THREE.Vector3(opts.view[0], opts.view[1], opts.view[2]);
     if (d.lengthSq() > 0.01) { camera.position.copy(controls.target).add(d.normalize().multiplyScalar(home.length())); controls.update(); }
   }
