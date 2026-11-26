@@ -413,7 +413,8 @@
     stage.appendChild(ring);
     var cx = hr.left + hr.width / 2 - sr.left, cy = hr.top + hr.height / 2 - sr.top;
     ring.style.left = cx + 'px'; ring.style.top = cy + 'px';
-    // keep the whole ring inside the stage (shrink a little on small screens)
+    // keep the whole ring inside the stage (shrink a little on small screens); measure at full size
+    ring.classList.add('open', 'nt');
     var o = ring.getBoundingClientRect(), minX = 0, maxX = 0, minY = 0, maxY = 0;
     made.forEach(function (el) { var r = el.getBoundingClientRect();
       minX = Math.min(minX, r.left - o.left); maxX = Math.max(maxX, r.right - o.left); minY = Math.min(minY, r.top - o.top); maxY = Math.max(maxY, r.bottom - o.top); });
@@ -422,7 +423,7 @@
     var lx = Math.min(Math.max(cx, 8 - minX * k), sr.width - 8 - maxX * k), ly = Math.min(Math.max(cy, 8 - minY * k), sr.height - 8 - maxY * k);
     ring.style.left = lx + 'px'; ring.style.top = ly + 'px';
     czRingEl = ring;
-    void ring.offsetWidth; ring.classList.add('open');            // force a layout so the pop-out animates
+    ring.classList.remove('open'); void ring.offsetWidth; ring.classList.remove('nt'); ring.classList.add('open');            // force a layout so the pop-out animates
     var first = ring.querySelector('a'); if (first) first.focus({ preventScroll: true });
   }
   // hair colours: each one is its own full turnaround, swapped in when picked
@@ -560,14 +561,15 @@
       if (R[i]) bubble(R[i], 'r', x, y, n++);
     }
     layer.appendChild(ring);
-    // fit the whole ring on screen (shrinks a little on phones)
+    // fit the whole ring on screen (shrinks a little on phones); measure at full size
+    ring.classList.add('open', 'nt');
     var minX = 0, maxX = 0, minY = 0, maxY = 0, o = ring.getBoundingClientRect();
     made.forEach(function (el) { var r = el.getBoundingClientRect();
       minX = Math.min(minX, r.left - o.left); maxX = Math.max(maxX, r.right - o.left); minY = Math.min(minY, r.top - o.top); maxY = Math.max(maxY, r.bottom - o.top); });
     var w = maxX - minX, h = maxY - minY, k = Math.min(1, (innerWidth - 20) / w, (innerHeight - 20) / h);
     ring.style.setProperty('--k', k);
     ring.style.left = (innerWidth / 2 - (minX + w / 2) * k) + 'px'; ring.style.top = (innerHeight / 2 - (minY + h / 2) * k) + 'px';
-    requestAnimationFrame(function () { ring && ring.classList.add('open'); });
+    ring.classList.remove('open'); void ring.offsetWidth; ring.classList.remove('nt'); ring.classList.add('open');
     made[0].focus({ preventScroll: true });
   }
   btn.addEventListener('click', function () { layer ? close() : show(ROOT, false); });
