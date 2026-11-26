@@ -735,7 +735,7 @@ window.MFDeck = createDeck(document.getElementById('deck3d'), {{ phone: matchMed
 def build():
     for f in os.listdir(OUT):
         p = os.path.join(OUT, f)
-        if os.path.isdir(p) and f not in ("assets", ".git", ".github", "deck-lab") and os.path.exists(os.path.join(p, "index.html")):
+        if os.path.isdir(p) and f not in ("assets", ".git", ".github", "deck-lab", "phone-lab") and os.path.exists(os.path.join(p, "index.html")):
             shutil.rmtree(p)
     town, city = C["town"], C["city"]
 

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Phone preview | MyFace</title>
+<style>
+  :root{--pink:#ff4fa3;--ink:#1c1a1e}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{display:flex;flex-direction:column;align-items:center;gap:14px;padding:14px 10px 20px;min-height:100vh;
+    background:#ece8e3 radial-gradient(circle,#d9d2cc 1.2px,transparent 1.3px) 0 0/14px 14px;font:13px "Trebuchet MS",Tahoma,Arial,sans-serif;color:var(--ink)}
+  .bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;max-width:760px}
+  .bar b{font:400 22px Anton,Impact,sans-serif;letter-spacing:.03em;margin-right:6px}
+  .bar input{width:min(300px,70vw);height:32px;padding:0 12px;border:2px solid var(--ink);border-radius:16px;font:13px "Courier New",monospace;background:#fff}
+  .pill{height:32px;padding:0 14px;border-radius:16px;border:1.5px solid #000;color:#fff;font:700 13px "Trebuchet MS",Tahoma,Arial,sans-serif;cursor:pointer;
+    background:linear-gradient(#6a6470 0%,#2c2832 40%,#0c0a0e 53%,#1d1a21 80%,#3b3641 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+  .pill.pink{background:linear-gradient(#ffb3d9 0%,#ff6fb5 40%,#e0288a 53%,#ff4fa3 80%,#ff8cc8 100%);text-shadow:0 1px 0 #7a0c43}
+  .pill.on{box-shadow:0 0 0 2px var(--pink),0 0 10px rgba(255,79,163,.6)}
+  .pill:hover{color:#ffb3d9}
+  /* the phone: 390 x 844 screen, scaled to fit the window */
+  .stage{flex:1;display:flex;align-items:flex-start;justify-content:center;width:100%}
+  .phone{--s:1;position:relative;width:calc(414px * var(--s));height:calc(868px * var(--s))}
+  .body{position:absolute;left:0;top:0;width:414px;height:868px;transform:scale(var(--s));transform-origin:0 0;border-radius:58px;
+    background:linear-gradient(145deg,#2c2832,#0c0a0e 45%,#26222b);box-shadow:inset 0 0 0 2px #4a4550,0 24px 50px rgba(0,0,0,.35),0 0 0 4px #1c1a1e}
+  .body::before,.body::after{content:"";position:absolute;width:4px;border-radius:2px;background:#2c2832}
+  .body::before{left:-6px;top:170px;height:60px;box-shadow:0 80px 0 #2c2832}
+  .body::after{right:-6px;top:210px;height:90px}
+  .screen{position:absolute;left:12px;top:12px;width:390px;height:844px;border-radius:46px;overflow:hidden;background:#fff}
+  .screen iframe{width:390px;height:844px;border:0;display:block}
+  .island{position:absolute;left:50%;top:22px;width:118px;height:34px;margin-left:-59px;border-radius:18px;background:#000;z-index:2;pointer-events:none}
+  .note{max-width:520px;text-align:center;color:#6d6070}
+</style>
+</head>
+<body>
+  <div class="bar">
+    <b>PHONE PREVIEW</b>
+    <input id="url" value="" aria-label="Page to preview" spellcheck="false">
+    <button class="pill" id="go">Go</button>
+    <button class="pill" id="reload">Reload</button>
+    <button class="pill pink on" id="flip" aria-pressed="true">Flip phone: on</button>
+  </div>
+  <div class="bar">
+    <button class="pill" data-p="">Home</button>
+    <button class="pill" data-p="prices/">Prices</button>
+    <button class="pill" data-p="nails/">Nails</button>
+    <button class="pill" data-p="nails/gel-nails/">Gel nails</button>
+    <button class="pill" data-p="faq/">FAQ</button>
+    <button class="pill" data-p="contact/">Contact</button>
+  </div>
+  <div class="stage"><div class="phone" id="phone"><div class="body"><div class="screen"><iframe id="frame" title="MyFace on a phone"></iframe></div><div class="island"></div></div></div></div>
+  <p class="note">Shows the live site at iPhone size (390 &times; 844). "Flip phone" switches the homepage between the flip phone and the monitor.</p>
+<script>
+  var base = location.href.replace(/phone-lab\/.*$/, ''), frame = document.getElementById('frame'), url = document.getElementById('url');
+  var flip = true, path = '';
+  function src() { return base + path + (path === '' && flip ? '?phone' : ''); }
+  function load(p) { if (p !== undefined) path = p; frame.src = src() + (src().indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now(); url.value = '/' + path; }
+  frame.addEventListener('load', function () { try { var l = frame.contentWindow.location; path = l.pathname.replace(/^.*?\/myface\//, ''); url.value = '/' + path; } catch (e) {} });
+  document.getElementById('go').onclick = function () { load(url.value.replace(/^\/+/, '')); };
+  url.addEventListener('keydown', function (e) { if (e.key === 'Enter') load(url.value.replace(/^\/+/, '')); });
+  document.getElementById('reload').onclick = function () { load(); };
+  document.getElementById('flip').onclick = function () {
+    flip = !flip; this.classList.toggle('on', flip); this.setAttribute('aria-pressed', flip); this.textContent = 'Flip phone: ' + (flip ? 'on' : 'off'); load();
+  };
+  document.querySelectorAll('[data-p]').forEach(function (b) { b.onclick = function () { load(b.dataset.p); }; });
+  function fit() {
+    var top = document.getElementById('phone').getBoundingClientRect().top + scrollY;
+    var s = Math.min(1, (innerHeight - top - 40) / 868, (innerWidth - 20) / 414);
+    document.getElementById('phone').style.setProperty('--s', Math.max(.45, s).toFixed(3));
+  }
+  addEventListener('resize', fit); fit(); load('');
+</script>
+</body>
+</html>
