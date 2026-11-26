@@ -704,3 +704,12 @@ body.home{background:#ece8e3}
 .cz-list a:hover b,.cz-list a:focus-visible b{color:#ffb3d9}
 
 .hs-ear .hs-dot{display:none}
+/* customiser v2: leopard-to-sky backdrop, she fills the full height of the stage */
+.cz-main{grid-template-columns:minmax(0,1fr) minmax(250px,340px)}
+.cz-stage{display:block;padding:0;min-height:420px;background:#9fb6cf url(bg-sky.jpg) center/cover no-repeat}
+.cz-stage::after{display:none}
+.cz-stage::before{content:"";position:absolute;left:50%;bottom:2%;width:40%;height:6%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(20,10,20,.45),transparent);pointer-events:none}
+.cz-hud{position:absolute;top:14px;left:18px;font-size:clamp(22px,3vw,38px)}
+.cz-fig{position:absolute;top:3%;bottom:2%;left:50%;height:auto;max-height:none;transform:translateX(-50%)}
+.cz-rot{position:absolute;right:16px;bottom:14px;padding:6px 10px;border-radius:18px;background:rgba(18,10,20,.6)}
+@media (max-width:760px){.cz-stage{height:62vh;min-height:0}}
