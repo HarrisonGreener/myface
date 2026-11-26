@@ -625,11 +625,6 @@
     var head = document.createElement('span'); head.className = 'pie-head'; ring.appendChild(head);
     if (nested) ring.dataset.nested = '1';
     var list = items.slice(); if (nested) list.push({ label: 'Back', back: true });
-    // phones: Book and Search live in the menu, not the header
-    if (!nested && matchMedia('(max-width: 620px)').matches) {
-      var sb = document.getElementById('searchBtn');
-      if (sb) list.push({ label: 'Search', act: function () { sb.click(); } });
-    }
     var top = list.shift(), L = [], R = [], made = [];
     list.forEach(function (it, i) { (i % 2 ? R : L).push(it); });
     function bubble(it, side, x, y, i) {

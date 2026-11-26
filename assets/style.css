@@ -999,3 +999,9 @@ html.mf-phone .pop95{left:50%;top:70px}
 .zoomview.phone.flip .os .wall{inset:0 0 28%;display:flex;align-items:center;justify-content:center}
 .zoomview.phone.flip .os .wall-logo{width:84%}
 .zoomview.phone.flip .os .apps{padding-top:58px}
+/* phones: hamburger + round search button side by side (Book stays in the menu) */
+@media (max-width:620px){
+  html.js .top .bar .search-btn{display:inline-flex;width:44px;height:44px;padding:0;border-radius:50%;justify-content:center;margin:0}
+  html.js .top .bar .search-btn .mg{width:18px;height:18px}
+  html.js .top .bar #menuBtn{margin-right:0}
+}
