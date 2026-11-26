@@ -591,7 +591,7 @@ export function createDeck(container, opts = {}) {
   controls.target.set(0, isPhone ? 0.95 : 0.6, 0);
   controls.enableDamping = true; controls.enablePan = false; controls.enableZoom = false;
   controls.minPolarAngle = 0.5; controls.maxPolarAngle = 1.45;
-  controls.autoRotate = true; controls.autoRotateSpeed = 0.9;
+  controls.autoRotate = false;
   controls.addEventListener('start', () => { controls.autoRotate = false; });
   controls.update();
 
