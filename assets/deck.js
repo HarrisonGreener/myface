@@ -11,6 +11,48 @@ const C = {
 
 function mat(color, o = {}) { return new THREE.MeshStandardMaterial({ color, roughness: 0.62, metalness: 0.04, ...o }); }
 
+// procedural grime: yellowed patches, dirt in the corners, specks and scratches
+function rnd(seed) { let x = seed; return () => (x = (x * 16807) % 2147483647) / 2147483647; }
+function grime(seed, base, tint = [150, 120, 70]) {
+  const r = rnd(seed), S = 512;
+  const cv = document.createElement('canvas'); cv.width = cv.height = S; const g = cv.getContext('2d');
+  const rc = document.createElement('canvas'); rc.width = rc.height = S; const h = rc.getContext('2d');
+  g.fillStyle = base; g.fillRect(0, 0, S, S); h.fillStyle = '#9a9a9a'; h.fillRect(0, 0, S, S);
+  for (let i = 0; i < 26; i++) {                         // yellowed / dirty blotches
+    const x = r() * S, y = r() * S, rad = 30 + r() * 140, a = 0.05 + r() * 0.12;
+    const gr = g.createRadialGradient(x, y, 0, x, y, rad);
+    gr.addColorStop(0, `rgba(${tint[0]},${tint[1]},${tint[2]},${a})`); gr.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = gr; g.fillRect(x - rad, y - rad, rad * 2, rad * 2);
+  }
+  const edge = g.createRadialGradient(S / 2, S / 2, S * 0.25, S / 2, S / 2, S * 0.75);   // grime in the edges
+  edge.addColorStop(0, 'rgba(0,0,0,0)'); edge.addColorStop(1, 'rgba(70,55,40,.32)');
+  g.fillStyle = edge; g.fillRect(0, 0, S, S);
+  for (let i = 0; i < 4500; i++) {                       // specks
+    const x = r() * S, y = r() * S, v = r();
+    g.fillStyle = v < .5 ? `rgba(60,45,35,${.08 + r() * .25})` : `rgba(255,250,240,${.1 + r() * .2})`;
+    g.fillRect(x, y, 1 + r() * 1.5, 1 + r() * 1.5);
+    h.fillStyle = `rgba(${v < .5 ? 255 : 0},${v < .5 ? 255 : 0},${v < .5 ? 255 : 0},.25)`; h.fillRect(x, y, 2, 2);
+  }
+  g.lineCap = 'round';
+  for (let i = 0; i < 55; i++) {                         // scratches
+    const x = r() * S, y = r() * S, l = 10 + r() * 70, ang = r() * Math.PI;
+    g.strokeStyle = `rgba(90,70,55,${.12 + r() * .25})`; g.lineWidth = .6 + r() * 1.2;
+    g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(ang) * l, y + Math.sin(ang) * l); g.stroke();
+    h.strokeStyle = 'rgba(255,255,255,.5)'; h.lineWidth = 1.5; h.beginPath(); h.moveTo(x, y); h.lineTo(x + Math.cos(ang) * l, y + Math.sin(ang) * l); h.stroke();
+  }
+  for (let i = 0; i < 6; i++) {                          // smudges
+    const x = r() * S, y = r() * S; g.fillStyle = 'rgba(80,65,55,.07)';
+    for (let k = 0; k < 12; k++) { g.beginPath(); g.ellipse(x + r() * 30, y + r() * 30, 10 + r() * 16, 5 + r() * 9, r() * 3, 0, 6.3); g.fill(); }
+  }
+  const map = new THREE.CanvasTexture(cv); map.colorSpace = THREE.SRGBColorSpace;
+  const rough = new THREE.CanvasTexture(rc);
+  return { map, rough };
+}
+function dirty(seed, base, o = {}) {
+  const t = grime(seed, base, o.tint);
+  return new THREE.MeshStandardMaterial({ map: t.map, roughnessMap: t.rough, bumpMap: t.rough, bumpScale: 0.6, roughness: 0.85, metalness: 0.03, ...o.extra });
+}
+
 // a box whose back face is shrunk: the tapered tube of a CRT
 function frustum(w, h, d, backScale) {
   const g = new THREE.BoxGeometry(w, h, d, 1, 1, 1).toNonIndexed();
@@ -65,122 +107,114 @@ function screenTexture() {
   return { tex, stop: () => clearInterval(timer) };
 }
 
-function cable(points, radius = 0.014, color = C.pink) {
-  const curve = new THREE.CatmullRomCurve3(points.map(p => new THREE.Vector3(...p)));
-  return new THREE.Mesh(new THREE.TubeGeometry(curve, 80, radius, 8, false), mat(color, { roughness: 0.45 }));
+
+function plug(pos, dir) {
+  const g = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.055, 14), mat(0x2b2830, { roughness: 0.5 }));
+  const ring = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.012, 14), mat(C.pink));
+  ring.position.y = -0.02; g.add(body, ring);
+  g.position.copy(pos); g.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
+  return g;
+}
+// a cable that starts and ends in a plug sitting in a socket
+function wire(points, color = C.pink, radius = 0.013) {
+  const v = points.map(p => new THREE.Vector3(...p));
+  const curve = new THREE.CatmullRomCurve3(v, false, 'centripetal');
+  const g = new THREE.Group();
+  g.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 120, radius, 8, false), dirty(color, '#' + new THREE.Color(color).getHexString(), { tint: [90, 60, 70], extra: { roughness: 0.55 } })));
+  g.add(plug(v[0], v[0].clone().sub(v[1])));
+  g.add(plug(v[v.length - 1], v[v.length - 1].clone().sub(v[v.length - 2])));
+  return g;
 }
 
 function buildDeck() {
   const deck = new THREE.Group();
   const leds = [];
+  const shell = dirty(11, '#ece2cf'), shell2 = dirty(23, '#e3d8c3'), shell3 = dirty(37, '#d6c9b1');
 
-  // --- base unit
-  const base = new THREE.Mesh(new RoundedBoxGeometry(1.25, 0.24, 1.0, 4, 0.04), mat(C.cream));
-  base.position.y = 0.12; deck.add(base);
-  const slot = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.025, 0.02), mat(C.chip));
-  slot.position.set(0.28, 0.14, 0.505); deck.add(slot);
-  const stripe = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.02, 0.01), mat(C.pink));
-  stripe.position.set(0, 0.05, 0.503); deck.add(stripe);
-  for (let i = 0; i < 3; i++) {
-    const led = new THREE.Mesh(new THREE.SphereGeometry(0.014, 12, 8), new THREE.MeshBasicMaterial({ color: i === 1 ? C.cyan : C.pinkHot }));
-    led.position.set(-0.48 + i * 0.06, 0.15, 0.505); deck.add(led); leds.push(led);
-  }
-  // swivel
-  const swivel = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.36, 0.08, 32), mat(C.creamDk));
-  swivel.position.y = 0.28; deck.add(swivel);
+  // --- stand: foot + neck (no desk unit)
+  const foot = new THREE.Mesh(new RoundedBoxGeometry(0.8, 0.07, 0.7, 4, 0.03), shell3);
+  foot.position.y = 0.035; deck.add(foot);
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.22, 0.2, 28), shell2);
+  neck.position.y = 0.17; deck.add(neck);
+  const footLed = new THREE.Mesh(new THREE.SphereGeometry(0.013, 12, 8), new THREE.MeshBasicMaterial({ color: C.pinkHot }));
+  footLed.position.set(0.3, 0.06, 0.352); deck.add(footLed); leds.push(footLed);
 
   // --- monitor
-  const mon = new THREE.Group(); mon.position.y = 0.75; deck.add(mon);
-  const front = new THREE.Mesh(new RoundedBoxGeometry(1.12, 0.92, 0.16, 5, 0.06), mat(C.cream));
+  const mon = new THREE.Group(); mon.position.y = 0.74; deck.add(mon);
+  const front = new THREE.Mesh(new RoundedBoxGeometry(1.12, 0.92, 0.16, 5, 0.06), shell);
   front.position.z = 0.32; mon.add(front);
-  const tube = new THREE.Mesh(frustum(1.02, 0.84, 0.72, { x: 0.62, y: 0.6, dy: 0.04 }), mat(C.cream));
+  const tube = new THREE.Mesh(frustum(1.02, 0.84, 0.72, { x: 0.62, y: 0.6, dy: 0.04 }), shell2);
   tube.position.z = -0.12; mon.add(tube);
-  // vents on top of the tube
   for (let i = 0; i < 7; i++) {
-    const v = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.006, 0.025), mat(C.creamDk));
-    v.position.set(0, 0.4, -0.02 - i * 0.07); v.rotation.x = -0.12; mon.add(v);
+    const v = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.008, 0.025), mat(0x6b5f52));
+    v.position.set(0, 0.405 - i * 0.012, -0.02 - i * 0.07); v.rotation.x = -0.12; mon.add(v);
   }
-  // bezel + screen
-  const bezel = new THREE.Mesh(new RoundedBoxGeometry(0.9, 0.7, 0.04, 4, 0.04), mat(C.bezel, { roughness: 0.4 }));
+  const bezel = new THREE.Mesh(new RoundedBoxGeometry(0.9, 0.7, 0.04, 4, 0.04), dirty(51, '#2a2730', { tint: [120, 110, 100] }));
   bezel.position.set(0, 0.03, 0.39); mon.add(bezel);
   const scr = screenTexture();
   const screen = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.6), new THREE.MeshBasicMaterial({ map: scr.tex, toneMapped: false }));
   screen.position.set(0, 0.03, 0.412); mon.add(screen);
-  const glass = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.6), new THREE.MeshPhysicalMaterial({ color: 0xffffff, transparent: true, opacity: 0.08, roughness: 0.05, clearcoat: 1 }));
+  const smudge = grime(77, 'rgba(0,0,0,0)', [255, 255, 255]);
+  const glass = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.6), new THREE.MeshPhysicalMaterial({ color: 0xffffff, transparent: true, opacity: 0.1, roughness: 0.25, clearcoat: 1, alphaMap: smudge.rough }));
   glass.position.set(0, 0.03, 0.415); mon.add(glass);
   const glow = new THREE.PointLight(0x9bffe0, 0.6, 1.6); glow.position.set(0, 0.03, 0.7); mon.add(glow);
-  // power button + pink badge
   const pwr = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.02, 20), mat(C.pink));
   pwr.rotation.x = Math.PI / 2; pwr.position.set(0.44, -0.38, 0.405); mon.add(pwr);
-  // side clips (pink tabs like the render)
-  [[-0.565, 0.25], [-0.565, -0.2], [0.565, 0.25], [0.565, -0.2]].forEach(([x, y]) => {
-    const t = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.1, 0.06), mat(C.pink)); t.position.set(x, y, 0.3); mon.add(t);
+  // side sockets (pink port blocks the wires plug into)
+  const sockets = [[-0.575, 0.22], [-0.575, -0.2], [0.575, 0.22], [0.575, -0.2]];
+  sockets.forEach(([x, y]) => {
+    const t = new THREE.Mesh(new RoundedBoxGeometry(0.04, 0.11, 0.08, 2, 0.01), mat(C.pink)); t.position.set(x, y, 0.3); mon.add(t);
+    const hole = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.01, 12), mat(0x111111));
+    hole.rotation.z = Math.PI / 2; hole.position.set(x + Math.sign(x) * 0.021, y, 0.3); mon.add(hole);
   });
 
   // --- exposed electronics on the back
   const back = new THREE.Group(); back.position.set(0, 0.04, -0.49); back.rotation.y = Math.PI; mon.add(back);
-  const pcb = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.42, 0.015), mat(C.pcb, { roughness: 0.5 }));
-  back.add(pcb);
-  for (let i = 0; i < 9; i++) {
-    const chip = new THREE.Mesh(new THREE.BoxGeometry(0.06 + (i % 3) * 0.02, 0.05, 0.02), mat(C.chip));
-    chip.position.set(-0.17 + (i % 3) * 0.15, 0.13 - Math.floor(i / 3) * 0.12, 0.016); back.add(chip);
+  back.add(new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.46, 0.015), dirty(63, '#3c6f55', { tint: [40, 30, 20] })));
+  for (let i = 0; i < 6; i++) {
+    const chip = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.05, 0.02), mat(C.chip));
+    chip.position.set(-0.2 + (i % 3) * 0.08, 0.13 - Math.floor(i / 3) * 0.09, 0.016); back.add(chip);
   }
-  for (let i = 0; i < 9; i++) {      // heatsink fins
-    const fin = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.14, 0.07), mat(C.metal, { metalness: 0.7, roughness: 0.3 }));
-    fin.position.set(-0.05 + i * 0.018, -0.12, 0.045); back.add(fin);
-  }
-  for (let i = 0; i < 4; i++) {
-    const led = new THREE.Mesh(new THREE.SphereGeometry(0.012, 10, 8), new THREE.MeshBasicMaterial({ color: i % 2 ? C.cyan : C.pinkHot }));
-    led.position.set(0.19, 0.16 - i * 0.05, 0.02); back.add(led); leds.push(led);
-  }
-  // bigger heatsink block
   for (let i = 0; i < 12; i++) {
-    const fin = new THREE.Mesh(new THREE.BoxGeometry(0.01, 0.16, 0.1), mat(C.metal, { metalness: 0.75, roughness: 0.28 }));
-    fin.position.set(0.02 + i * 0.016, 0.06, 0.06); back.add(fin);
+    const fin = new THREE.Mesh(new THREE.BoxGeometry(0.01, 0.16, 0.1), mat(C.metal, { metalness: 0.75, roughness: 0.4 }));
+    fin.position.set(0.04 + i * 0.016, 0.08, 0.06); back.add(fin);
   }
-  // glowing module
-  const mod = new THREE.Mesh(new RoundedBoxGeometry(0.1, 0.14, 0.05, 2, 0.01), new THREE.MeshStandardMaterial({ color: 0x9dffd8, emissive: 0x4dffc0, emissiveIntensity: 0.6, roughness: 0.3 }));
+  const mod = new THREE.Mesh(new RoundedBoxGeometry(0.1, 0.12, 0.05, 2, 0.01), new THREE.MeshStandardMaterial({ color: 0x9dffd8, emissive: 0x4dffc0, emissiveIntensity: 0.6, roughness: 0.4 }));
   mod.position.set(-0.17, -0.1, 0.04); back.add(mod);
-  // fan
   const fanRing = new THREE.Mesh(new THREE.TorusGeometry(0.075, 0.012, 10, 32), mat(C.pink));
-  fanRing.position.set(0.12, -0.14, 0.04); back.add(fanRing);
+  fanRing.position.set(0.13, -0.13, 0.04); back.add(fanRing);
   const blades = new THREE.Group(); blades.position.copy(fanRing.position); back.add(blades);
   for (let i = 0; i < 5; i++) {
     const b = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.018, 0.005), mat(C.chip));
     b.position.x = 0.032; const p = new THREE.Group(); p.rotation.z = i * Math.PI * 2 / 5; p.add(b); blades.add(p);
   }
-  // coiled cable across the board
-  const coil = []; for (let i = 0; i <= 40; i++) { const a = i / 40 * Math.PI * 6; coil.push([-0.22 + i * 0.011, 0.19 + Math.sin(a) * 0.025, 0.04 + Math.cos(a) * 0.025]); }
-  const coilMesh = cable(coil, 0.007, C.pinkHot); back.add(coilMesh);
-  // vents on the back panel edge
-  for (let i = 0; i < 6; i++) {
-    const v = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.008, 0.01), mat(C.creamDk));
-    v.position.set(0, -0.24 - i * 0.015, 0.0); back.add(v);
+  for (let i = 0; i < 4; i++) {
+    const led = new THREE.Mesh(new THREE.SphereGeometry(0.012, 10, 8), new THREE.MeshBasicMaterial({ color: i % 2 ? C.cyan : C.pinkHot }));
+    led.position.set(-0.04, 0.16 - i * 0.045, 0.02); back.add(led); leds.push(led);
   }
+  // header sockets on the board edge (where the wires plug in), in monitor space
+  const hdr = (x, y) => { const h = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.04, 0.03), mat(0x1c1b21)); h.position.set(-x, y + 0.04, -0.515); mon.add(h); };
+  [[0.24, 0.2], [-0.24, 0.2], [0.24, -0.17], [-0.05, -0.2], [-0.24, -0.15]].forEach(([x, y]) => hdr(x, y));
 
-  // --- cables
-  deck.add(cable([[0.2, 1.1, -0.55], [0.45, 1.05, -0.35], [0.6, 0.8, -0.1], [0.62, 0.5, 0.1], [0.5, 0.3, 0.3]]));
-  deck.add(cable([[-0.15, 1.0, -0.56], [-0.5, 0.95, -0.4], [-0.62, 0.6, -0.2], [-0.6, 0.27, 0.0], [-0.7, 0.03, 0.35], [-0.55, 0.02, 0.8]], 0.012, C.lilac));
-  deck.add(cable([[0.0, 0.62, -0.56], [0.15, 0.4, -0.6], [0.35, 0.25, -0.52], [0.65, 0.12, -0.3], [0.85, 0.02, 0.1], [0.9, 0.02, 0.7]]));
-  deck.add(cable([[-0.1, 0.9, -0.56], [0.1, 0.95, -0.62], [0.25, 0.75, -0.6], [0.1, 0.55, -0.6], [-0.15, 0.62, -0.58]], 0.01, C.pinkHot));
-
-  // --- keyboard
-  const kb = new THREE.Group(); kb.position.set(-0.05, 0.03, 0.95); kb.rotation.x = 0.06; deck.add(kb);
-  kb.add(new THREE.Mesh(new RoundedBoxGeometry(1.05, 0.05, 0.36, 3, 0.02), mat(C.cream)));
-  const keyGeo = new RoundedBoxGeometry(0.052, 0.03, 0.052, 2, 0.008);
-  const keys = new THREE.InstancedMesh(keyGeo, mat(0xffffff, { roughness: 0.5 }), 15 * 5);
-  const m4 = new THREE.Matrix4(), col = new THREE.Color();
-  let k = 0;
-  for (let r = 0; r < 5; r++) for (let c = 0; c < 15; c++) {
-    m4.makeTranslation(-0.455 + c * 0.065, 0.035, -0.13 + r * 0.065); keys.setMatrixAt(k, m4);
-    keys.setColorAt(k, col.set((c + r) % 4 === 0 ? C.cream : C.pink)); k++;
-  }
-  kb.add(keys);
-
-  // --- mouse
-  const mouse = new THREE.Mesh(new THREE.SphereGeometry(0.1, 24, 16), mat(C.pink, { roughness: 0.4 }));
-  mouse.scale.set(0.6, 0.35, 1); mouse.position.set(0.75, 0.035, 0.95); deck.add(mouse);
-  deck.add(cable([[0.75, 0.04, 0.85], [0.8, 0.03, 0.6], [0.7, 0.05, 0.45]], 0.008));
+  // --- wires: every one runs from a socket to a socket (monitor space)
+  const W = [
+    // back board top-right -> over the top -> right side socket
+    [[-0.24, 0.24, -0.56], [-0.3, 0.42, -0.5], [-0.42, 0.5, -0.15], [-0.6, 0.38, 0.1], [-0.625, 0.22, 0.3]],
+    // back board top-left -> down the side -> left lower socket
+    [[0.24, 0.24, -0.56], [0.36, 0.3, -0.45], [0.55, 0.05, -0.2], [0.66, -0.15, 0.1], [0.625, -0.2, 0.3]],
+    // back board bottom -> down into the stand
+    [[0.05, -0.16, -0.56], [0.1, -0.42, -0.5], [0.12, -0.55, -0.25], [0.0, -0.53, -0.12]],
+    // right lower socket -> down to the foot
+    [[-0.625, -0.2, 0.3], [-0.72, -0.4, 0.3], [-0.5, -0.66, 0.36], [-0.3, -0.665, 0.36]],
+    // jumper loop on the back board
+    [[0.24, -0.13, -0.56], [0.1, -0.02, -0.66], [-0.1, 0.05, -0.64], [-0.24, 0.24, -0.56]],
+  ];
+  const cols = [C.pink, C.lilac, C.pink, C.pinkHot, C.pinkHot];
+  W.forEach((pts, i) => mon.add(wire(pts, cols[i], i === 4 ? 0.009 : 0.013)));
+  // socket on the foot for the last wire
+  const fs = new THREE.Mesh(new RoundedBoxGeometry(0.08, 0.04, 0.05, 2, 0.01), mat(C.pink));
+  fs.position.set(-0.3, 0.075, 0.33); deck.add(fs);
 
   deck.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
   return { deck, leds, screen, scr, blades };
@@ -196,7 +230,7 @@ export function createDeck(container) {
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(32, 1, 0.05, 50);
-  const home = new THREE.Vector3(2.6, 1.9, 3.6);
+  const home = new THREE.Vector3(2.2, 1.5, 3.0);
   camera.position.copy(home);
 
   scene.add(new THREE.HemisphereLight(0xfff4fb, 0x6b4a73, 1.1));
@@ -213,7 +247,7 @@ export function createDeck(container) {
   scene.add(deck);
 
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.target.set(0, 0.62, 0.2);
+  controls.target.set(0, 0.6, 0);
   controls.enableDamping = true; controls.enablePan = false; controls.enableZoom = false;
   controls.minPolarAngle = 0.5; controls.maxPolarAngle = 1.45;
   controls.autoRotate = true; controls.autoRotateSpeed = 0.9;
