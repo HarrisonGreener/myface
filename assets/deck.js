@@ -216,7 +216,7 @@ function drawLogo(cv, seed) {
   pass((ch, x, y, col) => { t.fillStyle = col; t.fillText(ch, x, y); });
   // captcha wobble: shift thin horizontal strips
   const r = rnd(seed), ph = r() * 6;
-  for (let y = 0; y < cv.height; y += 2) c.drawImage(tmp, 0, y, cv.width, 2, Math.sin(y / 9 + ph) * 2.2 * k * 2, y, cv.width, 2);
+  for (let y = 0; y < cv.height; y += 2) c.drawImage(tmp, 0, y, cv.width, 2, Math.sin(y / 11 + ph) * 1.1 * k * 2, y, cv.width, 2);
   wear(c, cv.width, cv.height, seed);
 }
 function logoCanvas(seed) {
@@ -366,7 +366,7 @@ function buildDeck() {
     // back board top-right -> over the top -> right side socket
     [[-0.24, 0.24, -0.56], [-0.3, 0.42, -0.5], [-0.42, 0.5, -0.15], [-0.6, 0.38, 0.1], [-0.625, 0.22, 0.3]],
     // back board top-left -> down the side -> left lower socket
-    [[0.24, 0.24, -0.56], [0.36, 0.3, -0.45], [0.55, 0.05, -0.2], [0.66, -0.15, 0.1], [0.625, -0.2, 0.3]],
+    [[0.24, 0.24, -0.56], [0.38, 0.02, -0.58], [0.44, -0.32, -0.46], [0.58, -0.44, -0.1], [0.68, -0.36, 0.2], [0.625, -0.2, 0.3]],
     // back board bottom -> down into the stand
     [[0.05, -0.16, -0.56], [0.1, -0.42, -0.5], [0.12, -0.55, -0.25], [0.0, -0.53, -0.12]],
     // right lower socket -> down to the foot
@@ -388,7 +388,7 @@ function buildDeck() {
   addSticker(mon, stickerCanvas('heart', 'pink', 5), 0.08, [0.505, 0.2, 0.402], [0, 0], 12);
   addSticker(mon, stickerCanvas('star', 'chrome', 7), 0.09, [-0.505, 0.36, 0.402], [0, 0], -15);
   // tube sides
-  imageSticker(mon, new URL('./sticker-her.png', import.meta.url).href, 0.26, [sideX(-0.1), 0.0, -0.1], [0, sideY], -5);
+  imageSticker(mon, new URL('./sticker-her.png', import.meta.url).href, 0.32, [sideX(-0.08), 0.0, -0.08], [0, sideY], -5);
   addSticker(mon, stickerCanvas('butterfly', 'holo', 9), 0.15, [sideX(-0.38), 0.12, -0.38], [0, sideY], -14);
   addSticker(mon, stickerCanvas('lips', 'pink', 11), 0.14, [sideX(-0.38), -0.13, -0.38], [0, sideY], 8);
   addSticker(mon, stickerCanvas('cherry', 'chrome', 13), 0.28, [-sideX(-0.12), 0.02, -0.12], [0, -sideY], -8);
@@ -399,10 +399,10 @@ function buildDeck() {
   addSticker(deck, stickerCanvas('heart', 'holo', 21), 0.16, [0.503, 0.13, 0.28], [0, Math.PI / 2], -10);
   addSticker(deck, stickerCanvas('butterfly', 'pink', 23), 0.16, [-0.503, 0.13, 0.27], [0, -Math.PI / 2], 12);
   const logoCv = logoCanvas(25);
-  const logoMesh = addSticker(deck, logoCv, 0.46, [0.1, 0.13, -0.412], [0, Math.PI], 3);
+  const logoMesh = addSticker(deck, logoCv, 0.56, [0.12, 0.13, -0.412], [0, Math.PI], 3);
   Promise.all(['108px "Bagel Fat One"', '134px "Pirata One"'].map(f => document.fonts.load(f).catch(() => {})))
     .then(() => { drawLogo(logoCv, 25); logoMesh.material.map.needsUpdate = true; });
-  addSticker(deck, stickerCanvas('star', 'pink', 27), 0.12, [-0.32, 0.14, -0.412], [0, Math.PI], -18);
+  addSticker(deck, stickerCanvas('star', 'pink', 27), 0.1, [-0.38, 0.16, -0.412], [0, Math.PI], -18);
 
   deck.traverse(o => { if (o.isMesh) { o.castShadow = !o.material.transparent; o.receiveShadow = true; } });
   return { deck, leds, screen, scr, blades };
