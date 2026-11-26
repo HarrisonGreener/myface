@@ -135,8 +135,13 @@ function buildDeck() {
   // --- stand: foot + neck (no desk unit)
   const foot = new THREE.Mesh(new RoundedBoxGeometry(0.8, 0.07, 0.7, 4, 0.03), shell3);
   foot.position.y = 0.035; deck.add(foot);
-  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.22, 0.2, 28), shell2);
-  neck.position.y = 0.17; deck.add(neck);
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.22, 0.26, 28), shell2);
+  neck.position.y = 0.2; deck.add(neck);
+  // swivel collar + tilt mount: neck runs up into the underside of the case
+  const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.035, 28), dirty(61, '#c9bba1'));
+  collar.position.y = 0.345; deck.add(collar);
+  const mount = new THREE.Mesh(new RoundedBoxGeometry(0.46, 0.16, 0.5, 3, 0.03), shell3);
+  mount.position.set(0, 0.42, 0.04); deck.add(mount);
   const footLed = new THREE.Mesh(new THREE.SphereGeometry(0.013, 12, 8), new THREE.MeshBasicMaterial({ color: C.pinkHot }));
   footLed.position.set(0.3, 0.06, 0.352); deck.add(footLed); leds.push(footLed);
 
