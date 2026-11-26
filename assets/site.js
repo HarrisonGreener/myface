@@ -96,10 +96,13 @@
     rx = Math.max(-40, Math.min(25, down.rx - dy * 0.3));
     rest();
   });
-  scene.addEventListener('pointerup', function () {
+  scene.addEventListener('pointerup', function (e) {
     if (!down) return;
     down = null; rig.classList.remove('drag');
-    if (!moved) zoomIn();
+    if (moved) return;
+    var hit = D && D.pick ? D.pick(e.clientX, e.clientY) : null;
+    if (hit && hit.key) { if (zoomed || busy) return; busy = true; D.press(hit.key, function () { busy = false; zoomIn(hit.app); }); }
+    else zoomIn();
   });
   scene.addEventListener('pointercancel', function () { down = null; rig.classList.remove('drag'); });
   // keyboard: Enter/Space on the button zooms, arrows spin
@@ -134,13 +137,14 @@
     var r = deckBox.getBoundingClientRect();
     deckBox.classList.toggle('full', on); D.resize(); return r;
   }
-  function zoomIn() {
+  function zoomIn(app) {
     if (zoomed || busy) return;
     if (D) {
       busy = true; scene.parentNode.classList.add('zooming');
       var from = deckFull(true);
       D.flyIn(function () {
         showDesktop(false); bootUp();
+        if (app) openWin(app);
       }, from, reduce ? 0 : 1100);
       return;
     }
@@ -185,6 +189,7 @@
 
   function useDeck(d) {
     D = d; scene.classList.add('has-deck');
+    var hint = document.getElementById('hint'); if (hint && D.isPhone) hint.textContent = 'spin it · tap a key to go there';
     var c = D.canvas;
     c.tabIndex = 0; c.setAttribute('role', 'button'); c.setAttribute('aria-label', 'Turn on the computer (drag to spin it)');
     c.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); zoomIn(); } });

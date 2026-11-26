@@ -415,7 +415,145 @@ function buildDeck() {
   return { deck, leds, screen, scr, blades };
 }
 
-export function createDeck(container) {
+
+// ================================================================ phone version: a grimy cyberpunk flip phone
+// the keypad keys are the menu: each one clicks in and takes you to that section
+const PHONE_KEYS = [
+  ['Hair', 'hair'], ['Nails', 'nails'], ['Beauty', 'beauty'],
+  ['Piercing', 'piercing'], ['Filler', 'filler'], ['Prices', 'prices'],
+  ['Book', 'book'], ['her.exe', 'her'], ['Info', 'about'],
+  ['Contact', 'contact'], ['Profile', 'web'], ['Home', ''],
+];
+function keyCanvas(label, small) {
+  const cv = document.createElement('canvas'); cv.width = 256; cv.height = 160;
+  const c = cv.getContext('2d');
+  const g = c.createLinearGradient(0, 0, 0, 160);
+  g.addColorStop(0, '#4a4450'); g.addColorStop(0.45, '#1c1920'); g.addColorStop(0.55, '#0b0a0d'); g.addColorStop(1, '#25212a');
+  c.fillStyle = g; c.fillRect(0, 0, 256, 160);
+  c.strokeStyle = '#ff4fa3'; c.lineWidth = 5; c.globalAlpha = 0.85; c.strokeRect(10, 10, 236, 140); c.globalAlpha = 1;
+  c.font = `700 ${small ? 44 : label.length > 7 ? 46 : 54}px "Trebuchet MS", Tahoma, Arial, sans-serif`;
+  c.textAlign = 'center'; c.textBaseline = 'middle';
+  c.shadowColor = '#ff4fa3'; c.shadowBlur = 14; c.fillStyle = '#ffd1ea'; c.fillText(label, 128, 84);
+  c.shadowBlur = 0; c.fillStyle = 'rgba(255,255,255,.18)'; c.fillRect(14, 14, 228, 40);
+  return cv;
+}
+function phoneScreenTexture() {
+  const cv = document.createElement('canvas'); cv.width = 480; cv.height = 680;
+  const c = cv.getContext('2d');
+  const logo = logoCanvas(31);
+  function draw() {
+    const g = c.createLinearGradient(0, 0, 0, 680);
+    g.addColorStop(0, '#1a0b1f'); g.addColorStop(0.55, '#2a0f2c'); g.addColorStop(1, '#4a1240');
+    c.fillStyle = g; c.fillRect(0, 0, 480, 680);
+    // synthwave floor grid
+    c.strokeStyle = 'rgba(255,79,163,.55)'; c.lineWidth = 2;
+    for (let i = 0; i < 9; i++) { const y = 470 + Math.pow(i / 8, 1.8) * 210; c.beginPath(); c.moveTo(0, y); c.lineTo(480, y); c.stroke(); }
+    for (let i = -8; i <= 8; i++) { c.beginPath(); c.moveTo(240 + i * 14, 470); c.lineTo(240 + i * 90, 680); c.stroke(); }
+    const sun = c.createLinearGradient(0, 330, 0, 470); sun.addColorStop(0, '#ffd1ea'); sun.addColorStop(1, '#ff4fa3');
+    c.fillStyle = sun; c.beginPath(); c.arc(240, 470, 110, Math.PI, 0); c.fill();
+    c.fillStyle = '#2a0f2c'; for (let i = 0; i < 5; i++) c.fillRect(120, 400 + i * 15, 240, 3 + i * 1.5);
+    // status bar
+    c.fillStyle = 'rgba(0,0,0,.45)'; c.fillRect(0, 0, 480, 44);
+    c.fillStyle = '#ffd1ea'; for (let i = 0; i < 4; i++) c.fillRect(16 + i * 11, 30 - i * 6, 7, 6 + i * 6);
+    c.font = '700 22px "Courier New", monospace'; c.textAlign = 'center'; c.fillText('MYFACE', 240, 30);
+    c.strokeStyle = '#ffd1ea'; c.lineWidth = 2; c.strokeRect(410, 14, 46, 20); c.fillRect(458, 19, 4, 10); c.fillRect(414, 18, 28, 12);
+    // clock + logo
+    const d = new Date(), t = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+    c.shadowColor = '#ff4fa3'; c.shadowBlur = 18; c.fillStyle = '#fff'; c.font = '700 96px "Courier New", monospace'; c.fillText(t, 240, 160);
+    c.shadowBlur = 0; c.font = '22px "Courier New", monospace'; c.fillStyle = '#ffb3d9';
+    c.fillText(d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase(), 240, 196);
+    c.drawImage(logo, 50, 214, 380, 139);
+    c.fillStyle = '#ffd1ea'; c.font = '700 22px "Courier New", monospace'; c.fillText('press a key x', 240, 640);
+    tex.needsUpdate = true;
+  }
+  const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+  draw(); setTimeout(draw, 1500);                 // redraw once the logo fonts are in
+  const timer = setInterval(draw, 20000);
+  return { tex, stop: () => clearInterval(timer) };
+}
+function buildPhone() {
+  const deck = new THREE.Group(), leds = [], keys = [];
+  const shell = dirty(101, '#eaa3c4', { tint: [120, 60, 80] }), shell2 = dirty(103, '#dc93b6', { tint: [120, 60, 80] });
+  const face = dirty(107, '#2a262f', { tint: [150, 110, 130] });
+  const phone = new THREE.Group(); phone.position.y = 0.06; phone.rotation.x = -0.1; deck.add(phone);
+  const W = 0.64, LH = 0.92, LD = 0.075, UH = 0.88, UD = 0.06, FZ = LD / 2;
+
+  // --- lower half (keypad)
+  const lower = new THREE.Mesh(new RoundedBoxGeometry(W, LH, LD, 5, 0.035), shell); lower.position.y = LH / 2; phone.add(lower);
+  const plate = new THREE.Mesh(new RoundedBoxGeometry(W - 0.07, LH - 0.1, 0.01, 3, 0.004), face); plate.position.set(0, LH / 2 - 0.01, FZ + 0.002); phone.add(plate);
+  // nav cluster: soft keys + d-pad ring with OK
+  const navKey = (label, app, x, y, w, h) => {
+    const m = new THREE.Mesh(new RoundedBoxGeometry(w, h, 0.025, 3, 0.01), [mat(0x18151b), mat(0x18151b), mat(0x18151b), mat(0x18151b),
+      new THREE.MeshStandardMaterial({ map: (() => { const t = new THREE.CanvasTexture(keyCanvas(label, true)); t.colorSpace = THREE.SRGBColorSpace; return t; })(), emissive: 0xffffff, emissiveIntensity: 0.25, roughness: 0.35 }), mat(0x18151b)]);
+    m.material[4].emissiveMap = m.material[4].map;
+    m.position.set(x, y, FZ + 0.016); m.userData = { app, z: FZ + 0.016 }; phone.add(m); keys.push(m); return m;
+  };
+  navKey('Menu', '', -0.2, 0.8, 0.16, 0.06); navKey('Book', 'book', 0.2, 0.8, 0.16, 0.06);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.068, 0.016, 12, 40), mat(C.pink, { metalness: 0.5, roughness: 0.3 })); ring.position.set(0, 0.79, FZ + 0.014); phone.add(ring);
+  const ok = new THREE.Mesh(new THREE.CylinderGeometry(0.042, 0.042, 0.022, 28), mat(0x18151b, { emissive: 0xff4fa3, emissiveIntensity: 0.35, roughness: 0.3 }));
+  ok.rotation.x = Math.PI / 2; ok.position.set(0, 0.79, FZ + 0.016); ok.userData = { app: '', z: FZ + 0.016 }; phone.add(ok); keys.push(ok);
+  // main keys: 3 x 4, each one a section of the site
+  PHONE_KEYS.forEach(([label, app], i) => {
+    const x = (i % 3 - 1) * 0.19, y = 0.63 - Math.floor(i / 3) * 0.135;
+    const t = new THREE.CanvasTexture(keyCanvas(label)); t.colorSpace = THREE.SRGBColorSpace;
+    const side = mat(0x141217, { roughness: 0.4 });
+    const top = new THREE.MeshStandardMaterial({ map: t, emissive: 0xffffff, emissiveMap: t, emissiveIntensity: 0.28, roughness: 0.3, metalness: 0.1 });
+    const k = new THREE.Mesh(new RoundedBoxGeometry(0.168, 0.105, 0.028, 3, 0.012), [side, side, side, side, top, side]);
+    k.position.set(x, y, FZ + 0.017); k.userData = { app, z: FZ + 0.017 }; phone.add(k); keys.push(k);
+  });
+  const mic = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.01, 10), mat(0x0d0c10)); mic.rotation.x = Math.PI / 2; mic.position.set(0, 0.05, FZ + 0.006); phone.add(mic);
+  // hinge
+  const hinge = new THREE.Mesh(new THREE.CylinderGeometry(0.046, 0.046, 0.46, 24), shell2); hinge.rotation.z = Math.PI / 2; hinge.position.set(0, LH, -0.004); phone.add(hinge);
+  [-1, 1].forEach(sx => {
+    const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.02, 24), mat(C.metal, { metalness: 0.8, roughness: 0.3 })); cap.rotation.z = Math.PI / 2; cap.position.set(sx * 0.24, LH, -0.004); phone.add(cap);
+    const led = new THREE.Mesh(new THREE.TorusGeometry(0.03, 0.006, 8, 24), new THREE.MeshBasicMaterial({ color: sx < 0 ? C.pinkHot : C.cyan })); led.rotation.y = Math.PI / 2; led.position.set(sx * 0.252, LH, -0.004); phone.add(led); leds.push(led);
+  });
+
+  // --- upper half (screen), hinged and tipped back a little
+  const lid = new THREE.Group(); lid.position.set(0, LH, -0.004); lid.rotation.x = -0.2; phone.add(lid);
+  const upper = new THREE.Mesh(new RoundedBoxGeometry(W, UH, UD, 5, 0.035), shell); upper.position.y = UH / 2 + 0.02; lid.add(upper);
+  const UZ = UD / 2;
+  const bez = new THREE.Mesh(new RoundedBoxGeometry(0.55, 0.74, 0.012, 3, 0.03), dirty(109, '#16131a', { tint: [140, 110, 120] })); bez.position.set(0, 0.47, UZ); lid.add(bez);
+  const scr = phoneScreenTexture();
+  const SW = 0.48, SH = 0.68;
+  const screen = new THREE.Mesh(new THREE.PlaneGeometry(SW, SH), new THREE.MeshBasicMaterial({ map: scr.tex, toneMapped: false }));
+  screen.position.set(0, 0.47, UZ + 0.0065); screen.userData = { w: SW, h: SH }; lid.add(screen);
+  const smudge = grime(171, 'rgba(0,0,0,0)', [255, 255, 255]);
+  const glass = new THREE.Mesh(new THREE.PlaneGeometry(SW, SH), new THREE.MeshPhysicalMaterial({ color: 0xffffff, transparent: true, opacity: 0.1, roughness: 0.25, clearcoat: 1, alphaMap: smudge.rough }));
+  glass.position.set(0, 0.47, UZ + 0.008); lid.add(glass);
+  const hc = document.createElement('canvas'); hc.width = 200; hc.height = 260; const hx = hc.getContext('2d');
+  hx.filter = 'blur(12px)'; hx.fillStyle = 'rgba(255,140,200,0.9)'; hx.fillRect(22, 22, 156, 216);
+  const halo = new THREE.Mesh(new THREE.PlaneGeometry(SW * 1.25, SH * 1.18), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(hc), transparent: true, opacity: 0.3, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
+  halo.position.set(0, 0.47, UZ + 0.0072); lid.add(halo);
+  const glow = new THREE.PointLight(0xff8cc8, 0.7, 1.0); glow.position.set(0, 0.47, 0.3); lid.add(glow);
+  leds.flicker = t => { halo.material.opacity = 0.28 + 0.04 * Math.sin(t * 3) + 0.02 * Math.sin(t * 17); };
+  const ear = new THREE.Mesh(new RoundedBoxGeometry(0.12, 0.016, 0.008, 2, 0.004), mat(0x0d0c10)); ear.position.set(0, 0.86, UZ + 0.002); lid.add(ear);
+  // outer lid: little external screen, camera, and the one sticker
+  const ext = new THREE.Mesh(new RoundedBoxGeometry(0.26, 0.14, 0.008, 2, 0.02), new THREE.MeshStandardMaterial({ color: 0x120d14, emissive: 0xff4fa3, emissiveIntensity: 0.18, roughness: 0.2 }));
+  ext.position.set(0, 0.66, -UZ - 0.002); lid.add(ext);
+  const lens = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.014, 24), mat(0x0d0c10, { metalness: 0.6, roughness: 0.2 })); lens.rotation.x = Math.PI / 2; lens.position.set(0, 0.82, -UZ - 0.004); lid.add(lens);
+  const lensRing = new THREE.Mesh(new THREE.TorusGeometry(0.032, 0.005, 8, 24), mat(C.metal, { metalness: 0.8 })); lensRing.position.copy(lens.position); lid.add(lensRing);
+  addSticker(lid, logoCanvas(41), 0.44, [0, 0.36, -UZ - 0.002], [0, Math.PI], -4);
+  // antenna with a glowing tip
+  const ant = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.02, 0.2, 14), mat(0x2a262f, { roughness: 0.4 })); ant.position.set(0.24, UH + 0.1, -0.01); lid.add(ant);
+  const tip = new THREE.Mesh(new THREE.SphereGeometry(0.026, 16, 12), new THREE.MeshBasicMaterial({ color: C.pinkHot })); tip.position.set(0.24, UH + 0.21, -0.01); lid.add(tip); leds.push(tip);
+
+  // --- cyberpunk bits: exposed board on the back of the keypad half, a cable into the side
+  const back = new THREE.Group(); back.position.set(0, 0.42, -FZ - 0.002); back.rotation.y = Math.PI; phone.add(back);
+  back.add(new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.5, 0.008), dirty(113, '#3c6f55', { tint: [40, 30, 20] })));
+  for (let i = 0; i < 4; i++) { const chip = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.06, 0.016), mat(C.chip)); chip.position.set(-0.12 + (i % 2) * 0.12, 0.13 - Math.floor(i / 2) * 0.1, 0.01); back.add(chip); }
+  const cell = new THREE.Mesh(new RoundedBoxGeometry(0.14, 0.2, 0.03, 2, 0.01), new THREE.MeshStandardMaterial({ color: 0x9dffd8, emissive: 0x4dffc0, emissiveIntensity: 0.5, roughness: 0.4 })); cell.position.set(0.11, -0.08, 0.018); back.add(cell);
+  for (let i = 0; i < 3; i++) { const l = new THREE.Mesh(new THREE.SphereGeometry(0.01, 10, 8), new THREE.MeshBasicMaterial({ color: i % 2 ? C.cyan : C.pinkHot })); l.position.set(-0.15 + i * 0.05, -0.17, 0.008); back.add(l); leds.push(l); }
+  // charging port on the bottom and a socket on the side, joined by a cable
+  const port = new THREE.Mesh(new RoundedBoxGeometry(0.1, 0.02, 0.04, 2, 0.006), mat(C.pink)); port.position.set(0, -0.004, 0); phone.add(port);
+  const sock = new THREE.Mesh(new RoundedBoxGeometry(0.025, 0.07, 0.045, 2, 0.006), mat(C.pink)); sock.position.set(W / 2 + 0.008, 0.62, 0); phone.add(sock);
+  phone.add(wire([[0, -0.03, 0], [0, -0.1, 0], [0.06, -0.16, -0.1], [0.34, 0.02, -0.18], [0.46, 0.4, -0.12], [0.44, 0.62, 0], [0.37, 0.62, 0]], C.pinkHot, 0.013));
+
+  deck.traverse(o => { if (o.isMesh) { o.castShadow = !(o.material && o.material.transparent); o.receiveShadow = true; } });
+  return { deck, leds, screen, scr, blades: new THREE.Object3D(), keys };
+}
+
+export function createDeck(container, opts = {}) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -443,18 +581,22 @@ export function createDeck(container) {
   const blob = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 1.4), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(sh), transparent: true, depthWrite: false }));
   blob.rotation.x = -Math.PI / 2; blob.position.y = -0.088; scene.add(blob);
 
-  const { deck, leds, screen, scr, blades } = buildDeck();
+  const isPhone = !!opts.phone;
+  const built = isPhone ? buildPhone() : buildDeck();
+  const { deck, leds, screen, scr, blades } = built, keys = built.keys || [];
   scene.add(deck);
+  if (isPhone) { home.set(1.1, 1.3, 3.4); camera.position.copy(home); }
 
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.target.set(0, 0.6, 0);
+  controls.target.set(0, isPhone ? 0.9 : 0.6, 0);
   controls.enableDamping = true; controls.enablePan = false; controls.enableZoom = false;
   controls.minPolarAngle = 0.5; controls.maxPolarAngle = 1.45;
   controls.autoRotate = true; controls.autoRotateSpeed = 0.9;
   controls.addEventListener('start', () => { controls.autoRotate = false; });
   controls.update();
 
-  let flying = null, raf, view = null, inside = false;
+  let flying = null, raf, view = null, inside = false, presses = [];
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
   const lerpView = (a, b, e) => ({ fw: a.fw + (b.fw - a.fw) * e, fh: a.fh + (b.fh - a.fh) * e, x: a.x + (b.x - a.x) * e, y: a.y + (b.y - a.y) * e });
   function applyView() {
     const w = container.clientWidth, h = container.clientHeight;
@@ -465,7 +607,7 @@ export function createDeck(container) {
   function resize() {
     const w = container.clientWidth, h = container.clientHeight;
     renderer.setSize(w, h, false); camera.fov = 32; applyView();
-    const a = w / h, k = a < 1.2 ? Math.pow(1.2 / a, 0.85) : 1;
+    const a = w / h, k = isPhone ? (a < 0.62 ? Math.pow(0.62 / a, 0.9) : 1) : (a < 1.2 ? Math.pow(1.2 / a, 0.85) : 1);
     if (!flying && !inside && !view) { const dir = camera.position.clone().sub(controls.target).normalize(); camera.position.copy(controls.target).add(dir.multiplyScalar(home.length() * 0.92 * k)); }
   }
   resize(); window.addEventListener('resize', resize);
@@ -476,6 +618,13 @@ export function createDeck(container) {
     leds.forEach((l, i) => { l.visible = Math.sin(t * (2 + i * 0.7) + i) > -0.3; });
     leds.flicker && leds.flicker(t);
     blades.rotation.z = t * 9;
+    presses = presses.filter(pr => {             // keys click in, then spring back
+      const k = Math.min(1, (performance.now() - pr.start) / 260), d = k < 0.35 ? k / 0.35 : 1 - (k - 0.35) / 0.65;
+      pr.m.position.z = pr.m.userData.z - 0.014 * d;
+      pr.m.material.forEach ? pr.m.material[4].emissiveIntensity = 0.28 + 0.9 * d : (pr.m.material.emissiveIntensity = 0.35 + 0.9 * d);
+      if (k >= 1) { pr.done && pr.done(); return false; }
+      return true;
+    });
     if (flying) {
       const k = flying.ms ? Math.min(1, (performance.now() - flying.start) / flying.ms) : 1;
       const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
@@ -493,9 +642,12 @@ export function createDeck(container) {
   const saved = { pos: new THREE.Vector3(), tgt: new THREE.Vector3() };
   function screenView(aspect = camera.aspect) {
     const c = new THREE.Vector3(); screen.getWorldPosition(c);
+    const q = new THREE.Quaternion(); screen.getWorldQuaternion(q);
+    const n = new THREE.Vector3(0, 0, 1).applyQuaternion(q);
+    const sw = screen.userData.w || 0.8, sh = screen.userData.h || 0.6;
     const vFov = THREE.MathUtils.degToRad(camera.fov);
-    const fitH = 0.6 / 2 / Math.tan(vFov / 2), fitW = 0.8 / 2 / (Math.tan(vFov / 2) * aspect);
-    return { pos: c.clone().add(new THREE.Vector3(0, 0, Math.min(fitH, fitW) * 0.96)), tgt: c };
+    const fitH = sh / 2 / Math.tan(vFov / 2), fitW = sw / 2 / (Math.tan(vFov / 2) * aspect);
+    return { pos: c.clone().add(n.multiplyScalar(Math.min(fitH, fitW) * 0.96)), tgt: c };   // screen fills the whole window
   }
   function fly(toPos, toTgt, ms, done, v0, v1) {
     controls.enabled = false; controls.autoRotate = false;
@@ -538,6 +690,17 @@ export function createDeck(container) {
       const left = Math.min(...xs), top = Math.min(...ys);
       return { left, top, width: Math.max(...xs) - left, height: Math.max(...ys) - top };
     },
+    isPhone,
+    // what's under a tap: a keypad key (with the section it opens), the screen, or nothing
+    pick(x, y) {
+      const r = renderer.domElement.getBoundingClientRect();
+      ndc.set((x - r.left) / r.width * 2 - 1, -((y - r.top) / r.height) * 2 + 1);
+      ray.setFromCamera(ndc, camera);
+      const hit = ray.intersectObjects(keys.concat([screen]), false)[0];
+      if (!hit) return null;
+      return hit.object === screen ? { screen: true } : { key: hit.object, app: hit.object.userData.app };
+    },
+    press(key, done) { presses.push({ m: key, start: performance.now(), done }); },
     dispose() { cancelAnimationFrame(raf); scr.stop(); renderer.dispose(); },
   };
 }
