@@ -133,6 +133,30 @@ function buildDeck() {
     const led = new THREE.Mesh(new THREE.SphereGeometry(0.012, 10, 8), new THREE.MeshBasicMaterial({ color: i % 2 ? C.cyan : C.pinkHot }));
     led.position.set(0.19, 0.16 - i * 0.05, 0.02); back.add(led); leds.push(led);
   }
+  // bigger heatsink block
+  for (let i = 0; i < 12; i++) {
+    const fin = new THREE.Mesh(new THREE.BoxGeometry(0.01, 0.16, 0.1), mat(C.metal, { metalness: 0.75, roughness: 0.28 }));
+    fin.position.set(0.02 + i * 0.016, 0.06, 0.06); back.add(fin);
+  }
+  // glowing module
+  const mod = new THREE.Mesh(new RoundedBoxGeometry(0.1, 0.14, 0.05, 2, 0.01), new THREE.MeshStandardMaterial({ color: 0x9dffd8, emissive: 0x4dffc0, emissiveIntensity: 0.6, roughness: 0.3 }));
+  mod.position.set(-0.17, -0.1, 0.04); back.add(mod);
+  // fan
+  const fanRing = new THREE.Mesh(new THREE.TorusGeometry(0.075, 0.012, 10, 32), mat(C.pink));
+  fanRing.position.set(0.12, -0.14, 0.04); back.add(fanRing);
+  const blades = new THREE.Group(); blades.position.copy(fanRing.position); back.add(blades);
+  for (let i = 0; i < 5; i++) {
+    const b = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.018, 0.005), mat(C.chip));
+    b.position.x = 0.032; const p = new THREE.Group(); p.rotation.z = i * Math.PI * 2 / 5; p.add(b); blades.add(p);
+  }
+  // coiled cable across the board
+  const coil = []; for (let i = 0; i <= 40; i++) { const a = i / 40 * Math.PI * 6; coil.push([-0.22 + i * 0.011, 0.19 + Math.sin(a) * 0.025, 0.04 + Math.cos(a) * 0.025]); }
+  const coilMesh = cable(coil, 0.007, C.pinkHot); back.add(coilMesh);
+  // vents on the back panel edge
+  for (let i = 0; i < 6; i++) {
+    const v = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.008, 0.01), mat(C.creamDk));
+    v.position.set(0, -0.24 - i * 0.015, 0.0); back.add(v);
+  }
 
   // --- cables
   deck.add(cable([[0.2, 1.1, -0.55], [0.45, 1.05, -0.35], [0.6, 0.8, -0.1], [0.62, 0.5, 0.1], [0.5, 0.3, 0.3]]));
@@ -159,7 +183,7 @@ function buildDeck() {
   deck.add(cable([[0.75, 0.04, 0.85], [0.8, 0.03, 0.6], [0.7, 0.05, 0.45]], 0.008));
 
   deck.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
-  return { deck, leds, screen, scr };
+  return { deck, leds, screen, scr, blades };
 }
 
 export function createDeck(container) {
@@ -185,7 +209,7 @@ export function createDeck(container) {
   const ground = new THREE.Mesh(new THREE.CircleGeometry(2.2, 48), new THREE.ShadowMaterial({ opacity: 0.28 }));
   ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
 
-  const { deck, leds, screen, scr } = buildDeck();
+  const { deck, leds, screen, scr, blades } = buildDeck();
   scene.add(deck);
 
   const controls = new OrbitControls(camera, renderer.domElement);
@@ -196,18 +220,21 @@ export function createDeck(container) {
   controls.addEventListener('start', () => { controls.autoRotate = false; });
   controls.update();
 
+  let flying = null, raf;
   function resize() {
     const w = container.clientWidth, h = container.clientHeight;
     renderer.setSize(w, h, false); camera.aspect = w / h;
-    camera.fov = w < 600 ? 40 : 32; camera.updateProjectionMatrix();
+    camera.fov = 32; camera.updateProjectionMatrix();
+    const a = w / h, k = a < 1.2 ? Math.pow(1.2 / a, 0.85) : 1;
+    if (!flying) { const dir = camera.position.clone().sub(controls.target).normalize(); camera.position.copy(controls.target).add(dir.multiplyScalar(home.length() * 0.92 * k)); }
   }
   resize(); window.addEventListener('resize', resize);
 
-  let flying = null, raf;
   const clock = new THREE.Clock();
   function tick() {
     const t = clock.getElapsedTime();
     leds.forEach((l, i) => { l.visible = Math.sin(t * (2 + i * 0.7) + i) > -0.3; });
+    blades.rotation.z = t * 9;
     if (flying) {
       const k = Math.min(1, (performance.now() - flying.start) / flying.ms);
       const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
