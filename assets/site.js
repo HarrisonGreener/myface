@@ -127,7 +127,7 @@
     zv.hidden = false;
     if (instant) zv.classList.add('show'); else requestAnimationFrame(function () { zv.classList.add('show'); });
     document.body.style.overflow = 'hidden'; document.body.classList.add('mf-zoomed');
-    zoomed = true; busy = false; store.set('mf-in', '1'); window.dispatchEvent(new Event('mf-desktop'));
+    zoomed = true; busy = false; store.set('mf-in', '1');
   }
   function clearScreen() { zvScreen.removeAttribute('style'); os.style.transform = ''; }
   function deckFull(on) {
@@ -277,99 +277,21 @@
   });
 
   // ---- Start menu
-  // ---- Sims-style pie menu: click the desktop (or Start) and bubbles pop out round a little portrait
   var startBtn = document.getElementById('startBtn'), startMenu = document.getElementById('startmenu');
-  var PIE = []; try { PIE = JSON.parse(document.getElementById('pieData').textContent); } catch (err) {}
-  var pie = null, pieAt = null;
-  function closeStart() {
-    if (startMenu) startMenu.hidden = true;
-    startBtn.setAttribute('aria-expanded', 'false');
-    if (pie) { pie.remove(); pie = null; }
-  }
-  function osPoint(e) {                                     // page coords -> desktop coords (the desktop may be scaled)
-    var r = os.getBoundingClientRect(), k = r.width / os.offsetWidth;
-    return { x: (e.clientX - r.left) / k, y: (e.clientY - r.top) / k };
-  }
-  function pick(it) {
-    if (it.sub) return showPie(it.sub, pieAt, true);
-    closeStart();
-    if (it.act === 'logoff') return zoomOut();
-    if (it.app && openWin(it.app, startBtn)) return;
-    if (it.href) location.href = it.href;
-  }
-  function showPie(items, at, nested) {
-    if (pie) pie.remove();
-    pieAt = at;
-    pie = document.createElement('div'); pie.className = 'pie'; pie.setAttribute('role', 'menu');
-    var head = document.createElement('span'); head.className = 'pie-head'; pie.appendChild(head);
-    var list = items.slice();
-    if (nested) list.push({ label: 'Back...', back: true });
-    // like the Sims: one bubble on top, the rest fanned down both sides
-    var top = list.shift(), L = [], R = [];
-    list.forEach(function (it, i) { (i % 2 ? R : L).push(it); });
-    var made = [];
-    function bubble(it, side, x, y, i) {
-      var b = document.createElement('button'); b.type = 'button'; b.className = 'pie-item ' + side; b.setAttribute('role', 'menuitem');
-      b.innerHTML = '<span class="pk"></span><span class="pl"></span>'; b.querySelector('.pl').textContent = it.label;
-      b.style.setProperty('--x', x + 'px'); b.style.setProperty('--y', y + 'px'); b.style.transitionDelay = (i * 22) + 'ms';
-      b.addEventListener('click', function (ev) { ev.stopPropagation(); it.back ? showPie(PIE, pieAt, false) : pick(it); });
-      pie.appendChild(b); made.push(b);
-    }
-    var n = 0;
-    bubble(top, 'c', 0, -96, n++);
-    var rows = Math.max(L.length, R.length);
-    for (var i = 0; i < rows; i++) {
-      var t = rows === 1 ? 0 : i / (rows - 1), y = -46 + t * 200, x = 44 + Math.sin(t * Math.PI) * 46;
-      if (L[i]) bubble(L[i], 'l', -x, y, n++);
-      if (R[i]) bubble(R[i], 'r', x, y, n++);
-    }
-    os.appendChild(pie);
-    // keep it on the desktop
-    var W = os.offsetWidth, H = os.offsetHeight - 34, px = at.x, py = at.y;
-    pie.style.left = px + 'px'; pie.style.top = py + 'px';
-    var minX = 0, maxX = 0, minY = 0, maxY = 0;
-    made.forEach(function (b) { var r = b.getBoundingClientRect(), o = pie.getBoundingClientRect(), k = os.getBoundingClientRect().width / os.offsetWidth;
-      minX = Math.min(minX, (r.left - o.left) / k); maxX = Math.max(maxX, (r.right - o.left) / k);
-      minY = Math.min(minY, (r.top - o.top) / k); maxY = Math.max(maxY, (r.bottom - o.top) / k); });
-    px = Math.min(Math.max(px, 8 - minX), W - 8 - maxX); py = Math.min(Math.max(py, 8 - minY), H - maxY);
-    pie.style.left = px + 'px'; pie.style.top = py + 'px';
-    requestAnimationFrame(function () { pie && pie.classList.add('open'); });
-    startBtn.setAttribute('aria-expanded', 'true');
-    made[0].focus({ preventScroll: true });
-  }
+  function closeStart() { if (!startMenu) return; startMenu.hidden = true; startBtn.setAttribute('aria-expanded', 'false'); }
   startBtn.addEventListener('click', function (e) {
     e.stopPropagation();
-    if (pie) return closeStart();
-    showPie(PIE, { x: 150, y: os.offsetHeight - 230 }, false);
+    var open = startMenu.hidden; closeStart();
+    if (open) { startMenu.hidden = false; startBtn.setAttribute('aria-expanded', 'true'); startMenu.querySelector('a').focus(); }
   });
-  os.addEventListener('click', function (e) {
-    if (pie && pie.contains(e.target)) return;
-    var empty = !e.target.closest('.app, .app-win, .taskbar, .sim-note, .startmenu, button, a');
-    if (pie) { closeStart(); return; }
-    if (empty) showPie(PIE, osPoint(e), false);
+  startMenu.querySelectorAll('a[data-app]').forEach(function (a) {
+    a.addEventListener('click', function (ev) { if (openWin(a.dataset.app, startBtn)) ev.preventDefault(); });
   });
-  // arrow keys move round the bubbles
-  os.addEventListener('keydown', function (e) {
-    if (!pie || ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(e.key) < 0) return;
-    var b = Array.prototype.slice.call(pie.querySelectorAll('.pie-item')), i = b.indexOf(document.activeElement);
-    i = (i + (e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 1) + b.length) % b.length; b[i].focus(); e.preventDefault();
-  });
-
-  // ---- Sims-style notification the first time the desktop opens
-  var note = document.getElementById('simNote');
-  if (note) {
-    note.querySelector('.sn-x').addEventListener('click', function (e) { e.stopPropagation(); note.hidden = true; });
-    var noteShown = false;
-    window.addEventListener('mf-desktop', function () {
-      if (noteShown || store.get('mf-note')) return; noteShown = true; store.set('mf-note', '1');
-      setTimeout(function () { note.hidden = false; requestAnimationFrame(function () { note.classList.add('in'); }); }, 700);
-      setTimeout(function () { note.classList.remove('in'); setTimeout(function () { note.hidden = true; }, 400); }, 12000);
-    });
-  }
+  document.addEventListener('click', function (e) { if (!startMenu.hidden && !startMenu.contains(e.target)) closeStart(); });
 
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape' || !zoomed) return;
-    if (pie) { closeStart(); startBtn.focus(); }
+    if (!startMenu.hidden) { closeStart(); startBtn.focus(); }
     else if (os.querySelector('.app-win.active:not([hidden])')) backToDesktop();
     else zoomOut();
   });
@@ -407,5 +329,78 @@
   if (radio) radio.addEventListener('click', function () {
     on = !on; radio.innerHTML = on ? '&#10074;&#10074;' : '&#9654;'; radio.setAttribute('aria-label', on ? 'Pause' : 'Play');
     np.textContent = on ? 'now playing: [your salon playlist]' : 'press play for salon vibes';
+  });
+})();
+
+// ---- Bubble menu (replaces the top nav): bubbles fan out round a centre, categories open a second ring
+(function () {
+  var btn = document.getElementById('menuBtn'), nav = document.getElementById('bubbleNav');
+  if (!btn || !nav) return;
+  function read(ul) {
+    return Array.prototype.map.call(ul.children, function (li) {
+      var a = li.querySelector(':scope > a'), sub = li.querySelector(':scope > ul');
+      return { label: a.textContent, href: a.getAttribute('href'), cur: a.hasAttribute('aria-current'), sub: sub ? read(sub) : null };
+    });
+  }
+  var ROOT = read(nav.querySelector('ul')), layer = null, ring = null;
+  function close() {
+    if (!layer) return;
+    layer.classList.remove('open'); var l = layer; layer = null; ring = null;
+    setTimeout(function () { l.remove(); }, 200);
+    btn.setAttribute('aria-expanded', 'false'); document.documentElement.classList.remove('bn-open'); btn.focus();
+  }
+  function show(items, nested) {
+    if (!layer) {
+      layer = document.createElement('div'); layer.className = 'bn-layer'; layer.setAttribute('role', 'dialog'); layer.setAttribute('aria-label', 'Menu');
+      layer.addEventListener('click', function (e) { if (e.target === layer) close(); });
+      document.body.appendChild(layer); document.documentElement.classList.add('bn-open');
+      requestAnimationFrame(function () { layer && layer.classList.add('open'); });
+      btn.setAttribute('aria-expanded', 'true');
+    }
+    if (ring) ring.remove();
+    ring = document.createElement('div'); ring.className = 'pie';
+    var head = document.createElement('span'); head.className = 'pie-head'; ring.appendChild(head);
+    if (nested) ring.dataset.nested = '1';
+    var list = items.slice(); if (nested) list.push({ label: 'Back', back: true });
+    var top = list.shift(), L = [], R = [], made = [];
+    list.forEach(function (it, i) { (i % 2 ? R : L).push(it); });
+    function bubble(it, side, x, y, i) {
+      var el;
+      if (it.sub || it.back) {
+        el = document.createElement('button'); el.type = 'button';
+        el.addEventListener('click', function () { it.back ? show(ROOT, false) : show(it.sub, true); });
+      } else { el = document.createElement('a'); el.href = it.href; if (it.cur) el.setAttribute('aria-current', 'page'); }
+      el.className = 'pie-item ' + side;
+      el.innerHTML = '<span class="pk"></span><span class="pl"></span>';
+      el.querySelector('.pl').textContent = it.label + (it.sub || it.back ? '...' : '');
+      el.style.setProperty('--x', x + 'px'); el.style.setProperty('--y', y + 'px'); el.style.transitionDelay = (i * 20) + 'ms';
+      ring.appendChild(el); made.push(el);
+    }
+    var n = 0, rows = Math.max(L.length, R.length);
+    bubble(top, 'c', 0, -110, n++);
+    for (var i = 0; i < rows; i++) {
+      var t = rows === 1 ? 0 : i / (rows - 1), y = -58 + t * Math.max(120, rows * 36), x = 46 + Math.sin(t * Math.PI) * 50;
+      if (L[i]) bubble(L[i], 'l', -x, y, n++);
+      if (R[i]) bubble(R[i], 'r', x, y, n++);
+    }
+    layer.appendChild(ring);
+    // fit the whole ring on screen (shrinks a little on phones)
+    var minX = 0, maxX = 0, minY = 0, maxY = 0, o = ring.getBoundingClientRect();
+    made.forEach(function (el) { var r = el.getBoundingClientRect();
+      minX = Math.min(minX, r.left - o.left); maxX = Math.max(maxX, r.right - o.left); minY = Math.min(minY, r.top - o.top); maxY = Math.max(maxY, r.bottom - o.top); });
+    var w = maxX - minX, h = maxY - minY, k = Math.min(1, (innerWidth - 20) / w, (innerHeight - 20) / h);
+    ring.style.setProperty('--k', k);
+    ring.style.left = (innerWidth / 2 - (minX + w / 2) * k) + 'px'; ring.style.top = (innerHeight / 2 - (minY + h / 2) * k) + 'px';
+    requestAnimationFrame(function () { ring && ring.classList.add('open'); });
+    made[0].focus({ preventScroll: true });
+  }
+  btn.addEventListener('click', function () { layer ? close() : show(ROOT, false); });
+  document.addEventListener('keydown', function (e) {
+    if (!layer) return;
+    if (e.key === 'Escape') { e.preventDefault(); if (ring.dataset.nested) show(ROOT, false); else close(); }
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(e.key) >= 0) {
+      var b = Array.prototype.slice.call(ring.querySelectorAll('.pie-item')), i = b.indexOf(document.activeElement);
+      i = (i + (e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 1) + b.length) % b.length; b[i].focus(); e.preventDefault();
+    }
   });
 })();
