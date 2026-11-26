@@ -434,10 +434,10 @@
   var czHair = store.get('mf-hair') || '';
   function czSetHair(key) {
     czHair = key || ''; store.set('mf-hair', czHair);
-    czFig.style.backgroundImage = 'url(assets/avatar-turn' + (czHair ? '-' + czHair : '') + '.webp?v=52)';
+    czFig.style.backgroundImage = 'url(assets/avatar-turn' + (czHair ? '-' + czHair : '') + '.webp?v=55)';
   }
   var czPreloaded = false;
-  function czPreload() { if (czPreloaded) return; czPreloaded = true; CZ_HAIR.forEach(function (c) { if (c.key) new Image().src = 'assets/avatar-turn-' + c.key + '.webp?v=52'; }); }
+  function czPreload() { if (czPreloaded) return; czPreloaded = true; CZ_HAIR.forEach(function (c) { if (c.key) new Image().src = 'assets/avatar-turn-' + c.key + '.webp?v=55'; }); }
   function czSpinTo(target, done) {                      // turn frame by frame, like a character select
     if (czFrame === target) { done && done(); return; }
     var step = ((target - czFrame + CZ_FRAMES) % CZ_FRAMES) <= CZ_FRAMES / 2 ? 1 : -1;
