@@ -359,27 +359,30 @@ function buildDeck() {
     led.position.set(-0.04, 0.16 - i * 0.045, 0.02); back.add(led); leds.push(led);
   }
   // header sockets on the board edge (where the wires plug in), in monitor space
-  const hdr = (x, y) => { const h = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.04, 0.03), mat(0x1c1b21)); h.position.set(-x, y + 0.04, -0.515); mon.add(h); };
-  [[0.24, 0.2], [-0.24, 0.2], [0.24, -0.17], [-0.05, -0.2], [-0.24, -0.15]].forEach(([x, y]) => hdr(x, y));
+  const HDR = [[-0.24, 0.24], [0.24, 0.24], [0.05, -0.16], [0.25, -0.17], [-0.255, -0.015]];
+  HDR.forEach(([x, y]) => { const h = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.04, 0.03), mat(0x1c1b21)); h.position.set(x, y, -0.515); mon.add(h); });
 
   // --- wires: every one runs from a socket to a socket (monitor space)
+  // every wire leaves a socket straight out and ends straight into a socket
   const W = [
-    // back board top-right -> over the top -> right side socket
-    [[-0.24, 0.24, -0.56], [-0.3, 0.42, -0.5], [-0.42, 0.5, -0.15], [-0.6, 0.38, 0.1], [-0.625, 0.22, 0.3]],
-    // back board top-left -> down the side -> left lower socket
-    [[0.24, 0.24, -0.56], [0.38, 0.02, -0.58], [0.44, -0.32, -0.46], [0.58, -0.44, -0.1], [0.68, -0.36, 0.2], [0.625, -0.2, 0.3]],
-    // back board bottom -> down into the stand
-    [[0.05, -0.16, -0.56], [0.1, -0.42, -0.5], [0.12, -0.55, -0.25], [0.0, -0.53, -0.12]],
-    // right lower socket -> down to the foot
-    [[-0.625, -0.2, 0.3], [-0.72, -0.4, 0.3], [-0.5, -0.66, 0.36], [-0.3, -0.665, 0.36]],
+    // back board -> over the top -> left side socket
+    [[-0.24, 0.24, -0.555], [-0.24, 0.24, -0.62], [-0.3, 0.42, -0.55], [-0.42, 0.5, -0.15], [-0.6, 0.38, 0.1], [-0.7, 0.22, 0.3], [-0.625, 0.22, 0.3]],
+    // back board -> under the side -> right lower side socket
+    [[0.24, 0.24, -0.555], [0.24, 0.24, -0.62], [0.38, 0.02, -0.6], [0.44, -0.32, -0.46], [0.58, -0.44, -0.1], [0.7, -0.36, 0.2], [0.7, -0.2, 0.3], [0.625, -0.2, 0.3]],
+    // back board -> under the case -> socket on the back of the neck
+    [[0.05, -0.16, -0.555], [0.05, -0.16, -0.62], [0.1, -0.42, -0.58], [0.06, -0.53, -0.4], [0, -0.53, -0.31], [0, -0.53, -0.245]],
+    // left lower side socket -> out and round -> socket on top of the base
+    [[-0.625, -0.2, 0.3], [-0.7, -0.2, 0.3], [-0.74, -0.4, 0.32], [-0.55, -0.58, 0.34], [-0.3, -0.58, 0.33], [-0.3, -0.635, 0.33]],
     // jumper loop on the back board
-    [[0.24, -0.13, -0.56], [0.1, -0.02, -0.66], [-0.1, 0.05, -0.64], [-0.24, 0.24, -0.56]],
+    [[0.25, -0.17, -0.555], [0.25, -0.17, -0.61], [0.1, 0.0, -0.68], [-0.15, 0.0, -0.68], [-0.255, -0.015, -0.61], [-0.255, -0.015, -0.555]],
   ];
   const cols = [C.pink, C.lilac, C.pink, C.pinkHot, C.pinkHot];
   W.forEach((pts, i) => mon.add(wire(pts, cols[i], i === 4 ? 0.009 : 0.013)));
   // socket on the foot for the last wire
   const fs = new THREE.Mesh(new RoundedBoxGeometry(0.08, 0.04, 0.05, 2, 0.01), mat(C.pink));
   fs.position.set(-0.3, 0.075 + B, 0.33); deck.add(fs);
+  const ns = new THREE.Mesh(new RoundedBoxGeometry(0.08, 0.06, 0.05, 2, 0.01), mat(C.pink));
+  ns.position.set(0, 0.38 + B, -0.19); deck.add(ns);
 
   // --- stickers (Harry's sticker sheet + her + the logo)
   const TAP = 0.269, sideY = Math.atan2(1, -TAP);           // tube side faces lean back a touch
@@ -393,7 +396,6 @@ function buildDeck() {
   ];
   Promise.all(['108px "Bagel Fat One"', '134px "Pirata One"'].map(f => document.fonts.load(f).catch(() => {})))
     .then(() => { drawLogo(logoCv, 25); logos.forEach(m => { m.material.map.needsUpdate = true; }); });
-  imageSticker(mon, 'stk-barbell.png', 454 / 325, 0.1, [0.505, 0.3, 0.402], [0, 0], -35, 3);
   // right side of the monitor: her, butterfly, lips
   imageSticker(mon, 'sticker-her.png', 402 / 640, 0.32, [sideX(-0.08), 0.0, -0.08], [0, sideY], -5);
   imageSticker(mon, 'stk-butterfly.png', 370 / 290, 0.17, [sideX(-0.37), 0.12, -0.37], [0, sideY], -12, 5);
@@ -407,8 +409,6 @@ function buildDeck() {
   imageSticker(deck, 'stk-barbell.png', 454 / 325, 0.15, [-0.503, 0.13, 0.25], [0, -Math.PI / 2], 20, 17);
 
   // small chrome filler stickers
-  addSticker(mon, stickerCanvas('star', 'chrome', 31), 0.06, [-0.505, 0.33, 0.402], [0, 0], -15);
-  addSticker(mon, stickerCanvas('heart', 'pink', 33), 0.055, [0.505, -0.15, 0.402], [0, 0], 12);
   addSticker(mon, stickerCanvas('bolt', 'chrome', 35), 0.07, [sideX(0.12), -0.26, 0.12], [0, sideY], 15);
   addSticker(mon, stickerCanvas('skull', 'chrome', 37), 0.07, [-sideX(0.12), 0.24, 0.12], [0, -sideY], -12);
   addSticker(mon, stickerCanvas('star', 'holo', 39), 0.06, [-sideX(-0.4), -0.17, -0.4], [0, -sideY], 20);
