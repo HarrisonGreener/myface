@@ -435,3 +435,68 @@
     }
   });
 })();
+
+// ---- Site search: same glossy style, searches every page on the site
+(function () {
+  var btn = document.getElementById('searchBtn');
+  if (!btn) return;
+  var idx = null, layer = null, input, list, hits = [], sel = 0, root = btn.dataset.root;
+  function load() {
+    if (idx) return Promise.resolve(idx);
+    return fetch(btn.dataset.index).then(function (r) { return r.json(); }).then(function (j) { idx = j; return j; });
+  }
+  function score(p, terms) {
+    var t = p.t.toLowerCase(), d = (p.d + ' ' + p.u.replace(/[\/-]/g, ' ')).toLowerCase(), s = 0;
+    for (var i = 0; i < terms.length; i++) {
+      var w = terms[i];
+      if (t.indexOf(w) >= 0) s += t.indexOf(w) === 0 ? 6 : 4;
+      else if (d.indexOf(w) >= 0) s += 1;
+      else return 0;                                     // every word has to match somewhere
+    }
+    return s - p.u.split('/').length * 0.1;              // shorter, top-level pages first
+  }
+  function render() {
+    var q = input.value.trim().toLowerCase();
+    list.innerHTML = '';
+    if (!q || !idx) { hits = []; return; }
+    var terms = q.split(/\s+/);
+    hits = idx.map(function (p) { return { p: p, s: score(p, terms) }; }).filter(function (h) { return h.s > 0; })
+      .sort(function (a, b) { return b.s - a.s; }).slice(0, 8);
+    sel = 0;
+    if (!hits.length) { var li = document.createElement('li'); li.className = 'sr-none'; li.textContent = 'nothing found x'; list.appendChild(li); return; }
+    hits.forEach(function (h, i) {
+      var li = document.createElement('li'), a = document.createElement('a');
+      a.className = 'sr-item' + (i === sel ? ' on' : ''); a.href = root + h.p.u;
+      a.innerHTML = '<span class="pk"></span><b></b><small></small>';
+      a.querySelector('b').textContent = h.p.t; a.querySelector('small').textContent = h.p.d;
+      li.appendChild(a); list.appendChild(li);
+    });
+  }
+  function mark() { list.querySelectorAll('.sr-item').forEach(function (a, i) { a.classList.toggle('on', i === sel); }); }
+  function close() {
+    if (!layer) return;
+    layer.classList.remove('open'); var l = layer; layer = null;
+    setTimeout(function () { l.remove(); }, 200);
+    document.documentElement.classList.remove('bn-open'); btn.focus();
+  }
+  function open() {
+    layer = document.createElement('div'); layer.className = 'bn-layer sr-layer'; layer.setAttribute('role', 'dialog'); layer.setAttribute('aria-label', 'Search');
+    layer.innerHTML = '<div class="sr-box"><label class="sr-field"><svg class="mg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/></svg>' +
+      '<input type="search" placeholder="search treatments, prices, aftercare..." aria-label="Search the site" autocomplete="off"></label><ul class="sr-list" role="listbox"></ul></div>';
+    input = layer.querySelector('input'); list = layer.querySelector('.sr-list');
+    layer.addEventListener('click', function (e) { if (e.target === layer) close(); });
+    input.addEventListener('input', function () { load().then(render); });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { if (!hits.length) return; sel = (sel + (e.key === 'ArrowDown' ? 1 : -1) + hits.length) % hits.length; mark(); e.preventDefault(); }
+      else if (e.key === 'Enter' && hits[sel]) location.href = root + hits[sel].p.u;
+    });
+    document.body.appendChild(layer); document.documentElement.classList.add('bn-open');
+    requestAnimationFrame(function () { layer && layer.classList.add('open'); input.focus(); });
+    load();
+  }
+  btn.addEventListener('click', function () { layer ? close() : open(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && layer) { e.preventDefault(); close(); }
+    if (e.key === '/' && !layer && !/INPUT|TEXTAREA/.test(document.activeElement.tagName) && !document.body.classList.contains('mf-zoomed')) { e.preventDefault(); open(); }
+  });
+})();
