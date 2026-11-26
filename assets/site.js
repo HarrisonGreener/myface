@@ -64,7 +64,7 @@
   var rig = document.getElementById('rig'), screen = document.getElementById('screen'), os = document.getElementById('os'),
       zoomBtn = document.getElementById('zoomBtn'), zv = document.getElementById('zoomview'), zvScreen = document.getElementById('zvScreen'),
       x = 0;
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reduce = false;   // the site plays its full animations for everyone (Ella's call)
   var P = 1600, RX = -10, RY = -30, rx = RX, ry = RY, zoomed = false, busy = false;
   var store = { get: function (k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } },
                 set: function (k, v) { try { v ? sessionStorage.setItem(k, v) : sessionStorage.removeItem(k); } catch (e) {} } };
