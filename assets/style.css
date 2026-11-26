@@ -731,3 +731,6 @@ body.home{background:#ece8e3}
 .cz-pie .pie-item,.cz-pie .pie-item:visited{color:#fff;text-decoration:none}
 .cz-pie .pie-item:hover,.cz-pie .pie-item:focus-visible{color:#ffb3d9}
 .cz-pie .pie-item.cz-bookb:hover,.cz-pie .pie-item.cz-bookb:focus-visible{color:#fff}
+.os .win-body .cz-pie .pie-item{color:#fff}
+.os .win-body .cz-pie .pie-item:hover,.os .win-body .cz-pie .pie-item:focus-visible{color:#ffb3d9}
+.os .win-body .cz-pie .pie-item.cz-bookb:hover,.os .win-body .cz-pie .pie-item.cz-bookb:focus-visible{color:#fff}
