@@ -632,7 +632,7 @@ body.home{background:#ece8e3}
 .cz-stage::after{content:"";position:absolute;left:-20%;right:-20%;bottom:0;height:22%;pointer-events:none;opacity:.55;transform:perspective(220px) rotateX(55deg);transform-origin:bottom;
   background:repeating-linear-gradient(90deg,transparent 0 34px,#ff4fa3 34px 36px),repeating-linear-gradient(transparent 0 22px,#ff4fa3 22px 24px)}
 .cz-hud{position:relative;z-index:2;margin:0;font:400 clamp(20px,3.2vw,34px)/1 Anton,Impact,sans-serif;letter-spacing:.06em;color:#fff;text-shadow:0 0 12px #ff4fa3,0 2px 0 #000}
-.cz-fig{position:relative;z-index:1;height:min(62vh,560px);max-height:100%;aspect-ratio:380/1007;background:url(avatar-turn.webp?v=45) 0 0/600% 100% no-repeat;cursor:grab;touch-action:pan-y;user-select:none}
+.cz-fig{position:relative;z-index:1;height:min(62vh,560px);max-height:100%;aspect-ratio:380/1007;background:url(avatar-turn.webp?v=52) 0 0/600% 100% no-repeat;cursor:grab;touch-action:pan-y;user-select:none}
 .cz-fig:active{cursor:grabbing}
 .cz-fig .hs{position:absolute;z-index:2;padding:0;border:0;border-radius:45%;background:transparent;cursor:pointer}
 .cz-fig .hs-face{z-index:1}
@@ -735,3 +735,12 @@ body.home{background:#ece8e3}
 .os .win-body .cz-pie .pie-item:hover,.os .win-body .cz-pie .pie-item:focus-visible{color:#ffb3d9}
 .os .win-body .cz-pie .pie-item.cz-bookb:hover,.os .win-body .cz-pie .pie-item.cz-bookb:focus-visible{color:#fff}
 .cz-fig .hs.on .hs-tip{opacity:0}
+/* hair colour swatches in the hair bubble menu */
+.cz-swatches{position:absolute;left:0;top:var(--y);display:flex;gap:9px;padding:7px 12px;border-radius:22px;border:1.5px solid #000;
+  background:linear-gradient(#6a6470 0%,#2c2832 40%,#0c0a0e 53%,#1d1a21 80%,#3b3641 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 3px 0 rgba(0,0,0,.35);
+  opacity:0;transform:translate(-50%,-50%) scale(.3);transition:transform .22s cubic-bezier(.3,1.6,.5,1) .12s,opacity .15s .12s}
+.pie.open .cz-swatches{opacity:1;transform:translate(-50%,-50%)}
+.cz-sw{width:26px;height:26px;padding:0;border-radius:50%;border:2px solid #000;cursor:pointer;
+  box-shadow:inset 0 3px 4px rgba(255,255,255,.55),inset 0 -3px 4px rgba(0,0,0,.35);transition:transform .12s}
+.cz-sw:hover,.cz-sw:focus-visible{outline:none;transform:scale(1.15)}
+.cz-sw.on{box-shadow:inset 0 3px 4px rgba(255,255,255,.55),0 0 0 2px #fff,0 0 0 4px #ff4fa3,0 0 12px #ff4fa3}

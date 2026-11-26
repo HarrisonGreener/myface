@@ -399,6 +399,17 @@
       if (L[i]) bubble(L[i], 'l', -x, y, n++);
       if (R[i]) bubble(R[i], 'r', x, y, n++);
     }
+    if (group === 'hair') {                              // hair colour swatches under the hair bubbles
+      var row = document.createElement('div'); row.className = 'cz-swatches';
+      row.style.setProperty('--y', (-26 + Math.max(90, (rows - 1) * 46) + 54) + 'px');
+      CZ_HAIR.forEach(function (c) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'cz-sw' + (c.key === czHair ? ' on' : '');
+        b.style.background = c.sw; b.setAttribute('aria-label', 'Hair colour: ' + c.label); b.title = c.label;
+        b.addEventListener('click', function (e) { e.stopPropagation(); czSetHair(c.key); row.querySelectorAll('.cz-sw').forEach(function (x) { x.classList.toggle('on', x === b); }); });
+        row.appendChild(b);
+      });
+      ring.appendChild(row); made.push(row);
+    }
     stage.appendChild(ring);
     var cx = hr.left + hr.width / 2 - sr.left, cy = hr.top + hr.height / 2 - sr.top;
     ring.style.left = cx + 'px'; ring.style.top = cy + 'px';
@@ -414,6 +425,18 @@
     void ring.offsetWidth; ring.classList.add('open');            // force a layout so the pop-out animates
     var first = ring.querySelector('a'); if (first) first.focus({ preventScroll: true });
   }
+  // hair colours: each one is its own full turnaround, swapped in when picked
+  var CZ_HAIR = [
+    { key: '', label: 'Black & pink', sw: 'linear-gradient(135deg,#1c1a1e 55%,#ff4fa3 55%)' },
+    { key: 'green', label: 'Green', sw: '#7cff3a' }, { key: 'blue', label: 'Ice blue', sw: '#a9cdf2' },
+    { key: 'red', label: 'Red', sw: '#c2321c' }, { key: 'blonde', label: 'Blonde', sw: '#f0d48e' }];
+  var czHair = store.get('mf-hair') || '';
+  function czSetHair(key) {
+    czHair = key || ''; store.set('mf-hair', czHair);
+    czFig.style.backgroundImage = 'url(assets/avatar-turn' + (czHair ? '-' + czHair : '') + '.webp?v=52)';
+  }
+  var czPreloaded = false;
+  function czPreload() { if (czPreloaded) return; czPreloaded = true; CZ_HAIR.forEach(function (c) { if (c.key) new Image().src = 'assets/avatar-turn-' + c.key + '.webp?v=52'; }); }
   function czSpinTo(target, done) {                      // turn frame by frame, like a character select
     if (czFrame === target) { done && done(); return; }
     var step = ((target - czFrame + CZ_FRAMES) % CZ_FRAMES) <= CZ_FRAMES / 2 ? 1 : -1;
@@ -421,11 +444,11 @@
   }
   function openAvatar() {
     var w = document.getElementById('win-avatar'); if (!w || !cz) return;
-    openWin('avatar'); w.classList.add('maxed');
+    openWin('avatar'); w.classList.add('maxed'); czPreload();
     if (!czSpun && !reduce) { czSpun = true; czSet(1); var n = 0, t = setInterval(function () { czSet(czFrame + 1); if (++n >= CZ_FRAMES - 1) clearInterval(t); }, 110); }
   }
   if (cz) {
-    czSet(0);
+    czSet(0); if (czHair) czSetHair(czHair);
     czFig.querySelectorAll('.hs').forEach(function (h) {
       h.addEventListener('click', function (e) { e.stopPropagation(); if (czDragged) return; czPart(h.dataset.part, h); });
     });
