@@ -16,7 +16,10 @@
 (function () {
   var cap = document.getElementById('captcha');
   if (!cap) return;
-  // shown on every load of the homepage
+  // shown when you arrive or refresh, but not when moving between the site's own pages
+  var navType = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0] || {}).type;
+  var ref = document.referrer, internal = ref && ref.indexOf(location.origin + location.pathname.replace(/[^/]*$/, '')) === 0;   // came from one of the site's pages
+  if (navType !== 'reload' && (navType === 'back_forward' || internal)) { cap.hidden = true; return; }
   var check = document.getElementById('capCheck'), letters = document.querySelector('#capLetters use');
   document.body.style.overflow = 'hidden';
   setTimeout(function () { check.focus(); }, 50);
@@ -164,7 +167,7 @@
   function zoomOut() {
     if (!zoomed || busy) return;
     if (D) {
-      busy = true; zv.classList.remove('show'); closeAll(); closeStart(); store.set('mf-in', '');
+      busy = true; zv.classList.remove('show'); closeAll(); closeStart(); store.set('mf-in', ''); store.set('mf-win', '');
       setTimeout(function () {
         zv.hidden = true; zv.classList.remove('deck'); clearScreen();
         screen.insertBefore(os, screen.firstChild); os.inert = true;
@@ -177,7 +180,7 @@
       }, reduce ? 0 : 350);
       return;
     }
-    busy = true; zv.classList.remove('show'); closeAll(); closeStart(); store.set('mf-in', '');
+    busy = true; zv.classList.remove('show'); closeAll(); closeStart(); store.set('mf-in', ''); store.set('mf-win', '');
     setTimeout(function () {
       zv.hidden = true; screen.insertBefore(os, screen.firstChild); os.inert = true;
       document.body.style.overflow = ''; document.body.classList.remove('mf-zoomed');
@@ -221,6 +224,7 @@
   }
   function closeWin(w) {
     w.hidden = true; w.classList.remove('active', 'maxed');
+    if (store.get('mf-win') === w.id.slice(4)) store.set('mf-win', '');
     var t = task(w); if (t) t.remove();
     var icon = os.querySelector('.app[data-app="' + w.id.slice(4) + '"]'); if (icon) icon.classList.remove('open');
     var top = wins().filter(function (x) { return !x.hidden; }).sort(function (p, q) { return q.style.zIndex - p.style.zIndex; })[0];
@@ -230,6 +234,7 @@
   function openWin(key, from) {
     var w = document.getElementById('win-' + key);
     if (!w) return false;
+    store.set('mf-win', key);
     if (key === 'avatar') { w.classList.add('maxed'); if (typeof czPreload === 'function') czPreload(); }
     closeStart();
     if (!task(w)) {
@@ -306,8 +311,11 @@
   // (only when coming back from one of the site's own pages: a fresh visit or a refresh always starts at the computer)
   var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0] || {}).type;
   var fromSite = document.referrer && document.referrer.indexOf(location.origin) === 0 && document.referrer.split('#')[0] !== location.href.split('#')[0];
-  if (store.get('mf-in') && nav !== 'reload' && (nav === 'back_forward' || fromSite)) { hasBooted = true; showDesktop(true); }
-  else store.set('mf-in', '');
+  if (store.get('mf-in') && nav !== 'reload' && (nav === 'back_forward' || fromSite)) {
+    hasBooted = true; showDesktop(true);
+    var lastWin = store.get('mf-win'); if (lastWin) openWin(lastWin);           // back to the window you were in
+  }
+  else store.set('mf-in', ''); store.set('mf-win', '');
 
   // ---- her.exe: drag to spin her through the 7 turnaround frames
   var m = document.getElementById('mascot'), btn = document.getElementById('avatarBtn'), bubble = document.getElementById('bubble');
@@ -398,7 +406,6 @@
     ['pointerdown', 'pointerup', 'click'].forEach(function (t) { pop.addEventListener(t, function (e) { e.stopPropagation(); }); });
     var capEl = document.getElementById('captcha');
     if (capEl && !capEl.hidden) window.addEventListener('mf-human', showPop, { once: true });
-    else showPop();
   }
 
   // ---- Customise your avatar: spin her round, click a part, get the services for it
