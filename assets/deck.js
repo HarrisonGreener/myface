@@ -339,21 +339,21 @@ function buildDeck() {
   const TAP = 0.269, sideY = Math.atan2(1, -TAP);           // tube side faces lean back a touch
   const sideX = z => 0.445 + TAP * z + 0.003;
   // monitor front frame
-  addSticker(mon, wordCanvas('ella x', 'pink', 3), 0.26, [-0.3, -0.395, 0.402], [0, 0], -4);
+  addSticker(mon, wordCanvas('ella x', 'pink', 3), 0.3, [-0.29, -0.395, 0.402], [0, 0], -4);
   addSticker(mon, stickerCanvas('heart', 'pink', 5), 0.08, [0.505, 0.2, 0.402], [0, 0], 12);
-  addSticker(mon, stickerCanvas('star', 'chrome', 7), 0.07, [-0.5, 0.36, 0.402], [0, 0], -15);
+  addSticker(mon, stickerCanvas('star', 'chrome', 7), 0.09, [-0.505, 0.36, 0.402], [0, 0], -15);
   // tube sides
-  addSticker(mon, stickerCanvas('butterfly', 'holo', 9), 0.2, [sideX(-0.12), 0.05, -0.12], [0, sideY], -10);
-  addSticker(mon, stickerCanvas('lips', 'pink', 11), 0.14, [sideX(-0.3), -0.15, -0.3], [0, sideY], 8);
-  addSticker(mon, stickerCanvas('cherry', 'chrome', 13), 0.17, [-sideX(-0.15), 0.0, -0.15], [0, -sideY], -8);
-  addSticker(mon, stickerCanvas('skull', 'chrome', 15), 0.1, [-sideX(-0.36), -0.13, -0.36], [0, -sideY], 14);
+  addSticker(mon, stickerCanvas('butterfly', 'holo', 9), 0.3, [sideX(-0.05), 0.08, -0.05], [0, sideY], -10);
+  addSticker(mon, stickerCanvas('lips', 'pink', 11), 0.22, [sideX(-0.33), -0.1, -0.33], [0, sideY], 8);
+  addSticker(mon, stickerCanvas('cherry', 'chrome', 13), 0.28, [-sideX(-0.12), 0.02, -0.12], [0, -sideY], -8);
+  addSticker(mon, stickerCanvas('skull', 'chrome', 15), 0.16, [-sideX(-0.38), -0.1, -0.38], [0, -sideY], 14);
   // base unit
-  addSticker(deck, stickerCanvas('bow', 'pink', 17), 0.16, [-0.38, 0.252, -0.08], [-Math.PI / 2, 0], 20);
-  addSticker(deck, stickerCanvas('bolt', 'chrome', 19), 0.09, [0.4, 0.252, 0.3], [-Math.PI / 2, 0], -25);
-  addSticker(deck, stickerCanvas('heart', 'holo', 21), 0.1, [0.503, 0.13, 0.3], [0, Math.PI / 2], -10);
-  addSticker(deck, stickerCanvas('butterfly', 'pink', 23), 0.11, [-0.503, 0.13, 0.28], [0, -Math.PI / 2], 12);
-  addSticker(deck, wordCanvas('myface', 'black', 25), 0.3, [0.1, 0.13, -0.412], [0, Math.PI], 3);
-  addSticker(deck, stickerCanvas('star', 'pink', 27), 0.08, [-0.3, 0.15, -0.412], [0, Math.PI], -18);
+  addSticker(deck, stickerCanvas('bow', 'pink', 17), 0.22, [-0.36, 0.252, -0.1], [-Math.PI / 2, 0], 20);
+  addSticker(deck, stickerCanvas('bolt', 'chrome', 19), 0.13, [0.38, 0.252, 0.27], [-Math.PI / 2, 0], -25);
+  addSticker(deck, stickerCanvas('heart', 'holo', 21), 0.16, [0.503, 0.13, 0.28], [0, Math.PI / 2], -10);
+  addSticker(deck, stickerCanvas('butterfly', 'pink', 23), 0.16, [-0.503, 0.13, 0.27], [0, -Math.PI / 2], 12);
+  addSticker(deck, wordCanvas('myface', 'black', 25), 0.4, [0.12, 0.13, -0.412], [0, Math.PI], 3);
+  addSticker(deck, stickerCanvas('star', 'pink', 27), 0.12, [-0.32, 0.14, -0.412], [0, Math.PI], -18);
 
   deck.traverse(o => { if (o.isMesh) { o.castShadow = !o.material.transparent; o.receiveShadow = true; } });
   return { deck, leds, screen, scr, blades };
