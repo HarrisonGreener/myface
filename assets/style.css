@@ -806,3 +806,86 @@ body.home{background:#ece8e3}
   .pt-hair{width:32px;height:32px}
   .pt-cur{display:none}
 }
+/* ==== Inner pages: same vibe as the homepage (type bands, Anton, glossy black + pink) ==== */
+body:not(.home){background:#ece8e3}
+.pg-bands{margin:0 0 18px;overflow:hidden}
+.pg-bands .band{container-type:size;height:clamp(84px,15vh,160px);background:#ff4fa3;color:#1c1a1e}
+.pg-bands .band.thin{height:46px;background:#1c1a1e;color:#ff4fa3}
+.pg-bands .band.thin i{color:#ece8e3}
+.pg-bands .band.b2 .track{animation-name:band-l;animation-duration:70s}
+.pg-bands .band.thin .track{animation-name:band-r;animation-duration:60s}
+body:not(.home) .wrap{max-width:860px}
+body:not(.home) .crumbs{font:13px "Courier New",monospace;color:#6d6070;margin:0 0 14px}
+body:not(.home) .crumbs a{color:#c2246f}
+/* the window: brutalist card with a glossy black title bar */
+.page-win{background:#fbf8f5;border:3px solid #1c1a1e;box-shadow:10px 10px 0 #1c1a1e;margin-bottom:56px}
+.page-win .titlebar{padding:6px 8px;border-bottom:3px solid #1c1a1e;color:#ff9ccc;font:15px "Courier New",monospace;
+  background:linear-gradient(#5a5560 0%,#26222b 40%,#0c0a0e 53%,#1d1a21 80%,#34303a 100%)}
+.page-win .titlebar .back{position:relative;display:inline-flex;align-items:center;height:30px;padding:0 14px 0 30px;border-radius:16px;border:1.5px solid #000;
+  font:700 13px/1 "Trebuchet MS",Tahoma,Arial,sans-serif;color:#fff;text-decoration:none;
+  background:linear-gradient(#6a6470 0%,#2c2832 40%,#0c0a0e 53%,#1d1a21 80%,#3b3641 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}
+.page-win .titlebar .back::before{content:"";position:absolute;left:8px;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:50%;border:1.5px solid #6d0f3c;
+  background:radial-gradient(circle at 40% 35%,#ffe3f1 0 18%,#ff6fb5 45%,#c2246f 100%)}
+.page-win .titlebar .back:hover{color:#ffb3d9;box-shadow:0 0 0 2px #ff4fa3,0 0 12px rgba(255,79,163,.6)}
+.page-win .dots i{background:radial-gradient(circle at 40% 35%,#ffe3f1 0 18%,#ff6fb5 45%,#c2246f 100%);border-color:#000}
+.page-win .win-body{padding:30px 34px 36px}
+.page-win h1{font:400 clamp(40px,6vw,70px)/.92 Anton,Impact,sans-serif;text-transform:uppercase;letter-spacing:.005em;margin:0 0 18px;color:#1c1a1e}
+.page-win h1::after{content:"";display:block;width:88px;height:10px;margin-top:12px;background:#ff4fa3}
+.page-win .win-body>p:first-of-type{font-size:17px}
+.page-win .sec{border-top:3px solid #1c1a1e;margin-top:34px;padding-top:20px}
+.page-win .sec h2{font:400 32px/1 Anton,Impact,sans-serif;text-transform:uppercase;letter-spacing:.02em;margin:0 0 14px}
+.page-win .sec h2::before{content:"\25A0";color:#ff4fa3;margin-right:10px;font-size:.6em;vertical-align:.18em}
+.page-win .sec h2 a{color:inherit}
+.page-win h3{font:700 16px "Trebuchet MS",Tahoma,Arial,sans-serif;margin:20px 0 6px}
+.page-win h3 a{color:#1c1a1e;text-decoration-color:#ff4fa3;text-decoration-thickness:3px;text-underline-offset:3px}
+/* price lists */
+.page-win table.prices{border-collapse:separate;border-spacing:0 5px}
+.page-win .prices th,.page-win .prices td{border:0;padding:9px 14px;background:#f1e9ee}
+.page-win .prices th{border-radius:16px 0 0 16px;font-weight:600}
+.page-win .prices td{border-radius:0 16px 16px 0;width:1%;font:700 14px "Courier New",monospace;color:#fff;
+  background:linear-gradient(#5a5560 0%,#26222b 40%,#0c0a0e 53%,#1d1a21 80%,#34303a 100%);text-shadow:0 0 6px rgba(255,79,163,.6)}
+.page-win .prices td{color:#ff9ccc}
+/* service menus: glossy black bubbles with pink knobs */
+.page-win .menu{display:grid;gap:8px}
+.page-win .menu li{position:relative;display:flex;align-items:center;gap:10px;padding:0;border:0}
+.page-win .menu li a{flex:1;display:block;padding:11px 16px 11px 40px;border-radius:20px;border:1.5px solid #000;color:#fff;text-decoration:none;
+  font:700 15px "Trebuchet MS",Tahoma,Arial,sans-serif;
+  background:linear-gradient(#5a5560 0%,#26222b 40%,#0c0a0e 53%,#1d1a21 80%,#34303a 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 rgba(0,0,0,.25)}
+.page-win .menu li a::before{content:"";position:absolute;left:13px;top:50%;width:16px;height:16px;margin-top:-8px;border-radius:50%;border:1.5px solid #6d0f3c;
+  background:radial-gradient(circle at 40% 35%,#ffe3f1 0 18%,#ff6fb5 45%,#c2246f 100%)}
+.page-win .menu li a:hover,.page-win .menu li a:focus-visible{outline:none;color:#ffb3d9;box-shadow:0 0 0 2px #ff4fa3,0 0 14px rgba(255,79,163,.6)}
+.page-win .menu li span{position:absolute;right:16px;top:50%;transform:translateY(-50%);pointer-events:none;font:700 14px "Courier New",monospace;color:#ff9ccc}
+/* steps */
+.page-win ol{list-style:none;counter-reset:st;padding:0;margin:0 0 12px}
+.page-win ol li{counter-increment:st;position:relative;padding:8px 0 8px 46px}
+.page-win ol li::before{content:counter(st);position:absolute;left:0;top:4px;width:32px;height:32px;display:grid;place-items:center;
+  font:400 20px Anton,Impact,sans-serif;color:#fff;background:#ff4fa3;border:2px solid #1c1a1e}
+/* FAQs: glossy bubbles that open */
+.page-win details{border:0;padding:0;margin:0 0 8px}
+.page-win summary{position:relative;list-style:none;padding:11px 16px 11px 40px;border-radius:20px;border:1.5px solid #000;color:#fff;
+  font:700 15px "Trebuchet MS",Tahoma,Arial,sans-serif;background:linear-gradient(#5a5560 0%,#26222b 40%,#0c0a0e 53%,#1d1a21 80%,#34303a 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+.page-win summary::-webkit-details-marker{display:none}
+.page-win summary::before{content:"+";position:absolute;left:12px;top:50%;width:18px;height:18px;margin-top:-9px;border-radius:50%;display:grid;place-items:center;
+  font:700 14px/1 Arial,sans-serif;color:#6d0f3c;border:1.5px solid #6d0f3c;background:radial-gradient(circle at 40% 35%,#ffe3f1 0 18%,#ff6fb5 45%,#c2246f 100%)}
+.page-win details[open] summary::before{content:"\2212"}
+.page-win summary:hover{color:#ffb3d9}
+.page-win details p{margin:0;padding:12px 18px 14px 40px;border-left:4px solid #ff4fa3;margin-left:18px;background:#f6eef2}
+/* buttons */
+.page-win .cta{gap:12px;margin-top:34px}
+.page-win .cta .btn,.page-win .win-body .btn{position:relative;display:inline-flex;align-items:center;height:44px;padding:0 22px 0 40px;border-radius:23px;border:1.5px solid #000;
+  font:700 16px "Trebuchet MS",Tahoma,Arial,sans-serif;color:#fff;text-shadow:0 1px 0 #7a0c43;
+  background:linear-gradient(#ffb3d9 0%,#ff6fb5 40%,#e0288a 53%,#ff4fa3 80%,#ff8cc8 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 4px 0 #1c1a1e}
+.page-win .cta .btn::before,.page-win .win-body .btn::before{content:"";position:absolute;left:12px;top:50%;width:18px;height:18px;margin-top:-9px;border-radius:50%;border:1.5px solid #fff;
+  background:radial-gradient(circle at 40% 35%,#fff 0 25%,#ffd1ea 60%,#ff9ccc 100%)}
+.page-win .cta .btn.ghost{color:#fff;text-shadow:0 1px 0 #000;background:linear-gradient(#6a6470 0%,#2c2832 40%,#0c0a0e 53%,#1d1a21 80%,#3b3641 100%)}
+.page-win .cta .btn.ghost::before{border-color:#6d0f3c;background:radial-gradient(circle at 40% 35%,#ffe3f1 0 18%,#ff6fb5 45%,#c2246f 100%)}
+.page-win .cta .btn:hover{box-shadow:0 0 0 2px #ff4fa3,0 0 16px rgba(255,79,163,.7),0 4px 0 #1c1a1e}
+.page-win .cta .btn:active{transform:translateY(3px);box-shadow:0 1px 0 #1c1a1e}
+.page-win a{color:#c2246f}
+@media (max-width:620px){
+  .page-win{box-shadow:6px 6px 0 #1c1a1e}
+  .page-win .win-body{padding:22px 18px 26px}
+  .page-win .sec h2{font-size:26px}
+  .pg-bands .band.thin{height:36px}
+}
