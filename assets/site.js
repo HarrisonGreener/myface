@@ -127,7 +127,7 @@
     zv.hidden = false;
     if (instant) zv.classList.add('show'); else requestAnimationFrame(function () { zv.classList.add('show'); });
     document.body.style.overflow = 'hidden'; document.body.classList.add('mf-zoomed');
-    zoomed = true; busy = false; store.set('mf-in', '1');
+    zoomed = true; busy = false; store.set('mf-in', '1'); window.dispatchEvent(new Event('mf-desktop'));
   }
   function clearScreen() { zvScreen.removeAttribute('style'); os.style.transform = ''; }
   function deckFull(on) {
@@ -277,21 +277,99 @@
   });
 
   // ---- Start menu
+  // ---- Sims-style pie menu: click the desktop (or Start) and bubbles pop out round a little portrait
   var startBtn = document.getElementById('startBtn'), startMenu = document.getElementById('startmenu');
-  function closeStart() { if (!startMenu) return; startMenu.hidden = true; startBtn.setAttribute('aria-expanded', 'false'); }
+  var PIE = []; try { PIE = JSON.parse(document.getElementById('pieData').textContent); } catch (err) {}
+  var pie = null, pieAt = null;
+  function closeStart() {
+    if (startMenu) startMenu.hidden = true;
+    startBtn.setAttribute('aria-expanded', 'false');
+    if (pie) { pie.remove(); pie = null; }
+  }
+  function osPoint(e) {                                     // page coords -> desktop coords (the desktop may be scaled)
+    var r = os.getBoundingClientRect(), k = r.width / os.offsetWidth;
+    return { x: (e.clientX - r.left) / k, y: (e.clientY - r.top) / k };
+  }
+  function pick(it) {
+    if (it.sub) return showPie(it.sub, pieAt, true);
+    closeStart();
+    if (it.act === 'logoff') return zoomOut();
+    if (it.app && openWin(it.app, startBtn)) return;
+    if (it.href) location.href = it.href;
+  }
+  function showPie(items, at, nested) {
+    if (pie) pie.remove();
+    pieAt = at;
+    pie = document.createElement('div'); pie.className = 'pie'; pie.setAttribute('role', 'menu');
+    var head = document.createElement('span'); head.className = 'pie-head'; pie.appendChild(head);
+    var list = items.slice();
+    if (nested) list.push({ label: 'Back...', back: true });
+    // like the Sims: one bubble on top, the rest fanned down both sides
+    var top = list.shift(), L = [], R = [];
+    list.forEach(function (it, i) { (i % 2 ? R : L).push(it); });
+    var made = [];
+    function bubble(it, side, x, y, i) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'pie-item ' + side; b.setAttribute('role', 'menuitem');
+      b.innerHTML = '<span class="pk"></span><span class="pl"></span>'; b.querySelector('.pl').textContent = it.label;
+      b.style.setProperty('--x', x + 'px'); b.style.setProperty('--y', y + 'px'); b.style.transitionDelay = (i * 22) + 'ms';
+      b.addEventListener('click', function (ev) { ev.stopPropagation(); it.back ? showPie(PIE, pieAt, false) : pick(it); });
+      pie.appendChild(b); made.push(b);
+    }
+    var n = 0;
+    bubble(top, 'c', 0, -78, n++);
+    var rows = Math.max(L.length, R.length);
+    for (var i = 0; i < rows; i++) {
+      var t = rows === 1 ? 0 : i / (rows - 1), y = -36 + t * 150, x = 26 + Math.sin(t * Math.PI) * 34;
+      if (L[i]) bubble(L[i], 'l', -x, y, n++);
+      if (R[i]) bubble(R[i], 'r', x, y, n++);
+    }
+    os.appendChild(pie);
+    // keep it on the desktop
+    var W = os.offsetWidth, H = os.offsetHeight - 34, px = at.x, py = at.y;
+    pie.style.left = px + 'px'; pie.style.top = py + 'px';
+    var minX = 0, maxX = 0, minY = 0, maxY = 0;
+    made.forEach(function (b) { var r = b.getBoundingClientRect(), o = pie.getBoundingClientRect(), k = os.getBoundingClientRect().width / os.offsetWidth;
+      minX = Math.min(minX, (r.left - o.left) / k); maxX = Math.max(maxX, (r.right - o.left) / k);
+      minY = Math.min(minY, (r.top - o.top) / k); maxY = Math.max(maxY, (r.bottom - o.top) / k); });
+    px = Math.min(Math.max(px, 8 - minX), W - 8 - maxX); py = Math.min(Math.max(py, 8 - minY), H - maxY);
+    pie.style.left = px + 'px'; pie.style.top = py + 'px';
+    requestAnimationFrame(function () { pie && pie.classList.add('open'); });
+    startBtn.setAttribute('aria-expanded', 'true');
+    made[0].focus({ preventScroll: true });
+  }
   startBtn.addEventListener('click', function (e) {
     e.stopPropagation();
-    var open = startMenu.hidden; closeStart();
-    if (open) { startMenu.hidden = false; startBtn.setAttribute('aria-expanded', 'true'); startMenu.querySelector('a').focus(); }
+    if (pie) return closeStart();
+    showPie(PIE, { x: 150, y: os.offsetHeight - 230 }, false);
   });
-  startMenu.querySelectorAll('a[data-app]').forEach(function (a) {
-    a.addEventListener('click', function (ev) { if (openWin(a.dataset.app, startBtn)) ev.preventDefault(); });
+  os.addEventListener('click', function (e) {
+    if (pie && pie.contains(e.target)) return;
+    var empty = !e.target.closest('.app, .app-win, .taskbar, .sim-note, .startmenu, button, a');
+    if (pie) { closeStart(); return; }
+    if (empty) showPie(PIE, osPoint(e), false);
   });
-  document.addEventListener('click', function (e) { if (!startMenu.hidden && !startMenu.contains(e.target)) closeStart(); });
+  // arrow keys move round the bubbles
+  os.addEventListener('keydown', function (e) {
+    if (!pie || ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(e.key) < 0) return;
+    var b = Array.prototype.slice.call(pie.querySelectorAll('.pie-item')), i = b.indexOf(document.activeElement);
+    i = (i + (e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 1) + b.length) % b.length; b[i].focus(); e.preventDefault();
+  });
+
+  // ---- Sims-style notification the first time the desktop opens
+  var note = document.getElementById('simNote');
+  if (note) {
+    note.querySelector('.sn-x').addEventListener('click', function (e) { e.stopPropagation(); note.hidden = true; });
+    var noteShown = false;
+    window.addEventListener('mf-desktop', function () {
+      if (noteShown || store.get('mf-note')) return; noteShown = true; store.set('mf-note', '1');
+      setTimeout(function () { note.hidden = false; requestAnimationFrame(function () { note.classList.add('in'); }); }, 700);
+      setTimeout(function () { note.classList.remove('in'); setTimeout(function () { note.hidden = true; }, 400); }, 12000);
+    });
+  }
 
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape' || !zoomed) return;
-    if (!startMenu.hidden) { closeStart(); startBtn.focus(); }
+    if (pie) { closeStart(); startBtn.focus(); }
     else if (os.querySelector('.app-win.active:not([hidden])')) backToDesktop();
     else zoomOut();
   });
