@@ -748,3 +748,7 @@ body.home{background:#ece8e3}
 .demo-ring{position:absolute;left:5px;top:3px;width:10px;height:10px;margin:-5px;border-radius:50%;border:3px solid #ff4fa3;animation:demo-ring .42s ease-out forwards}
 @keyframes demo-ring{from{transform:scale(.4);opacity:1}to{transform:scale(4);opacity:0}}
 .os .app.sel{background:rgba(255,79,163,.35);outline:1px dotted #fff}
+.demo-cursor{width:42px;height:42px;margin:-4px 0 0 -7px}
+.demo-cursor.slow{transition:transform 1.3s cubic-bezier(.45,.05,.25,1),opacity .3s}
+.demo-ring{left:7px;top:4px}
+.os .app.pressed{transform:scale(.92)}

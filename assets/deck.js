@@ -647,7 +647,7 @@ export function createDeck(container, opts = {}) {
     const sw = screen.userData.w || 0.8, sh = screen.userData.h || 0.6;
     const vFov = THREE.MathUtils.degToRad(camera.fov);
     const fitH = sh / 2 / Math.tan(vFov / 2), fitW = sw / 2 / (Math.tan(vFov / 2) * aspect);
-    return { pos: c.clone().add(n.multiplyScalar(Math.min(fitH, fitW) * 0.96)), tgt: c };   // screen fills the whole window
+    return { pos: c.clone().add(n.multiplyScalar(Math.max(fitH, fitW) * 1.03)), tgt: c };   // whole screen in view, then the desktop takes over
   }
   function fly(toPos, toTgt, ms, done, v0, v1) {
     controls.enabled = false; controls.autoRotate = false;

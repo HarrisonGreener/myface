@@ -360,15 +360,20 @@
           if (!icon) { demoing = false; cur.remove(); openAvatar(); return; }
           setTimeout(function () {
             var ir = icon.getBoundingClientRect();
-            at(ir.left + ir.width / 2, ir.top + ir.height * 0.4);
+            cur.classList.add('slow'); at(ir.left + ir.width / 2, ir.top + ir.height * 0.4);
             setTimeout(function () {
-              icon.classList.add('sel');
-              click(function () {
-                demoing = false; icon.classList.remove('sel'); openAvatar();
-                cur.classList.add('bye'); setTimeout(function () { cur.remove(); }, 400);
-              });
-            }, 950);
-          }, 450);
+              icon.classList.add('sel');                       // hover over the icon a moment...
+              setTimeout(function () {
+                click(function () {                            // ...then click it
+                  icon.classList.add('pressed');
+                  setTimeout(function () {
+                    demoing = false; icon.classList.remove('sel', 'pressed'); openAvatar();
+                    cur.classList.add('bye'); setTimeout(function () { cur.remove(); }, 400);
+                  }, 250);
+                });
+              }, 550);
+            }, 1350);
+          }, 700);
         }, 80);
       });
     }, 1050);
