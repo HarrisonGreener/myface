@@ -1291,3 +1291,50 @@ body.home .top.quiet{position:relative}
 .pg-bands .band.thin i{color:#39ff14}
 .page-win .sec h2::before{color:#39ff14;text-shadow:0 0 0 #1c1a1e,1px 1px 0 #1c1a1e}
 ::selection{background:#39ff14;color:#1c1a1e}
+/* ==== Flip phone apps as real phone apps: coloured header, light pages, list rows, flat buttons ==== */
+.zoomview.phone.flip .os .app-win{top:34px!important;height:calc(100% - 34px)!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#f3f6fb!important;--app:#1c63c9}
+.zoomview.phone.flip .os #win-nails,.zoomview.phone.flip .os #win-avatar{--app:#e0398a}
+.zoomview.phone.flip .os #win-hair{--app:#7a3ee6}
+.zoomview.phone.flip .os #win-beauty{--app:#e2580d}
+.zoomview.phone.flip .os #win-piercing{--app:#c98a00}
+.zoomview.phone.flip .os #win-filler{--app:#d61f4a}
+.zoomview.phone.flip .os #win-prices,.zoomview.phone.flip .os #win-contact{--app:#14954a}
+.zoomview.phone.flip .os #win-about,.zoomview.phone.flip .os #win-web{--app:#0f8aa3}
+.zoomview.phone.flip .os #win-her{--app:#1c1a1e}
+.zoomview.phone.flip .os .app-win .titlebar{position:relative;display:flex;align-items:center;justify-content:center;min-height:56px;padding:0 12px!important;border:0!important;
+  background:var(--app)!important;color:#fff!important;font:600 19px Inter,system-ui,sans-serif!important;text-shadow:none}
+.zoomview.phone.flip .os .app-win .titlebar .tpath{color:#fff;font:inherit}
+.zoomview.phone.flip .os .app-win .titlebar .back{position:absolute!important;left:6px;top:50%;transform:translateY(-50%);height:40px!important;padding:0 10px!important;border:0!important;border-radius:10px!important;
+  background:none!important;box-shadow:none!important;color:#fff!important;font:500 17px Inter,system-ui,sans-serif!important;text-shadow:none}
+.zoomview.phone.flip .os .app-win .titlebar .back::before{display:none!important}
+.zoomview.phone.flip .os .app-win .titlebar .back:active{background:rgba(255,255,255,.2)!important}
+.zoomview.phone.flip .os .app-win .win-body{background:#f3f6fb!important;color:#14233b!important;padding:18px 16px 28px!important;font:15px/1.5 Inter,system-ui,sans-serif!important}
+.zoomview.phone.flip .os .app-win .win-body p{color:#14233b}
+.zoomview.phone.flip .os .app-win .win-body a{color:var(--app)}
+/* lists become grouped rows with a chevron */
+.zoomview.phone.flip .os .app-win .win-body :is(.menu,.plain){display:block!important;margin:14px 0!important;padding:0;list-style:none;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(20,35,59,.12)}
+.zoomview.phone.flip .os .app-win .win-body :is(.menu,.plain) li{position:relative;border:0!important;border-top:1px solid #e3e8f0!important;margin:0}
+.zoomview.phone.flip .os .app-win .win-body :is(.menu,.plain) li:first-child{border-top:0!important}
+.zoomview.phone.flip .os .app-win .win-body :is(.menu,.plain) li a{display:block!important;padding:15px 44px 15px 16px!important;border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important;
+  color:#14233b!important;font:600 16px Inter,system-ui,sans-serif!important;text-shadow:none!important;text-decoration:none}
+.zoomview.phone.flip .os .app-win .win-body :is(.menu,.plain) li a::before{display:none!important}
+.zoomview.phone.flip .os .app-win .win-body :is(.menu,.plain) li a::after{content:"\203A";position:absolute;right:16px;top:50%;transform:translateY(-52%);color:#9aa6b8;font:400 26px/1 Inter,system-ui,sans-serif}
+.zoomview.phone.flip .os .app-win .win-body :is(.menu,.plain) li a:active{background:#e8eef7!important}
+.zoomview.phone.flip .os .app-win .win-body .menu li span{right:36px!important;color:var(--app)!important;font:600 14px Inter,system-ui,sans-serif!important}
+/* price list */
+.zoomview.phone.flip .os .app-win .win-body table.prices{width:100%;border-collapse:collapse!important;border-spacing:0!important;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(20,35,59,.12)}
+.zoomview.phone.flip .os .app-win .win-body .prices :is(th,td){background:#fff!important;border:0!important;border-top:1px solid #e3e8f0!important;border-radius:0!important;padding:14px 16px!important}
+.zoomview.phone.flip .os .app-win .win-body .prices tr:first-child :is(th,td){border-top:0!important}
+.zoomview.phone.flip .os .app-win .win-body .prices th a{color:#14233b!important;font:600 15px Inter,system-ui,sans-serif!important}
+.zoomview.phone.flip .os .app-win .win-body .prices td{color:var(--app)!important;font:700 15px Inter,system-ui,sans-serif!important;text-align:right}
+/* buttons and footer links */
+.zoomview.phone.flip .os .app-win .win-body .btn{display:flex!important;justify-content:center;width:100%;height:52px!important;padding:0 20px!important;border:0!important;border-radius:14px!important;
+  background:var(--app)!important;color:#fff!important;font:700 17px Inter,system-ui,sans-serif!important;text-shadow:none!important;box-shadow:0 2px 6px rgba(20,35,59,.2)!important}
+.zoomview.phone.flip .os .app-win .win-body .btn::before{display:none!important}
+.zoomview.phone.flip .os .app-win .win-body .btn:active{background:#39ff14!important;color:#1c1a1e!important}
+.zoomview.phone.flip .os .app-win .win-body .win-foot{border:0!important;margin-top:18px;text-align:center}
+.zoomview.phone.flip .os .app-win .win-body .win-foot a{display:inline!important;height:auto!important;padding:0!important;border:0!important;border-radius:0!important;background:none!important;
+  color:var(--app)!important;font:600 15px Inter,system-ui,sans-serif!important}
+/* phone apps: no CRT scanlines or glare over the screen, and keep the title clear of Back */
+.zoomview.phone::after,.zoomview.phone .glare{display:none!important}
+.zoomview.phone.flip .os .app-win .titlebar .tpath{flex:none;max-width:calc(100% - 170px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center}
