@@ -1378,3 +1378,5 @@ body.home .top.quiet{position:relative}
   body{overflow:hidden}
 }
 @keyframes rot-hint{0%,30%{transform:rotate(-90deg)}60%,100%{transform:rotate(0)}}
+/* while the captcha is up the moving type behind it is blurred anyway, so hold it still (saves a lot of work on phones) */
+html.show-cap:not(.cap-done) .track{animation-play-state:paused}

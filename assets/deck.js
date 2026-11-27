@@ -14,8 +14,9 @@ function mat(color, o = {}) { return new THREE.MeshStandardMaterial({ color, rou
 // procedural grime: yellowed patches, dirt in the corners, specks and scratches
 try { const pf = new FontFace('Pirata One', `url(${new URL('./fonts/pirata-one.woff2', import.meta.url).href})`); document.fonts.add(pf); pf.load().catch(() => {}); } catch (e) {}
 function rnd(seed) { let x = seed; return () => (x = (x * 16807) % 2147483647) / 2147483647; }
+let GRIME_S = 512;                                   // texture size for the grubby plastic (smaller on phones)
 function grime(seed, base, tint = [150, 120, 70]) {
-  const r = rnd(seed), S = 512;
+  const r = rnd(seed), S = GRIME_S, K = (S / 512) * (S / 512);
   const cv = document.createElement('canvas'); cv.width = cv.height = S; const g = cv.getContext('2d');
   const rc = document.createElement('canvas'); rc.width = rc.height = S; const h = rc.getContext('2d');
   g.fillStyle = base; g.fillRect(0, 0, S, S); h.fillStyle = '#9a9a9a'; h.fillRect(0, 0, S, S);
@@ -28,7 +29,7 @@ function grime(seed, base, tint = [150, 120, 70]) {
   const edge = g.createRadialGradient(S / 2, S / 2, S * 0.25, S / 2, S / 2, S * 0.75);   // grime in the edges
   edge.addColorStop(0, 'rgba(0,0,0,0)'); edge.addColorStop(1, 'rgba(70,55,40,.32)');
   g.fillStyle = edge; g.fillRect(0, 0, S, S);
-  for (let i = 0; i < 4500; i++) {                       // specks
+  for (let i = 0; i < 4500 * K; i++) {                   // specks
     const x = r() * S, y = r() * S, v = r();
     g.fillStyle = v < .5 ? `rgba(60,45,35,${.08 + r() * .25})` : `rgba(255,250,240,${.1 + r() * .2})`;
     g.fillRect(x, y, 1 + r() * 1.5, 1 + r() * 1.5);
@@ -588,6 +589,7 @@ export function createDeck(container, opts = {}) {
   blob.rotation.x = -Math.PI / 2; blob.position.y = -0.088; scene.add(blob);
 
   const isPhone = !!opts.phone;
+  GRIME_S = isPhone ? 256 : 512;
   const built = isPhone ? buildPhone() : buildDeck();
   const { deck, leds, screen, scr, blades } = built, keys = built.keys || [];
   scene.add(deck);

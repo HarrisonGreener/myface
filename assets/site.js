@@ -25,7 +25,7 @@
   setTimeout(function () { check.focus(); }, 50);
   function pass() {
     try { sessionStorage.setItem('mf-human', '1'); } catch (e) {}
-    cap.classList.add('done'); document.body.style.overflow = '';
+    cap.classList.add('done'); document.documentElement.classList.add('cap-done'); document.body.style.overflow = '';
     window.dispatchEvent(new Event('mf-human'));
     setTimeout(function () { cap.hidden = true; }, 450);
   }
