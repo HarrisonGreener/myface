@@ -1068,3 +1068,45 @@ html.mf-phone .pop95{left:50%;top:70px}
 .bands::before{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;
   background:radial-gradient(ellipse 34% 46% at 50% 54%,rgba(236,232,227,.55) 0%,rgba(236,232,227,.28) 55%,rgba(236,232,227,0) 100%)}
 .bands>.band.b1{background-color:var(--bg)}
+/* ==== Header: quiet. Logo + three Anton words, lots of space; a neon-green highlighter swipe on hover. BOOK is the one pink word. ==== */
+.top.quiet{position:sticky;top:0;z-index:20;padding:0;background:var(--bg);border:0;box-shadow:none;backdrop-filter:none}
+.top.quiet .bar{display:flex;align-items:center;height:84px;max-width:none;margin:0;padding:0 clamp(18px,3.2vw,56px);gap:0}
+.top.quiet .logo-svg{height:54px}
+.top.quiet .brand .logo:hover .logo-svg{animation:mf-bobble .5s ease-in-out}
+@keyframes mf-bobble{0%,100%{transform:rotate(0) scale(1)}25%{transform:rotate(-3deg) scale(1.04)}55%{transform:rotate(2deg) scale(1.03)}80%{transform:rotate(-1deg) scale(1.01)}}
+html.js .top.quiet .bar :is(#menuBtn,.search-btn,.btn){all:unset;box-sizing:border-box;position:relative;isolation:isolate;display:inline-flex!important;align-items:center;gap:.3em;cursor:pointer;
+  margin:0 0 0 clamp(22px,2.6vw,44px)!important;padding:.08em .14em!important;color:#1c1a1e;font:400 28px/1 Anton,Impact,sans-serif;letter-spacing:.03em;text-transform:uppercase}
+html.js .top.quiet .bar #menuBtn{margin-left:auto!important}
+html.js .top.quiet .bar a.btn:not(:hover,:focus-visible){color:#e0398a!important}
+/* the highlighter: a slightly tilted neon block that swipes in behind the word */
+html.js .top.quiet .bar :is(#menuBtn,.search-btn,.btn)::before{content:"";position:absolute;z-index:-1;left:-.18em;right:-.18em;top:.16em;bottom:.02em;background:#39ff14;
+  transform:rotate(-2deg) scaleX(0);transform-origin:left center;transition:transform .2s cubic-bezier(.3,.8,.3,1)}
+html.js .top.quiet .bar :is(#menuBtn,.search-btn,.btn):is(:hover,:focus-visible,[aria-expanded="true"])::before{transform:rotate(-2deg) scaleX(1)}
+html.js .top.quiet .bar :is(#menuBtn,.search-btn,.btn):is(:hover,:focus-visible,[aria-expanded="true"]){color:#1c1a1e;outline:none}
+html.js .top.quiet .bar :is(#menuBtn,.search-btn,.btn):active{transform:translateY(1px)}
+.top.quiet .bar .pk,.top.quiet .bar .hb{display:none!important}
+.top.quiet .bar :is(.ml,.sl){display:inline!important;position:static!important;width:auto!important;height:auto!important;clip:auto!important;overflow:visible!important}
+.top.quiet .bar .search-btn .mg{display:none}
+@media (max-width:620px){
+  .top.quiet .bar{height:64px;padding:0 16px}
+  .top.quiet .logo-svg{height:40px}
+  html.js .top.quiet .bar :is(#menuBtn,.search-btn){font-size:22px;margin-left:18px!important}
+  html.js .top.quiet .bar #menuBtn{margin-left:auto!important}
+  html.js .top.quiet .bar a.btn.btn{display:none!important}
+}
+/* concrete on the header too, same as the top stripe of the bands */
+.top.quiet{background:var(--bg) url(concrete.jpg?v=4) center top/max(100vw,1600px) auto;background-blend-mode:multiply}
+/* highlighter as a slanted oblong: both ends cut at the same angle */
+html.js .top.quiet .bar :is(#menuBtn,.search-btn,.btn)::before{left:-.32em;right:-.32em;top:.12em;bottom:.04em;transform:scaleX(0);
+  clip-path:polygon(.28em 0,100% 0,calc(100% - .28em) 100%,0 100%)}
+html.js .top.quiet .bar :is(#menuBtn,.search-btn,.btn):is(:hover,:focus-visible,[aria-expanded="true"])::before{transform:scaleX(1)}
+/* logo hover: a hard glitch hit instead of the wobble */
+.top.quiet .brand .logo:hover .logo-svg{animation:mf-glitch .42s steps(1,end)}
+@keyframes mf-glitch{
+  0%{transform:none;filter:none}
+  10%{transform:translate(-4px,1px) skewX(-12deg);filter:drop-shadow(-4px 0 0 #39ff14) drop-shadow(4px 0 0 #ff4fa3)}
+  22%{transform:translate(5px,-2px) skewX(10deg) scaleY(1.08);filter:drop-shadow(5px 0 0 #39ff14) drop-shadow(-5px 0 0 #ff4fa3)}
+  34%{transform:translate(-2px,0) scale(1.12);filter:drop-shadow(-2px 0 0 #39ff14) drop-shadow(2px 0 0 #ff4fa3)}
+  46%{transform:translate(3px,2px) skewX(-6deg);filter:drop-shadow(3px 0 0 #ff4fa3)}
+  60%{transform:translate(-1px,-1px) scale(1.04);filter:drop-shadow(-1px 0 0 #39ff14)}
+  75%,100%{transform:none;filter:none}}
