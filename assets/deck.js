@@ -529,14 +529,15 @@ function buildPhone() {
   leds.flicker = t => { halo.material.opacity = 0.28 + 0.04 * Math.sin(t * 3) + 0.02 * Math.sin(t * 17); };
   const ear = new THREE.Mesh(new RoundedBoxGeometry(0.12, 0.016, 0.008, 2, 0.004), mat(0x0d0c10)); ear.position.set(0, 0.86, UZ + 0.002); lid.add(ear);
   // outer lid: little external screen, camera, and the one sticker
-  const ext = new THREE.Mesh(new RoundedBoxGeometry(0.26, 0.14, 0.008, 2, 0.02), new THREE.MeshStandardMaterial({ color: 0x120d14, emissive: 0xff4fa3, emissiveIntensity: 0.18, roughness: 0.2 }));
-  ext.position.set(0, 0.66, -UZ - 0.002); lid.add(ext);
+
   const lens = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.014, 24), mat(0x0d0c10, { metalness: 0.6, roughness: 0.2 })); lens.rotation.x = Math.PI / 2; lens.position.set(0, 0.82, -UZ - 0.004); lid.add(lens);
   const lensRing = new THREE.Mesh(new THREE.TorusGeometry(0.032, 0.005, 8, 24), mat(C.metal, { metalness: 0.8 })); lensRing.position.copy(lens.position); lid.add(lensRing);
-  addSticker(lid, logoCanvas(41), 0.44, [0, 0.36, -UZ - 0.002], [0, Math.PI], -4);
+  addSticker(lid, logoCanvas(41), 0.44, [0.03, 0.35, -UZ - 0.002], [0, Math.PI], -7);
+  imageSticker(lid, 'stk-ella.png', 443 / 245, 0.32, [-0.06, 0.65, -UZ - 0.002], [0, Math.PI], 13, 43);   // stuck on at an angle, off-centre
   // antenna with a glowing tip
   const ant = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.02, 0.2, 14), mat(0x2a262f, { roughness: 0.4 })); ant.position.set(0.24, UH + 0.1, -0.01); lid.add(ant);
-  const tip = new THREE.Mesh(new THREE.SphereGeometry(0.026, 16, 12), new THREE.MeshBasicMaterial({ color: C.pinkHot })); tip.position.set(0.24, UH + 0.21, -0.01); lid.add(tip); leds.push(tip);
+  const tip = new THREE.Mesh(new THREE.SphereGeometry(0.026, 16, 12), new THREE.MeshBasicMaterial({ color: 0x39ff14 })); tip.position.set(0.24, UH + 0.21, -0.01); lid.add(tip); leds.push(tip);
+  const tipGlow = new THREE.PointLight(0x39ff14, 0.6, 0.5); tipGlow.position.copy(tip.position); lid.add(tipGlow);
 
   // --- cyberpunk bits: exposed board on the back of the keypad half, a cable into the side
   const back = new THREE.Group(); back.position.set(0, 0.42, -FZ - 0.002); back.rotation.y = Math.PI; phone.add(back);
