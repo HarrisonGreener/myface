@@ -93,7 +93,7 @@
   scene.addEventListener('pointermove', function (e) {
     if (!down) return;
     var dx = e.clientX - down.x, dy = e.clientY - down.y;
-    if (Math.abs(dx) + Math.abs(dy) > 6) moved = true;
+    if (Math.abs(dx) + Math.abs(dy) > (e.pointerType === 'touch' ? 12 : 6)) moved = true;
     if (D) return;
     ry = down.ry + dx * 0.5;
     rx = Math.max(-40, Math.min(25, down.rx - dy * 0.3));
@@ -197,16 +197,34 @@
     if (D.isPhone) {
       zv.classList.add('flip'); document.documentElement.classList.add('mf-phone');
       // phone furniture: a status bar and an end-call key that logs off back to the 3D phone
+      // phone OS: blue-green block wallpaper, a clock home screen, and a big app grid behind "Menu"
       var sc = document.createElement('div'); sc.className = 'ph-scene'; sc.setAttribute('aria-hidden', 'true');
-      sc.innerHTML = '<div class="ph-sun"></div><div class="ph-floor"><i></i></div>'; os.insertBefore(sc, os.firstChild);
-      // status bar drawn exactly like the lock screen's: signal bars, MYFACE, battery
+      sc.innerHTML = [[-12, 8, 62, 22, -8], [44, 22, 70, 18, 6], [-6, 44, 58, 16, -4], [52, 58, 60, 20, 10], [8, 74, 70, 16, -6], [30, 36, 40, 12, 14]]
+        .map(function (b) { return '<i style="left:' + b[0] + '%;top:' + b[1] + '%;width:' + b[2] + '%;height:' + b[3] + '%;transform:rotate(' + b[4] + 'deg)"></i>'; }).join('');
+      os.insertBefore(sc, os.firstChild);
       var st = document.createElement('div'); st.className = 'ph-status'; st.setAttribute('aria-hidden', 'true');
-      st.innerHTML = '<span class="ph-sig"><i></i><i></i><i></i><i></i></span><b>MYFACE</b><span class="ph-bat"><i></i></span>'; os.appendChild(st);
-      // log off is an app on the home screen, like any other
-      var apps = os.querySelector('.apps');
-      if (apps) { var li = document.createElement('li');
-        li.innerHTML = '<button type="button" class="app logoff-btn"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v8"/><path d="M6.3 6.6a8 8 0 1 0 11.4 0"/></svg><span>Log off</span></button>';
-        li.firstChild.addEventListener('click', zoomOut); apps.appendChild(li); }
+      st.innerHTML = '<span class="ph-sig"><i></i><i></i><i></i><i></i></span><b class="ph-t"></b><span class="ph-bat"><i></i></span>'; os.appendChild(st);
+      var home = document.createElement('div'); home.className = 'ph-home';
+      home.innerHTML = '<button type="button" class="ph-clockbtn" aria-label="Open the menu"><span class="ph-clock"></span><span class="ph-date"></span><span class="ph-hint">tap to open</span></button>' +
+        '<div class="ph-keys"><a class="ph-k" href="#" data-go="book">Book</a><button type="button" class="ph-k ph-menu" aria-label="Menu"><i></i><i></i><i></i><i></i></button><a class="ph-k" href="#" data-go="contact">Contact</a></div>';
+      os.appendChild(home);
+      var tick = function () { var d = new Date(), t = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+        home.querySelector('.ph-clock').textContent = t; st.querySelector('.ph-t').textContent = t;
+        home.querySelector('.ph-date').textContent = d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' }); };
+      tick(); setInterval(tick, 20000);
+      var openGrid = function () { os.classList.add('ph-grid'); };
+      openGrid();   // the 3D phone's screen already shows the clock, so tapping it goes straight to the apps
+      home.querySelector('.ph-clockbtn').addEventListener('click', openGrid);
+      home.querySelector('.ph-menu').addEventListener('click', openGrid);
+      home.querySelectorAll('[data-go]').forEach(function (k) { k.addEventListener('click', function (e) {
+        e.preventDefault(); var a = os.querySelector('.app[data-app="' + k.dataset.go + '"]'); if (a) { openGrid(); a.click(); } }); });
+      var bar = document.createElement('div'); bar.className = 'ph-gridbar';
+      bar.innerHTML = '<button type="button" class="ph-back" aria-label="Back to the clock">&lsaquo; Home</button><b>Menu</b>';
+      bar.querySelector('.ph-back').addEventListener('click', function () { os.classList.remove('ph-grid'); });
+      os.appendChild(bar);
+      var off = document.createElement('button'); off.type = 'button'; off.className = 'ph-logoff';
+      off.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v8"/><path d="M6.3 6.6a8 8 0 1 0 11.4 0"/></svg>Log off';
+      off.addEventListener('click', zoomOut); os.appendChild(off);
       var pd = document.getElementById('popD'); if (pd) pd.innerHTML = '<b>Your avatar needs customising!</b>Open the phone to customise your avatar and find your treatment x';
     }
     var c = D.canvas;

@@ -440,30 +440,34 @@ function keyCanvas(label, small) {
 function phoneScreenTexture() {
   const cv = document.createElement('canvas'); cv.width = 480; cv.height = 680;
   const c = cv.getContext('2d');
-  const logo = logoCanvas(31);
   function draw() {
     const g = c.createLinearGradient(0, 0, 0, 680);
-    g.addColorStop(0, '#1a0b1f'); g.addColorStop(0.55, '#2a0f2c'); g.addColorStop(1, '#4a1240');
+    [[0, '#0b2a6b'], [0.34, '#1c63c9'], [0.6, '#1fb0c8'], [0.82, '#25b86a'], [1, '#8ee35b']].forEach(s => g.addColorStop(s[0], s[1]));
     c.fillStyle = g; c.fillRect(0, 0, 480, 680);
-    // synthwave floor grid
-    c.strokeStyle = 'rgba(255,79,163,.55)'; c.lineWidth = 2;
-    for (let i = 0; i < 9; i++) { const y = 470 + Math.pow(i / 8, 1.8) * 210; c.beginPath(); c.moveTo(0, y); c.lineTo(480, y); c.stroke(); }
-    for (let i = -8; i <= 8; i++) { c.beginPath(); c.moveTo(240 + i * 14, 470); c.lineTo(240 + i * 90, 680); c.stroke(); }
-    const sun = c.createLinearGradient(0, 330, 0, 470); sun.addColorStop(0, '#ffd1ea'); sun.addColorStop(1, '#ff4fa3');
-    c.fillStyle = sun; c.beginPath(); c.arc(240, 470, 110, Math.PI, 0); c.fill();
-    c.fillStyle = '#2a0f2c'; for (let i = 0; i < 5; i++) c.fillRect(120, 400 + i * 15, 240, 3 + i * 1.5);
+    // glassy blocks, same as the home screen inside
+    [[-58, 54, 298, 150, -8, 'rgba(255,255,255,.22)'], [211, 150, 336, 122, 6, 'rgba(13,40,110,.45)'], [-29, 299, 278, 109, -4, 'rgba(37,184,106,.4)'],
+     [250, 394, 288, 136, 10, 'rgba(255,255,255,.2)'], [38, 503, 336, 109, -6, 'rgba(13,40,110,.4)'], [144, 245, 192, 82, 14, 'rgba(142,227,91,.3)']].forEach(b => {
+      c.save(); c.translate(b[0] + b[2] / 2, b[1] + b[3] / 2); c.rotate(b[4] * Math.PI / 180);
+      c.fillStyle = b[5]; c.fillRect(-b[2] / 2, -b[3] / 2, b[2], b[3]);
+      c.strokeStyle = 'rgba(255,255,255,.35)'; c.lineWidth = 1.5; c.strokeRect(-b[2] / 2, -b[3] / 2, b[2], b[3]); c.restore();
+    });
     // status bar
-    c.fillStyle = 'rgba(0,0,0,.45)'; c.fillRect(0, 0, 480, 44);
-    c.fillStyle = '#ffd1ea'; for (let i = 0; i < 4; i++) c.fillRect(16 + i * 11, 30 - i * 6, 7, 6 + i * 6);
-    c.font = '700 22px "Courier New", monospace'; c.textAlign = 'center'; c.fillText('MYFACE', 240, 30);
-    c.strokeStyle = '#ffd1ea'; c.lineWidth = 2; c.strokeRect(410, 14, 46, 20); c.fillRect(458, 19, 4, 10); c.fillRect(414, 18, 28, 12);
-    // clock + logo
     const d = new Date(), t = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
-    c.shadowColor = '#ff4fa3'; c.shadowBlur = 18; c.fillStyle = '#fff'; c.font = '700 96px "Courier New", monospace'; c.fillText(t, 240, 160);
-    c.shadowBlur = 0; c.font = '22px "Courier New", monospace'; c.fillStyle = '#ffb3d9';
-    c.fillText(d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase(), 240, 196);
-    c.drawImage(logo, 50, 214, 380, 139);
-    c.fillStyle = '#ffd1ea'; c.font = '700 22px "Courier New", monospace'; c.fillText('press a key x', 240, 640);
+    c.fillStyle = 'rgba(0,10,40,.35)'; c.fillRect(0, 0, 480, 44);
+    c.fillStyle = '#fff'; for (let i = 0; i < 4; i++) c.fillRect(16 + i * 11, 30 - i * 6, 7, 6 + i * 6);
+    c.font = '600 20px Inter, Arial, sans-serif'; c.textAlign = 'center'; c.fillText(t, 240, 29);
+    c.strokeStyle = '#fff'; c.lineWidth = 2; c.strokeRect(410, 14, 46, 20); c.fillRect(458, 19, 4, 10); c.fillRect(414, 18, 28, 12);
+    // big clock + date, right-aligned like the real phone
+    c.shadowColor = 'rgba(0,20,60,.5)'; c.shadowBlur = 14; c.fillStyle = '#fff'; c.textAlign = 'right';
+    c.font = '300 128px Inter, Arial, sans-serif'; c.fillText(t, 452, 190);
+    c.font = '500 28px Inter, Arial, sans-serif'; c.fillText(d.toLocaleDateString('en-GB', { weekday: 'long' }), 452, 236);
+    c.fillText(d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }), 452, 270);
+    c.shadowBlur = 0;
+    // soft-key bar
+    c.fillStyle = 'rgba(0,10,40,.45)'; c.fillRect(0, 624, 480, 56);
+    c.fillStyle = '#fff'; c.font = '600 24px Inter, Arial, sans-serif'; c.textAlign = 'left'; c.fillText('Book', 22, 660);
+    c.textAlign = 'right'; c.fillText('Contact', 458, 660);
+    for (let i = 0; i < 4; i++) { c.beginPath(); c.arc(234 + (i % 2) * 12, 646 + Math.floor(i / 2) * 12, 4, 0, Math.PI * 2); c.fill(); }
     tex.needsUpdate = true;
   }
   const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
@@ -594,6 +598,28 @@ export function createDeck(container, opts = {}) {
   controls.minPolarAngle = 0.5; controls.maxPolarAngle = 1.45;
   controls.autoRotate = false;
   controls.addEventListener('start', () => { controls.autoRotate = false; });
+  // phone: let the page scroll freely, and only spin the phone when the drag starts on it (or right next to it)
+  if (isPhone) {
+    renderer.domElement.style.touchAction = 'pan-y';
+    const box = new THREE.Box3(), corner = new THREE.Vector3(), PAD = 28;
+    const nearPhone = (x, y) => {
+      box.setFromObject(deck); const r = renderer.domElement.getBoundingClientRect();
+      let l = Infinity, t = Infinity, rr = -Infinity, b = -Infinity;
+      for (let i = 0; i < 8; i++) {
+        corner.set(i & 1 ? box.max.x : box.min.x, i & 2 ? box.max.y : box.min.y, i & 4 ? box.max.z : box.min.z).project(camera);
+        const px = r.left + (corner.x + 1) / 2 * r.width, py = r.top + (1 - corner.y) / 2 * r.height;
+        l = Math.min(l, px); rr = Math.max(rr, px); t = Math.min(t, py); b = Math.max(b, py);
+      }
+      return x > l - PAD && x < rr + PAD && y > t - PAD && y < b + PAD;
+    };
+    let gated = false;
+    container.addEventListener('pointerdown', e => {
+      if (inside || flying) return;
+      if (!nearPhone(e.clientX, e.clientY)) { gated = true; controls.enabled = false; }
+    }, true);
+    const release = () => { if (gated) { gated = false; if (!inside && !flying) controls.enabled = true; } };
+    window.addEventListener('pointerup', release); window.addEventListener('pointercancel', release);
+  }
   controls.update();
   // coming back to the page: face the same way you left it (no reset to the front)
   if (opts.view && opts.view.length === 3 && !isPhone) {
