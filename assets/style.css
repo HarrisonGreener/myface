@@ -1284,3 +1284,6 @@ body.home .top.quiet{position:relative}
   html.js .top .bar .search-btn .mg{filter:none!important;stroke:#1c1a1e!important;stroke-width:3;width:20px!important;height:20px!important}
   html.js .top .bar #menuBtn{margin-right:6px}
 }
+.fab-book:is(:hover,:focus-visible,.tap){background:#39ff14;outline:none}
+.fab-book.tap{transform:translate(3px,3px);box-shadow:1px 1px 0 #1c1a1e}
+.fab-book,.fab-book:is(:hover,:focus,:focus-visible,:active,:visited,.tap){color:#1c1a1e!important}

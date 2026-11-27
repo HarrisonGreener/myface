@@ -846,3 +846,11 @@
   var ago = (Date.now() - t0) / 1000;
   tracks.forEach(function (t) { t.style.animationDelay = '-' + ago.toFixed(2) + 's'; });
 })();
+
+// ---- floating BOOK button: flash lime the instant it's touched (iOS doesn't show :active on its own)
+(function () {
+  var b = document.querySelector('.fab-book'); if (!b) return;
+  b.addEventListener('pointerdown', function () { b.classList.add('tap'); });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (t) { b.addEventListener(t, function () { setTimeout(function () { b.classList.remove('tap'); }, 180); }); });
+  document.addEventListener('touchstart', function () {}, { passive: true });
+})();
