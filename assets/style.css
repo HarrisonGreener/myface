@@ -1210,3 +1210,27 @@ body.home .top.quiet{position:relative}
   #popFlood .book-pop{left:auto!important;right:3%!important;top:3%!important;bottom:auto!important;width:200px!important}
   #avatarPop{top:auto!important;bottom:6%!important;left:50%}
 }
+/* ==== Phones: picture-message notifications instead of desktop pop-ups ==== */
+.nf-stack{position:absolute;left:10px;right:10px;top:10px;z-index:22;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.nf-list{display:flex;flex-direction:column;gap:8px}
+.nf{pointer-events:auto;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:14px;text-decoration:none;touch-action:pan-y;user-select:none;
+  background:rgba(12,22,44,.88);color:#fff;border:1px solid rgba(255,255,255,.18);box-shadow:0 8px 22px rgba(0,0,0,.35);backdrop-filter:blur(8px);
+  font:13px/1.25 Inter,system-ui,sans-serif;transform:translateY(-16px) scale(.96);opacity:0;transition:transform .32s cubic-bezier(.2,1.4,.4,1),opacity .2s}
+.nf.in{transform:none;opacity:1}
+.nf.out{transform:translateX(110%);opacity:0}
+.nf-ic{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:#ff4fa3;color:#fff;font-size:16px}
+.nf-tx{flex:1;min-width:0;display:flex;flex-direction:column}
+.nf-tx small{font-size:11px;opacity:.7}
+.nf-tx b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nf img{flex:none;width:44px;height:44px;object-fit:cover;border-radius:8px}
+.nf-pin{background:linear-gradient(90deg,#d42f7f,#ff4fa3);border-color:rgba(255,255,255,.35)}
+.nf-pin .nf-ic{background:#fff;color:#d42f7f}
+.nf-go{flex:none;padding:7px 12px;border-radius:9px;background:#1c1a1e;color:#fff;font:400 16px/1 Anton,Impact,sans-serif;letter-spacing:.04em}
+.nf-pin:active .nf-go{background:#39ff14;color:#000}
+.nf-av .nf-ic{background:#ffd23f;color:#000}
+.nf-av .nf-tx b{white-space:normal}
+.nf-clear{pointer-events:auto;align-self:center;border:0;border-radius:20px;padding:7px 16px;background:rgba(12,22,44,.8);color:#fff;font:600 12px Inter,system-ui,sans-serif;
+  opacity:0;transform:translateY(-6px);transition:.25s}
+.nf-clear.in{opacity:1;transform:none}
+.nf-buzz{animation:nf-buzz .32s linear}
+@keyframes nf-buzz{0%,100%{transform:none}20%{transform:translateX(-3px) rotate(-.6deg)}40%{transform:translateX(3px) rotate(.6deg)}60%{transform:translateX(-2px)}80%{transform:translateX(2px)}}

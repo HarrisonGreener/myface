@@ -427,6 +427,7 @@
     if (!pop || zoomed) return;
     setTimeout(function () {
       if (zoomed) return;
+      if (D && D.isPhone) { notifs(); return; }
       // boom boom boom: photos of her work flood the screen, then avatar.exe lands in the middle on top
       photos.forEach(function (w, i) {
         setTimeout(function () { w.hidden = false; requestAnimationFrame(function () { w.classList.add('in'); }); }, i * 110);
@@ -441,6 +442,52 @@
   function hideWin(w) { w.classList.remove('in'); setTimeout(function () { w.hidden = true; }, 180); }
   // closing avatar.exe clears every pop-up at once
   function hidePop() { hideWin(pop); photos.forEach(hideWin); }
+
+  // ---- phones: the same idea as picture messages arriving on the flip phone, stacked like notifications
+  function notifs() {
+    var wrap = document.createElement('div'); wrap.className = 'nf-stack'; wrap.setAttribute('aria-live', 'polite');
+    ['pointerdown', 'pointerup', 'click'].forEach(function (t) { wrap.addEventListener(t, function (e) { e.stopPropagation(); }); });
+    scene.appendChild(wrap);
+    var bookA = document.querySelector('.pop-book');
+    var pin = document.createElement('a'); pin.className = 'nf nf-pin'; pin.href = bookA ? bookA.getAttribute('href') : '#';
+    pin.innerHTML = '<span class="nf-ic">&#128197;</span><span class="nf-tx"><small>book_now.exe &middot; now</small><b>Slots are open &mdash; tap to book</b></span><span class="nf-go">BOOK</span>';
+    var list = document.createElement('div'); list.className = 'nf-list';
+    var clear = document.createElement('button'); clear.type = 'button'; clear.className = 'nf-clear'; clear.textContent = 'Clear all';
+    wrap.appendChild(pin); wrap.appendChild(list); wrap.appendChild(clear);
+    var gone = function (el) { el.classList.add('out'); setTimeout(function () { el.remove(); if (!list.children.length && !wrap.querySelector('.nf-pin')) wrap.remove(); }, 260); };
+    clear.addEventListener('click', function () { [pin].concat([].slice.call(list.children)).forEach(gone); clear.remove(); setTimeout(function () { wrap.remove(); }, 300); });
+    // swipe a card sideways to dismiss it
+    var swipe = function (el) {
+      var x0 = null;
+      el.addEventListener('pointerdown', function (e) { x0 = e.clientX; el.setPointerCapture(e.pointerId); el.style.transition = 'none'; });
+      el.addEventListener('pointermove', function (e) { if (x0 === null) return; var dx = e.clientX - x0; el.style.transform = 'translateX(' + dx + 'px)'; el.style.opacity = 1 - Math.min(1, Math.abs(dx) / 220); });
+      el.addEventListener('pointerup', function (e) {
+        if (x0 === null) return; var dx = e.clientX - x0; x0 = null; el.style.transition = '';
+        if (Math.abs(dx) > 80) { el.style.transform = 'translateX(' + (dx > 0 ? 120 : -120) + '%)'; el.style.opacity = 0; setTimeout(function () { el.remove(); }, 220); }
+        else { el.style.transform = ''; el.style.opacity = ''; if (Math.abs(dx) < 6 && el.dataset.tap) window[el.dataset.tap] && window[el.dataset.tap](); }
+      });
+    };
+    var items = photos.map(function (w) { return { name: w.querySelector('.pop-bar span').textContent, img: w.querySelector('img') }; });
+    var buzz = function () { var c = D && D.canvas; if (!c) return; c.classList.remove('nf-buzz'); void c.offsetWidth; c.classList.add('nf-buzz'); try { navigator.vibrate && navigator.vibrate(60); } catch (e) {} };
+    setTimeout(function () { pin.classList.add('in'); buzz(); }, 200);
+    items.forEach(function (it, i) {
+      setTimeout(function () {
+        var n = document.createElement('div'); n.className = 'nf';
+        n.innerHTML = '<span class="nf-ic">&#9993;</span><span class="nf-tx"><small>Picture message &middot; now</small><b>' + it.name + '</b></span>' +
+          '<img src="' + it.img.getAttribute('src') + '" alt="' + it.img.alt + '">';
+        list.insertBefore(n, list.firstChild); swipe(n); requestAnimationFrame(function () { n.classList.add('in'); }); buzz();
+        while (list.children.length > 3) list.lastChild.remove();       // keep it tidy: only the three newest show
+      }, 900 + i * 650);
+    });
+    setTimeout(function () {
+      var n = document.createElement('div'); n.className = 'nf nf-av'; n.dataset.tap = 'mfOpenPhone';
+      n.innerHTML = '<span class="nf-ic">&#9888;</span><span class="nf-tx"><small>avatar.exe &middot; now</small><b>Your avatar needs customising! Tap the phone</b></span>';
+      list.insertBefore(n, list.firstChild); swipe(n); requestAnimationFrame(function () { n.classList.add('in'); }); buzz();
+      while (list.children.length > 3) list.lastChild.remove();
+      clear.classList.add('in');
+    }, 900 + items.length * 650 + 300);
+    window.mfOpenPhone = function () { zoomIn(); };
+  }
   photos.forEach(function (w) {
     w.querySelector('.pop-x').addEventListener('click', function () { hideWin(w); });
     ['pointerdown', 'pointerup', 'click'].forEach(function (t) { w.addEventListener(t, function (e) { e.stopPropagation(); }); });
