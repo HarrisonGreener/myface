@@ -409,11 +409,24 @@
     if (!pop || zoomed) return;
     setTimeout(function () {
       if (zoomed) return;
-      pop.hidden = false; requestAnimationFrame(function () { pop.classList.add('in'); });
-      pop.querySelector('.pop-go').focus({ preventScroll: true });
+      // boom boom boom: photos of her work flood the screen, then avatar.exe lands in the middle on top
+      photos.forEach(function (w, i) {
+        setTimeout(function () { w.hidden = false; requestAnimationFrame(function () { w.classList.add('in'); }); }, i * 110);
+      });
+      setTimeout(function () {
+        pop.hidden = false; requestAnimationFrame(function () { pop.classList.add('in'); });
+        pop.querySelector('.pop-go').focus({ preventScroll: true });
+      }, photos.length * 110 + 120);
     }, 900);
   }
-  function hidePop() { pop.classList.remove('in'); setTimeout(function () { pop.hidden = true; }, 180); }
+  var photos = Array.prototype.slice.call(document.querySelectorAll('#popFlood .photo'));
+  function hideWin(w) { w.classList.remove('in'); setTimeout(function () { w.hidden = true; }, 180); }
+  // closing avatar.exe clears every pop-up at once
+  function hidePop() { hideWin(pop); photos.forEach(hideWin); }
+  photos.forEach(function (w) {
+    w.querySelector('.pop-x').addEventListener('click', function () { hideWin(w); });
+    ['pointerdown', 'pointerup', 'click'].forEach(function (t) { w.addEventListener(t, function (e) { e.stopPropagation(); }); });
+  });
   if (pop) {
     pop.querySelectorAll('.pop-x, .pop-ok').forEach(function (b) { b.addEventListener('click', hidePop); });
     pop.querySelector('.pop-go').addEventListener('click', function (e) { hidePop(); showHow(e.currentTarget); });

@@ -71,7 +71,7 @@ function screenTexture() {
   const ctx = cv.getContext('2d');
   const img = new Image(); let ready = false;
   img.onload = () => { ready = true; draw(); };
-  img.src = new URL('./desktop-screen.jpg?v=62', import.meta.url).href;
+  img.src = new URL('./desktop-screen.jpg?v=63', import.meta.url).href;
   function draw() {
     if (!ready) { ctx.fillStyle = '#3a6ea5'; ctx.fillRect(0, 0, 800, 600); tex.needsUpdate = true; return; }
     ctx.drawImage(img, 0, 0, 800, 600);

@@ -1110,3 +1110,41 @@ html.js .top.quiet .bar :is(#menuBtn,.search-btn,.btn):is(:hover,:focus-visible,
   46%{transform:translate(3px,2px) skewX(-6deg);filter:drop-shadow(3px 0 0 #ff4fa3)}
   60%{transform:translate(-1px,-1px) scale(1.04);filter:drop-shadow(-1px 0 0 #39ff14)}
   75%,100%{transform:none;filter:none}}
+/* ==== Pop-up flood: photos of her work burst onto the screen, avatar.exe lands in the middle on top ==== */
+.pop-flood{position:absolute;inset:0;z-index:19;pointer-events:none}
+.pop95.photo{pointer-events:auto;left:var(--x);top:var(--y);width:var(--w);transform:scale(.55);transition:transform .16s cubic-bezier(.3,1.7,.5,1),opacity .08s}
+.pop95.photo.in{transform:none;opacity:1}
+.pop95.photo .pop-bar span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+.pop-img{padding:4px}
+.pop-img img{display:block;width:100%;height:auto;border:2px solid;border-color:#808080 #fff #fff #808080}
+#avatarPop{z-index:21;left:50%;top:30%}
+@media (max-width:620px){
+  .pop95.photo{width:calc(var(--w) * .55)}
+  #avatarPop{top:28%;bottom:auto}
+}
+/* ==== MyFace 95 desktop: big full-colour icons ==== */
+.os .app .ic95{display:block;width:64px;height:64px;filter:drop-shadow(2px 2px 0 rgba(0,0,0,.35))}
+.os .app .ic{display:none}
+.os .apps{gap:18px 8px}
+.os .app span{padding:1px 3px;text-shadow:1px 1px 0 #000}
+.os .app:focus-visible span,.os .app:hover span{background:#000080;outline:1px dotted #fff}
+.zoomview.phone.flip .os .app .ic95{display:none}
+.zoomview.phone.flip .os .app .ic{display:block}
+/* homepage header sits at the top of the page and scrolls away; other pages keep it stuck */
+body.home .top.quiet{position:relative}
+/* pop-up title bars in a mix of colours */
+#popFlood .photo:nth-child(4n+1) .pop-bar{background:linear-gradient(90deg,#1aa80a,#39ff14);color:#000}
+#popFlood .photo:nth-child(4n+2) .pop-bar{background:linear-gradient(90deg,#000,#3b3641);color:#fff}
+#popFlood .photo:nth-child(4n+3) .pop-bar{background:linear-gradient(90deg,#b3005e,#ff4fa3);color:#fff}
+#popFlood .photo:nth-child(4n+4) .pop-bar{background:linear-gradient(90deg,#fff,#d9d4cf);color:#000;border-bottom:1px solid #808080}
+/* book_now.exe: the one pop-up that's an action, not a photo */
+#popFlood .book-pop{z-index:40}
+#popFlood .book-pop .pop-bar{background:linear-gradient(90deg,#b3005e,#ff4fa3);color:#fff;border:0}
+.book-pop .pop-body{padding:12px 12px 4px}
+.book-pop .pop-body p{font-size:12.5px}
+.pop-book{display:block;width:100%;padding:9px 0;text-align:center;text-decoration:none;color:#1c1a1e;font:400 22px/1 Anton,Impact,sans-serif;letter-spacing:.04em;text-transform:uppercase;
+  background:#ff4fa3;border:2px solid;border-color:#ffb3d9 #6d0f3c #6d0f3c #ffb3d9;box-shadow:0 0 0 1px #000}
+.pop-book:hover,.pop-book:focus-visible{background:#39ff14;outline:none}
+.pop-book:active{border-color:#6d0f3c #ffb3d9 #ffb3d9 #6d0f3c}
+.book-pop .pop-btns{padding:8px 12px 12px}
+@media (max-width:620px){#popFlood .book-pop{width:230px;left:auto;right:4%;top:8%}}
