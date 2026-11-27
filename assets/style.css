@@ -1287,3 +1287,7 @@ body.home .top.quiet{position:relative}
 .fab-book:is(:hover,:focus-visible,.tap){background:#39ff14;outline:none}
 .fab-book.tap{transform:translate(3px,3px);box-shadow:1px 1px 0 #1c1a1e}
 .fab-book,.fab-book:is(:hover,:focus,:focus-visible,:active,:visited,.tap){color:#1c1a1e!important}
+/* small hits of the lime accent: the separator squares in the thin band and the squares on section headings */
+.pg-bands .band.thin i{color:#39ff14}
+.page-win .sec h2::before{color:#39ff14;text-shadow:0 0 0 #1c1a1e,1px 1px 0 #1c1a1e}
+::selection{background:#39ff14;color:#1c1a1e}
