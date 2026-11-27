@@ -1202,3 +1202,11 @@ body.home .top.quiet{position:relative}
 /* phone icons are free-standing objects now (no tiles); the selected one gets a soft highlight square like the Alcatel */
 .zoomview.phone.flip .os.ph-grid .app .icph{width:min(78px,21vw);padding:6px;border-radius:16px;filter:drop-shadow(0 3px 4px rgba(0,20,60,.35));transition:background .12s,transform .12s}
 .zoomview.phone.flip .os.ph-grid .app:hover .icph,.zoomview.phone.flip .os.ph-grid .app:focus-visible .icph{transform:none;background:rgba(255,255,255,.28);box-shadow:0 0 0 2px #39ff14;filter:drop-shadow(0 3px 4px rgba(0,20,60,.35))}
+/* phones: the old ".pop95 at the bottom" rule was stacking every pop-up in one spot; scatter them properly */
+@media (max-width:620px){
+  #popFlood .pop95.photo{left:var(--x);top:var(--y);bottom:auto;right:auto;width:calc(var(--w) * .5)}
+  #popFlood .pop95.photo .pop-bar span{font-size:10px}
+  #popFlood .pop95.photo .pop-x{width:16px;height:15px;font-size:12px}
+  #popFlood .book-pop{left:auto!important;right:3%!important;top:3%!important;bottom:auto!important;width:200px!important}
+  #avatarPop{top:auto!important;bottom:6%!important;left:50%}
+}
