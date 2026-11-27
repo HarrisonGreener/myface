@@ -1234,3 +1234,43 @@ body.home .top.quiet{position:relative}
 .nf-clear.in{opacity:1;transform:none}
 .nf-buzz{animation:nf-buzz .32s linear}
 @keyframes nf-buzz{0%,100%{transform:none}20%{transform:translateX(-3px) rotate(-.6deg)}40%{transform:translateX(3px) rotate(.6deg)}60%{transform:translateX(-2px)}80%{transform:translateX(2px)}}
+/* ==== Phone optimisation pass ==== */
+/* placeholder flip-phone outline while the 3D loads (fades away on its own if 3D never arrives) */
+@media (max-width:620px){
+  .deck3d:empty::before{content:"";position:absolute;left:50%;top:50%;width:118px;height:300px;margin:-150px 0 0 -59px;border-radius:22px;
+    background:linear-gradient(#e3d8c3,#e3d8c3) 50% 8%/86% 40% no-repeat,linear-gradient(#2a262f,#2a262f) 50% 92%/80% 40% no-repeat,#ece2cf;
+    box-shadow:0 20px 40px rgba(0,0,0,.25);animation:ph-wait 1.4s ease-in-out infinite alternate,ph-giveup .4s 10s forwards}
+}
+@keyframes ph-wait{from{opacity:.35;transform:translateY(4px)}to{opacity:.7;transform:none}}
+@keyframes ph-giveup{to{opacity:0;visibility:hidden}}
+/* smaller concrete for phones */
+@media (max-width:620px){
+  .bands>.band{background-image:url(concrete-sm.jpg?v=1)!important;background-size:800px auto!important}
+  .top.quiet{background-image:url(concrete-sm.jpg?v=1)!important;background-size:800px auto!important}
+}
+/* floating BOOK button, phones only, bottom-left; hidden while you're inside the phone */
+.fab-book{display:none}
+@media (max-width:620px){
+  .fab-book{display:flex;align-items:center;justify-content:center;position:fixed;z-index:60;left:calc(14px + env(safe-area-inset-left));bottom:calc(16px + env(safe-area-inset-bottom));
+    min-width:96px;height:52px;padding:0 22px;color:#1c1a1e;text-decoration:none;font:400 24px/1 Anton,Impact,sans-serif;letter-spacing:.06em;text-transform:uppercase;
+    background:#ff4fa3;border:3px solid #1c1a1e;border-radius:28px;box-shadow:4px 4px 0 #1c1a1e;transition:transform .1s,box-shadow .1s,background .12s}
+  .fab-book:active{transform:translate(3px,3px);box-shadow:1px 1px 0 #1c1a1e;background:#39ff14}
+  body.mf-zoomed .fab-book,html.bn-open .fab-book{display:none}
+  body>footer,.foot{padding-bottom:calc(84px + env(safe-area-inset-bottom))!important}
+}
+/* iPhone safe areas inside the phone OS */
+.zoomview.phone.flip .os.ph-grid .ph-logoff{height:calc(66px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom)}
+.zoomview.phone.flip .os.ph-grid .apps{bottom:calc(66px + env(safe-area-inset-bottom))}
+.zoomview.phone.flip .ph-keys{padding-bottom:env(safe-area-inset-bottom);height:calc(60px + env(safe-area-inset-bottom))}
+/* bigger touch targets on the avatar hotspots */
+@media (pointer:coarse){.cz-fig .hs::after{content:"";position:absolute;inset:-12px}}
+/* inner pages: buttons in the same flat Anton language as the header (the desktop inside the computer keeps its own) */
+.page-win .titlebar .back{height:34px;padding:0 14px;border-radius:0;border:2px solid #000;background:#ff4fa3;color:#1c1a1e;font:400 17px/1 Anton,Impact,sans-serif;letter-spacing:.04em;text-transform:uppercase;box-shadow:3px 3px 0 #000}
+.page-win .titlebar .back::before{display:none}
+.page-win .titlebar .back:hover,.page-win .titlebar .back:focus-visible{color:#1c1a1e;background:#39ff14;box-shadow:3px 3px 0 #000;outline:none}
+.page-win .cta .btn,.page-win .win-body .btn{height:52px;padding:0 26px;border-radius:0;border:3px solid #1c1a1e;color:#1c1a1e;text-shadow:none;background:#ff4fa3;
+  font:400 24px/1 Anton,Impact,sans-serif;letter-spacing:.04em;text-transform:uppercase;box-shadow:5px 5px 0 #1c1a1e}
+.page-win .cta .btn::before,.page-win .win-body .btn::before{display:none}
+.page-win .cta .btn.ghost{background:#fbf8f5;color:#1c1a1e;text-shadow:none}
+.page-win .cta .btn:hover,.page-win .win-body .btn:hover,.page-win .cta .btn:focus-visible{background:#39ff14;color:#1c1a1e;box-shadow:5px 5px 0 #1c1a1e;outline:none}
+.page-win .cta .btn:active,.page-win .win-body .btn:active{transform:translate(4px,4px);box-shadow:1px 1px 0 #1c1a1e}

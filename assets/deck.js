@@ -559,9 +559,10 @@ function buildPhone() {
 }
 
 export function createDeck(container, opts = {}) {
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const lite = !!opts.phone;                     // phones: fewer pixels, cheaper shadows, no MSAA
+  const renderer = new THREE.WebGLRenderer({ antialias: !lite, alpha: true, powerPreference: lite ? 'low-power' : 'high-performance' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, lite ? 1.5 : 2));
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = lite ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
   container.appendChild(renderer.domElement);
@@ -645,7 +646,13 @@ export function createDeck(container, opts = {}) {
   resize(); window.addEventListener('resize', resize);
 
   const clock = new THREE.Clock();
+  // don't burn battery: skip drawing while the canvas is scrolled away, the tab is hidden,
+  // or (on phones) while you're inside the screen and the page covers it
+  let onScreen = true;
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => { onScreen = es[es.length - 1].isIntersecting; }).observe(container);
   function tick() {
+    raf = requestAnimationFrame(tick);
+    if (!flying && !presses.length && (document.hidden || !onScreen || (lite && inside))) return;
     const t = clock.getElapsedTime();
     leds.forEach((l, i) => { l.visible = Math.sin(t * (2 + i * 0.7) + i) > -0.3; });
     leds.flicker && leds.flicker(t);
@@ -667,7 +674,6 @@ export function createDeck(container, opts = {}) {
       if (k >= 1) { const d = flying.done; flying = null; d && d(); }
     } else if (!inside) controls.update();          // while you're 'inside' the screen, leave the camera exactly where it is
     renderer.render(scene, camera);
-    raf = requestAnimationFrame(tick);
   }
   tick();
 

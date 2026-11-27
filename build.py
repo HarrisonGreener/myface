@@ -273,6 +273,9 @@ def logo(d):
     return f'<a class="logo" href="{rel(d, "")}">{logo_svg("logo-svg")}<span class="sr">{e(C["brand"])} home</span></a>'
 
 
+PRELOAD3D = '<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js" crossorigin>'
+
+
 def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", home=False):
     d = path.count("/")
     nav = [("Home", ""), ("Hair", "hair/"), ("Nails", "nails/"), ("Beauty", "beauty/"), ("Piercing", "piercing/"),
@@ -329,8 +332,8 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <head>
 <meta charset="utf-8">
 <link rel="icon" href="{rel(d, 'assets/favicon.svg')}" type="image/svg+xml"><link rel="icon" href="{rel(d, 'assets/favicon-32.png')}" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="{rel(d, 'assets/apple-touch-icon.png')}">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<script>/* captcha only on a fresh visit or a refresh: decided before anything is drawn */(function(){{try{{var n=(performance.getEntriesByType("navigation")[0]||{{}}).type,r=document.referrer,b=location.origin+location.pathname.replace(/[^/]*$/,""),inside=r&&r.indexOf(b)===0&&r.split("#")[0]!==location.href.split("#")[0];if(n==="reload"||(n!=="back_forward"&&!inside))document.documentElement.classList.add("show-cap")}}catch(e){{}}}})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>/* captcha only on a fresh visit or a refresh: decided before anything is drawn */(function(){{try{{var n=(performance.getEntriesByType("navigation")[0]||{{}}).type,r=document.referrer,b=location.origin+location.pathname.replace(/[^/]*$/,""),inside=r&&r.indexOf(b)===0&&r.split("#")[0]!==location.href.split("#")[0];var seen=matchMedia("(max-width: 620px)").matches&&sessionStorage.getItem("mf-human");if(!seen&&(n==="reload"||(n!=="back_forward"&&!inside)))document.documentElement.classList.add("show-cap")}}catch(e){{}}}})()</script>
 <title>{e(title)}</title>
 <meta name="description" content="{e(desc)}">
 <link rel="canonical" href="{e(url)}">
@@ -339,18 +342,24 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <meta property="og:title" content="{e(title)}">
 <meta property="og:description" content="{e(desc)}">
 <meta property="og:url" content="{e(url)}">
+<meta property="og:image" content="{e(C['site_url'])}/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#efe9e4">
+{PRELOAD3D if home else ""}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bagel+Fat+One&family=Pixelify+Sans:wght@400;600&family=Inter:wght@400;600&family=VT323&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{rel(d, 'assets/style.css')}?v=143">
+<link rel="stylesheet" href="{rel(d, 'assets/style.css')}?v=145">
 <script>document.documentElement.classList.add('js')</script>
 <script type="application/ld+json">{ld}</script>
 </head>
 <body{' class="home"' if home else ''}>
 {LOGO_DEFS}
 <a class="skip" href="#content">Skip to content</a>
-<header class="top quiet"><div class="bar"><div class="brand">{logo(d)}</div><nav class="nav" aria-label="Main">{navh}</nav><button type="button" class="orb-btn" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="bubbleNav"><span class="pk"></span><span class="hb" aria-hidden="true"><i></i><i></i><i></i></span><span class="ml">Menu</span></button><a class="btn" href="{e(C['booking_url'])}"><span class="pk"></span>Book</a><button type="button" class="orb-btn search-btn" id="searchBtn" aria-label="Search the site" data-index="{rel(d, 'assets/search.json')}?v=143" data-root="{rel(d, '')}"><svg class="mg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/></svg><span class="sl">Search</span></button></div></header>
+<header class="top quiet"><div class="bar"><div class="brand">{logo(d)}</div><nav class="nav" aria-label="Main">{navh}</nav><button type="button" class="orb-btn" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="bubbleNav"><span class="pk"></span><span class="hb" aria-hidden="true"><i></i><i></i><i></i></span><span class="ml">Menu</span></button><a class="btn" href="{e(C['booking_url'])}"><span class="pk"></span>Book</a><button type="button" class="orb-btn search-btn" id="searchBtn" aria-label="Search the site" data-index="{rel(d, 'assets/search.json')}?v=145" data-root="{rel(d, '')}"><svg class="mg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/></svg><span class="sl">Search</span></button></div></header>
+<a class="fab-book" href="{e(C['booking_url'])}">Book</a>
 <nav class="bubble-nav" id="bubbleNav" aria-label="Menu" hidden><ul>{bubbles}</ul></nav>
 {body}
 <footer class="foot"><div class="wrap">
@@ -359,7 +368,7 @@ def page(path, title, desc, h1, main, crumbs=(), schema=None, priority="0.6", ho
 <p>&copy;2026 {e(C['brand'])}</p>
 <p class="credit">Designed &amp; built by <a href="https://harrisongreener.co.uk" target="_blank" rel="noopener">Harrison Greener</a></p>
 </div></footer>
-<script src="{rel(d, 'assets/site.js')}?v=143" defer></script>
+<script src="{rel(d, 'assets/site.js')}?v=145" defer></script>
 </body>
 </html>
 """
@@ -738,7 +747,7 @@ def computer():
 </div>
 </div>
 <script type="importmap">{{"imports":{{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}}}</script>
-<script type="module">import {{ createDeck }} from './assets/deck.js?v=143';
+<script type="module">import {{ createDeck }} from './assets/deck.js?v=145';
 try {{ var mfView = null; try {{ if (!document.documentElement.classList.contains('show-cap')) mfView = JSON.parse(sessionStorage.getItem('mf-view')); }} catch (e) {{}}
 window.MFDeck = createDeck(document.getElementById('deck3d'), {{ phone: matchMedia('(max-width: 620px)').matches, view: mfView }}); window.dispatchEvent(new Event('mfdeck')); }} catch (e) {{ console.warn('3D computer unavailable', e); }}</script>
 </div>
