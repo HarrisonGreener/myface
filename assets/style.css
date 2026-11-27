@@ -1274,3 +1274,13 @@ body.home .top.quiet{position:relative}
 .page-win .cta .btn.ghost{background:#fbf8f5;color:#1c1a1e;text-shadow:none}
 .page-win .cta .btn:hover,.page-win .win-body .btn:hover,.page-win .cta .btn:focus-visible{background:#39ff14;color:#1c1a1e;box-shadow:5px 5px 0 #1c1a1e;outline:none}
 .page-win .cta .btn:active,.page-win .win-body .btn:active{transform:translate(4px,4px);box-shadow:1px 1px 0 #1c1a1e}
+/* phone header buttons in the same style as the floating BOOK button */
+@media (max-width:620px){
+  html.js .top .bar :is(#menuBtn,.search-btn){width:52px!important;height:52px!important;padding:0!important;border-radius:50%!important;border:3px solid #1c1a1e!important;
+    background:#ff4fa3!important;box-shadow:4px 4px 0 #1c1a1e!important;color:#1c1a1e!important;transition:transform .1s,box-shadow .1s,background .12s}
+  html.js .top .bar :is(#menuBtn,.search-btn):is(:hover,:focus-visible,[aria-expanded="true"]){background:#39ff14!important;box-shadow:4px 4px 0 #1c1a1e!important;outline:none}
+  html.js .top .bar :is(#menuBtn,.search-btn):active{transform:translate(3px,3px);box-shadow:1px 1px 0 #1c1a1e!important}
+  html.js .top .bar #menuBtn .hb i{background:#1c1a1e!important;box-shadow:none!important;height:3px}
+  html.js .top .bar .search-btn .mg{filter:none!important;stroke:#1c1a1e!important;stroke-width:3;width:20px!important;height:20px!important}
+  html.js .top .bar #menuBtn{margin-right:6px}
+}
